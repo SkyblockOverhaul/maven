@@ -526,7 +526,7 @@ var kills by useState(5000 to 20000)
 rangeSlider(low = kills.first, high = kills.second, onChange = { lo, hi -> kills = lo to hi },
             min = 0, max = 50000, step = 500, showValue = true, format = { "%,d".format(it) })
 """, css=[".guilib-range-slider", ".guilib-slider-thumb.low", ".guilib-slider-thumb.high", "+ all .guilib-slider-* classes"]),
-    api("numberInput", "function", "A number field with − and + buttons that keeps the value within `min..max`. Values inside the range are reported while typing; anything else is clamped when the field loses focus or on Enter. `Int` and `Double` overloads (the `Double` one shows as many decimals as `step`). With `allowEmpty = true` the value is an `Int?` / `Double?`: `null` shows an empty field with the placeholder, clearing the field reports `null`, and stepping an empty field starts at 0 (or the nearest bound).",
+    api("numberInput", "function", "A number field with − and + buttons that keeps the value within `min..max`. Values inside the range are reported while typing; anything else is clamped when the field loses focus or on Enter. `Int` and `Double` overloads (the `Double` one shows as many decimals as `step`). With `allowEmpty = true` the value is an `Int?` / `Double?`: `null` shows an empty field with the placeholder, clearing the field reports `null`, + on an empty field starts at `step` (at least `min`), − on an empty field does nothing, and − at `min` empties the field again.",
         params=[("value", "Int / Double", None, "Current value."),
                 ("onChange", "((Int) -> Unit)?", "null", "New, clamped value (`Int?` with `allowEmpty`)."),
                 ("allowEmpty", "Boolean", "–", "Only on the `Int?` / `Double?` overloads (required there): the field may be empty."),
