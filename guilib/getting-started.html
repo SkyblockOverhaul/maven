@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Getting started · GuiLib docs</title>
+<meta name="description" content="Add GuiLib to a Fabric mod, write a component and a stylesheet, and open it as a screen.">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" aria-label="Menu">☰</button>
+  <a class="brand" href="index.html"><img src="assets/icon.svg" alt="" width="22" height="22"><span>GuiLib</span><span class="version">v0.3.0</span></a>
+  <div class="search">
+    <input id="search" type="search" placeholder="Search the docs…" autocomplete="off" spellcheck="false">
+    <kbd>/</kbd>
+    <div class="search-results" hidden></div>
+  </div>
+  <nav class="top-links"><a href="getting-started.html">Get started</a><a href="../">Maven</a></nav>
+</header>
+<div class="layout">
+  <aside class="sidebar"><div class="nav-group"><div class="nav-group-title">Overview</div><a class="nav-link" href="index.html">GuiLib</a><a class="nav-link active" href="getting-started.html">Getting started</a><div class="nav-sub"><a href="#installation" class="sub-h2">Installation</a><a href="#your-first-screen" class="sub-h2">Your first screen</a><a href="#opening-screens" class="sub-h2">Opening screens</a><a href="#guilib-open" class="sub-api"><code>GuiLib.open</code></a><a href="#guilib-screen" class="sub-api"><code>GuiLib.screen</code></a><a href="#guilib-close" class="sub-api"><code>GuiLib.close</code></a><a href="#guilib-currentscreen" class="sub-api"><code>GuiLib.currentScreen</code></a><a href="#guilib-runonui" class="sub-api"><code>GuiLib.runOnUi</code></a><a href="#stylesheets-resources" class="sub-h2">Stylesheets &amp; resources</a><a href="#development-workflow" class="sub-h2">Development workflow</a></div></div><div class="nav-group"><div class="nav-group-title">Guide</div><a class="nav-link" href="components.html">Components &amp; hooks</a><a class="nav-link" href="differences.html">Differences from the web</a><a class="nav-link" href="recipes.html">Recipes</a></div><div class="nav-group"><div class="nav-group-title">Reference</div><a class="nav-link" href="elements.html">Elements</a><a class="nav-link" href="controls.html">Form controls</a><a class="nav-link" href="overlays.html">Panels &amp; overlays</a><a class="nav-link" href="events.html">Events</a><a class="nav-link" href="css.html">CSS</a></div></aside>
+  <main class="content">
+    <article>
+      <div class="page-head"><div class="eyebrow">Overview</div><h1>Getting started</h1><p class="lead">Add GuiLib to a Fabric mod, write a component and a stylesheet, and open it as a screen.</p></div>
+      <h2 id="installation"><a class="anchor" href="#installation">#</a>Installation</h2><p>GuiLib is a Fabric mod published as <code>net.sbo:guilib-&lt;mc&gt;-fabric</code> to the SkyblockOverhaul Maven repository. Pick the artifact for your Minecraft version (<code>26.1.2-fabric</code> or <code>26.2-fabric</code>) and bundle it jar-in-jar:</p><div class="code"><div class="code-title">build.gradle.kts</div><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">repositories {
+    exclusiveContent {
+        forRepository { maven(&quot;https://skyblockoverhaul.github.io/maven&quot;) }
+        filter { includeGroup(&quot;net.sbo&quot;) }
+    }
+}
+
+dependencies {
+    // jar-in-jar: players don&#x27;t need to install GuiLib separately
+    implementation(include(&quot;net.sbo:guilib-26.2-fabric:0.3.0&quot;)!!)
+}</code></pre></div><p>Declare the dependency in your <code>fabric.mod.json</code>:</p><div class="code"><div class="code-title">fabric.mod.json</div><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-json">&quot;depends&quot;: {
+  &quot;guilib&quot;: &quot;&gt;=0.3.0&quot;
+}</code></pre></div><div class="callout info">GuiLib needs <code>fabric-api</code> and <code>fabric-language-kotlin</code>. Your mod can be written in Kotlin or Java, but the DSL is designed for Kotlin.</div><h2 id="your-first-screen"><a class="anchor" href="#your-first-screen">#</a>Your first screen</h2><p>A UI is a <strong>component</strong>: a function that builds elements with the DSL. Elements are styled with a CSS file from your mod&#x27;s resources.</p><div class="code"><div class="code-title">PartyScreen.kt</div><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">import net.sbo.guilib.core.dom.component
+import net.sbo.guilib.core.dsl.*          // div, span, button, input, useState, …
+import net.sbo.guilib.fabric.GuiLib
+
+data class Party(val id: String, val leader: String, val size: Int)
+
+val PartyRow = component&lt;Party&gt;(&quot;PartyRow&quot;) { party -&gt;
+    var expanded by useState(false)
+    div(className = classNames(&quot;row&quot;, &quot;expanded&quot; to expanded), onClick = { expanded = !expanded }) {
+        span(className = &quot;leader&quot;) { +party.leader }
+        span(className = &quot;size&quot;) { +&quot;${party.size}/5&quot; }
+        if (expanded) button(className = &quot;join&quot;, onClick = { e -&gt; e.stopPropagation(); join(party.id) }) { +&quot;Join&quot; }
+    }
+}
+
+val App = component(&quot;App&quot;) {
+    val (parties, setParties) = useState(emptyList&lt;Party&gt;())
+    useEffect { loadParties { result -&gt; setParties(result) } }   // once after mount; setters are thread-safe
+    div(className = &quot;panel&quot;) {
+        h2 { +&quot;Parties&quot; }
+        scroll(className = &quot;list&quot;) {
+            for (p in parties) PartyRow(p, key = p.id)            // keys for lists, like React
+        }
+    }
+}
+
+// e.g. from a command or key binding:
+GuiLib.open(App, stylesheets = listOf(&quot;mymod:ui/parties.css&quot;))</code></pre></div><div class="code"><div class="code-title">parties.css</div><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-css">/* src/main/resources/assets/mymod/ui/parties.css */
+:root { --accent: #5b8def; }
+body { display: flex; align-items: center; justify-content: center; }  /* body = the whole screen */
+.panel { width: 300px; max-height: 80vh; padding: 8px; background-color: #1e1f22; border-radius: 6px;
+         display: flex; flex-direction: column; }
+.list { flex-grow: 1; min-height: 0; }
+.row { display: flex; justify-content: space-between; padding: 3px 6px; border-radius: 3px; cursor: pointer; }
+.row:hover { background-color: #2b2d31; }
+.join { background-color: var(--accent); }</code></pre></div><div class="callout warn"><code>px</code> are GUI pixels and the default font size is <strong>8px</strong>. Typical UI text is 7–10px, so web values like <code>font-size: 14px</code> look huge. See <a href="differences.html">Differences from the web</a>.</div><h2 id="opening-screens"><a class="anchor" href="#opening-screens">#</a>Opening screens</h2><section class="api" id="guilib-open"><h3 class="api-title"><a class="anchor" href="#guilib-open">#</a><code>GuiLib.open</code><span class="kind function">function</span></h3><div class="api-desc"><p>Opens a component as a Minecraft screen and returns it. Must be called on the client thread (use <code>GuiLib.runOnUi</code> otherwise).</p></div><div class="code"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">fun GuiLib.open(
+    app: ComponentType&lt;Unit&gt;,
+    stylesheets: List&lt;String&gt; = emptyList(),
+    title: String = app.name,
+    vanillaBackground: Boolean = true,
+    pauseGame: Boolean = false,
+): GuiLibScreen
+
+fun open(stylesheets: List&lt;String&gt; = emptyList(), title: String = &quot;GuiLib&quot;, content: NodeBuilder.() -&gt; Unit): GuiLibScreen</code></pre></div><div class="table-wrap"><table class="params"><thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody><tr><td><code>app</code></td><td><code>ComponentType&lt;Unit&gt;</code></td><td><span class=req>required</span></td><td>The root component (without props).</td></tr><tr><td><code>stylesheets</code></td><td><code>List&lt;String&gt;</code></td><td><code>emptyList()</code></td><td>Resource locations of CSS files, e.g. <code>&quot;mymod:ui/app.css&quot;</code> → <code>assets/mymod/ui/app.css</code>.</td></tr><tr><td><code>title</code></td><td><code>String</code></td><td><code>app.name</code></td><td>Screen title (narration).</td></tr><tr><td><code>vanillaBackground</code></td><td><code>Boolean</code></td><td><code>true</code></td><td>Draw Minecraft&#x27;s blurred/dimmed background behind the UI.</td></tr><tr><td><code>pauseGame</code></td><td><code>Boolean</code></td><td><code>false</code></td><td>Pause singleplayer while open.</td></tr></tbody></table></div><div class="code"><div class="code-title">Example</div><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">GuiLib.open(App, stylesheets = listOf(&quot;mymod:ui/app.css&quot;))
+
+// Inline UI without declaring a component:
+GuiLib.open(listOf(&quot;mymod:ui/hello.css&quot;)) { div(className = &quot;hello&quot;) { +&quot;Hi!&quot; } }</code></pre></div></section><section class="api" id="guilib-screen"><h3 class="api-title"><a class="anchor" href="#guilib-screen">#</a><code>GuiLib.screen</code><span class="kind function">function</span></h3><div class="api-desc"><p>Creates the screen without opening it, e.g. to return it from a config button or ModMenu integration.</p></div><div class="code"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">fun GuiLib.screen(
+    app: ComponentType&lt;Unit&gt;,
+    stylesheets: List&lt;String&gt; = emptyList(),
+    title: String = app.name,
+): GuiLibScreen</code></pre></div><div class="table-wrap"><table class="params"><thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody><tr><td><code>app</code></td><td><code>ComponentType&lt;Unit&gt;</code></td><td><span class=req>required</span></td><td>Root component.</td></tr><tr><td><code>stylesheets</code></td><td><code>List&lt;String&gt;</code></td><td><code>emptyList()</code></td><td>CSS resource locations.</td></tr><tr><td><code>title</code></td><td><code>String</code></td><td><code>app.name</code></td><td>Screen title.</td></tr></tbody></table></div></section><section class="api" id="guilib-close"><h3 class="api-title"><a class="anchor" href="#guilib-close">#</a><code>GuiLib.close</code><span class="kind function">function</span></h3><div class="api-desc"><p>Closes the current screen (e.g. from a close button: <code>button(onClick = { GuiLib.close() })</code>).</p></div><div class="code"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">fun close()</code></pre></div></section><section class="api" id="guilib-currentscreen"><h3 class="api-title"><a class="anchor" href="#guilib-currentscreen">#</a><code>GuiLib.currentScreen</code><span class="kind function">function</span></h3><div class="api-desc"><p>The screen that is currently open, on every supported Minecraft version.</p></div><div class="code"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">fun currentScreen(): Screen?</code></pre></div></section><section class="api" id="guilib-runonui"><h3 class="api-title"><a class="anchor" href="#guilib-runonui">#</a><code>GuiLib.runOnUi</code><span class="kind function">function</span></h3><div class="api-desc"><p>Runs a block on the client (render) thread. State setters are already thread-safe; use this for other work such as opening screens from a network callback.</p></div><div class="code"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">fun runOnUi(block: () -&gt; Unit)</code></pre></div></section><h2 id="stylesheets-resources"><a class="anchor" href="#stylesheets-resources">#</a>Stylesheets &amp; resources</h2><ul><li>CSS files live in your mod&#x27;s resources and are referenced by resource location: <code>&quot;mymod:ui/app.css&quot;</code> → <code>src/main/resources/assets/mymod/ui/app.css</code>.</li><li>Several stylesheets can be passed; later ones win on equal specificity. GuiLib&#x27;s built-in stylesheet (<code>assets/guilib/css/ua.css</code>) has the lowest priority, so you can override every built-in control.</li><li>Images (<code>img</code>, <code>background-image: url(...)</code>) use resource locations too: <code>&quot;mymod:textures/gui/logo.png&quot;</code> (PNG or SVG).</li><li>Invalid CSS never crashes: unknown properties and values are skipped with a warning (<code>file:line:col</code>, with &quot;did you mean …&quot;) in the log.</li></ul><h2 id="development-workflow"><a class="anchor" href="#development-workflow">#</a>Development workflow</h2><ul><li><code>/guilib showcase</code> opens a demo of every feature (the screenshots on this site are taken from it).</li><li>In a dev environment CSS files are <strong>hot-reloaded</strong> from <code>src/main/resources</code> on save, no rebuild needed. <code>/guilib reload</code> reloads manually.</li><li>Warnings (unknown properties, invalid values, duplicate keys, hook misuse) are logged with file and line.</li></ul>
+      <nav class="pager"><a class="prev" href="index.html"><span>Previous</span>GuiLib</a><a class="next" href="components.html"><span>Next</span>Components &amp; hooks</a></nav>
+    </article>
+    <footer class="footer">GuiLib 0.3.0 · Minecraft 26.1.2 / 26.2 (Fabric) · LGPL-3.0 · Screenshots taken in-game at GUI scale 2.</footer>
+  </main>
+  <aside class="toc"><div class="toc-title">On this page</div><nav id="toc"></nav></aside>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/kotlin.min.js"></script>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

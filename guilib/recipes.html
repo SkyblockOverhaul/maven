@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recipes · GuiLib docs</title>
+<meta name="description" content="Short answers to common UI tasks.">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" aria-label="Menu">☰</button>
+  <a class="brand" href="index.html"><img src="assets/icon.svg" alt="" width="22" height="22"><span>GuiLib</span><span class="version">v0.3.0</span></a>
+  <div class="search">
+    <input id="search" type="search" placeholder="Search the docs…" autocomplete="off" spellcheck="false">
+    <kbd>/</kbd>
+    <div class="search-results" hidden></div>
+  </div>
+  <nav class="top-links"><a href="getting-started.html">Get started</a><a href="../">Maven</a></nav>
+</header>
+<div class="layout">
+  <aside class="sidebar"><div class="nav-group"><div class="nav-group-title">Overview</div><a class="nav-link" href="index.html">GuiLib</a><a class="nav-link" href="getting-started.html">Getting started</a></div><div class="nav-group"><div class="nav-group-title">Guide</div><a class="nav-link" href="components.html">Components &amp; hooks</a><a class="nav-link" href="differences.html">Differences from the web</a><a class="nav-link active" href="recipes.html">Recipes</a><div class="nav-sub"><a href="#layout" class="sub-h2">Layout</a><a href="#behaviour" class="sub-h2">Behaviour</a><a href="#animation" class="sub-h2">Animation</a><a href="#a-complete-example" class="sub-h2">A complete example</a></div></div><div class="nav-group"><div class="nav-group-title">Reference</div><a class="nav-link" href="elements.html">Elements</a><a class="nav-link" href="controls.html">Form controls</a><a class="nav-link" href="overlays.html">Panels &amp; overlays</a><a class="nav-link" href="events.html">Events</a><a class="nav-link" href="css.html">CSS</a></div></aside>
+  <main class="content">
+    <article>
+      <div class="page-head"><div class="eyebrow">Guide</div><h1>Recipes</h1><p class="lead">Short answers to common UI tasks.</p></div>
+      <h2 id="layout"><a class="anchor" href="#layout">#</a>Layout</h2><div class="table-wrap"><table><thead><tr><th>Task</th><th>How</th></tr></thead><tbody><tr><td>Full-screen centered panel</td><td><code>body { display: flex; align-items: center; justify-content: center }</code> + a sized child</td></tr><tr><td>Scrollable list filling the rest</td><td>Parent <code>display: flex; flex-direction: column; height: …</code>, list <code>flex-grow: 1; min-height: 0; overflow: auto</code></td></tr><tr><td>Ellipsis</td><td><code>white-space: nowrap; overflow: hidden; text-overflow: ellipsis</code> (+ <code>min-width: 0</code> in flex rows)</td></tr><tr><td>Responsive tiles</td><td><code>display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 4px</code></td></tr><tr><td>Sidebar + content</td><td><code>display: grid; grid-template-columns: 80px 1fr</code> (or <code>grid-template-areas</code>)</td></tr><tr><td>Horizontal scroll row</td><td><code>display: flex; overflow-x: auto; overflow-y: hidden</code> with <code>flex-shrink: 0</code> on the children</td></tr><tr><td>Zebra rows</td><td><code>.row:nth-child(even) { background-color: #2b2d31 }</code></td></tr><tr><td>Theme</td><td>Define <code>--vars</code> on <code>:root</code> in one CSS file and use <code>var(--x)</code> everywhere</td></tr></tbody></table></div><h2 id="behaviour"><a class="anchor" href="#behaviour">#</a>Behaviour</h2><div class="table-wrap"><table><thead><tr><th>Task</th><th>How</th></tr></thead><tbody><tr><td>Close button</td><td><code>button(onClick = { GuiLib.close() }) { +&quot;✕&quot; }</code></td></tr><tr><td>Async data</td><td>Fetch in <code>useEffect</code>, call the state setter from the callback (thread-safe). Other work: <code>GuiLib.runOnUi { }</code></td></tr><tr><td>Keyboard shortcut for the screen</td><td><code>useDocumentEvent(&quot;keydown&quot;) { e -&gt; if ((e as KeyboardEvent).key == &quot;r&quot;) refresh() }</code></td></tr><tr><td>Feedback after an action</td><td><code>val toast = useToast()</code> → <code>toast.success(&quot;Saved&quot;)</code></td></tr><tr><td>Save a setting once, not while dragging</td><td><code>slider(..., onChangeEnd = { config.save() })</code></td></tr><tr><td>Only one accordion item open</td><td><code>details(open = openId == id, onToggle = { openId = if (it) id else null })</code></td></tr><tr><td>Reorderable list</td><td><code>sortableList(tasks, key = { it.id }, onReorder = { tasks = it }) { task, _ -&gt; div { +task.name } }</code></td></tr></tbody></table></div><h2 id="animation"><a class="anchor" href="#animation">#</a>Animation</h2><div class="table-wrap"><table><thead><tr><th>Task</th><th>How</th></tr></thead><tbody><tr><td>Hover fade</td><td><code>.card { transition: background-color 150ms } .card:hover { background-color: #333 }</code></td></tr><tr><td>Fade in on open</td><td><code>@keyframes fade-in { from { opacity: 0 } }</code> + <code>.panel { animation: fade-in 200ms ease-out }</code></td></tr><tr><td>Staggered slide-in</td><td><code>.item { animation: slide-in 300ms ease-out backwards }</code> and <code>style = &quot;animation-delay: ${i * 50}ms&quot;</code></td></tr><tr><td>Slide out before removal</td><td><code>presence(visible = open, exitMs = 200) { leaving -&gt; … }</code> + <code>.leaving { animation: slide-out 200ms forwards }</code></td></tr><tr><td>Grow on hover</td><td><code>.card { transition: transform 150ms ease-out } .card:hover { transform: scale(1.05) }</code></td></tr><tr><td>Spinner</td><td><code>@keyframes spin { to { transform: rotate(360deg) } }</code> + <code>.spinner { animation: spin 1s linear infinite }</code></td></tr><tr><td>Animated height</td><td><code>collapse(open = expanded) { … }</code> (or <code>details</code>)</td></tr></tbody></table></div><h2 id="a-complete-example"><a class="anchor" href="#a-complete-example">#</a>A complete example</h2><p>A small party finder screen combining several controls:</p><div class="code"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">val PartyFinder = component(&quot;PartyFinder&quot;) {
+    var category by useState(&quot;dungeons&quot;)
+    var size by useState(&quot;5&quot;)
+    var minCata by useState(30)
+    var note by useState(&quot;&quot;)
+    val toast = useToast()
+
+    div(className = &quot;finder&quot;) {
+        tabs(value = category, onChange = { category = it }) {
+            tab(&quot;dungeons&quot;, &quot;Dungeons&quot;); tab(&quot;kuudra&quot;, &quot;Kuudra&quot;); tab(&quot;fishing&quot;, &quot;Fishing&quot;)
+        }
+        div(className = &quot;form-row&quot;) {
+            span { +&quot;Size&quot; }
+            segmented(value = size, onChange = { size = it }) {
+                option(&quot;2&quot;, &quot;Duo&quot;); option(&quot;3&quot;, &quot;Trio&quot;); option(&quot;5&quot;, &quot;Full&quot;)
+            }
+        }
+        div(className = &quot;form-row&quot;) {
+            span { +&quot;Min. cata&quot; }
+            numberInput(value = minCata, onChange = { minCata = it }, min = 0, max = 50)
+        }
+        textarea(value = note, onChange = { note = it.value }, placeholder = &quot;Note&quot;, rows = 2, maxLength = 120)
+        button(className = &quot;primary&quot;, onClick = {
+            api.createParty(category, size.toInt(), minCata, note,
+                onSuccess = { toast.success(&quot;Party created&quot;) },
+                onError = { toast.error(it, title = &quot;Party finder&quot;) })
+        }) { +&quot;Create party&quot; }
+    }
+}</code></pre></div>
+      <nav class="pager"><a class="prev" href="differences.html"><span>Previous</span>Differences from the web</a><a class="next" href="elements.html"><span>Next</span>Elements</a></nav>
+    </article>
+    <footer class="footer">GuiLib 0.3.0 · Minecraft 26.1.2 / 26.2 (Fabric) · LGPL-3.0 · Screenshots taken in-game at GUI scale 2.</footer>
+  </main>
+  <aside class="toc"><div class="toc-title">On this page</div><nav id="toc"></nav></aside>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/kotlin.min.js"></script>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

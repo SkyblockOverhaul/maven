@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Events · GuiLib docs</title>
+<meta name="description" content="Events work like the DOM: they bubble from the deepest element to body , and stopPropagation() / preventDefault() behave as you expect.">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" aria-label="Menu">☰</button>
+  <a class="brand" href="index.html"><img src="assets/icon.svg" alt="" width="22" height="22"><span>GuiLib</span><span class="version">v0.3.0</span></a>
+  <div class="search">
+    <input id="search" type="search" placeholder="Search the docs…" autocomplete="off" spellcheck="false">
+    <kbd>/</kbd>
+    <div class="search-results" hidden></div>
+  </div>
+  <nav class="top-links"><a href="getting-started.html">Get started</a><a href="../">Maven</a></nav>
+</header>
+<div class="layout">
+  <aside class="sidebar"><div class="nav-group"><div class="nav-group-title">Overview</div><a class="nav-link" href="index.html">GuiLib</a><a class="nav-link" href="getting-started.html">Getting started</a></div><div class="nav-group"><div class="nav-group-title">Guide</div><a class="nav-link" href="components.html">Components &amp; hooks</a><a class="nav-link" href="differences.html">Differences from the web</a><a class="nav-link" href="recipes.html">Recipes</a></div><div class="nav-group"><div class="nav-group-title">Reference</div><a class="nav-link" href="elements.html">Elements</a><a class="nav-link" href="controls.html">Form controls</a><a class="nav-link" href="overlays.html">Panels &amp; overlays</a><a class="nav-link active" href="events.html">Events</a><div class="nav-sub"><a href="#handling-events" class="sub-h2">Handling events</a><a href="#event-types" class="sub-h2">Event types</a><a href="#keyboard" class="sub-h2">Keyboard</a><a href="#default-actions" class="sub-h2">Default actions</a><a href="#focus" class="sub-h2">Focus</a><a href="#element-api" class="sub-h2">Element API</a></div><a class="nav-link" href="css.html">CSS</a></div></aside>
+  <main class="content">
+    <article>
+      <div class="page-head"><div class="eyebrow">Reference</div><h1>Events</h1><p class="lead">Events work like the DOM: they bubble from the deepest element to <code>body</code>, and <code>stopPropagation()</code> / <code>preventDefault()</code> behave as you expect.</p></div>
+      <h2 id="handling-events"><a class="anchor" href="#handling-events">#</a>Handling events</h2><div class="code"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">button(onClick = { e -&gt; e.stopPropagation(); join() }) { +&quot;Join&quot; }
+div(onMouseEnter = { hovered = true }, onMouseLeave = { hovered = false }) { … }
+input(onKeyDown = { e -&gt; if (e.key == &quot;Enter&quot;) submit() })
+scroll(onScroll = { e -&gt; atBottom = e.scrollTop &gt;= maxScroll })</code></pre></div><ul><li><code>e.target</code> is the element the event happened on, <code>e.currentTarget</code> the one whose handler runs.</li><li><code>mouseenter</code> / <code>mouseleave</code>, <code>focus</code> / <code>blur</code> and <code>scroll</code> don&#x27;t bubble; everything else does.</li><li>Document-wide listeners: <code>useDocumentEvent(&quot;keydown&quot;) { … }</code> (runs before element handlers).</li></ul><h2 id="event-types"><a class="anchor" href="#event-types">#</a>Event types</h2><div class="table-wrap"><table><thead><tr><th>Class</th><th>Events</th><th>Fields</th></tr></thead><tbody><tr><td><code>UIEvent</code></td><td>all</td><td><code>type</code>, <code>target</code>, <code>currentTarget</code>, <code>stopPropagation()</code>, <code>preventDefault()</code>, <code>defaultPrevented</code></td></tr><tr><td><code>MouseEvent</code></td><td><code>click</code> <code>dblclick</code> <code>contextmenu</code> <code>mousedown</code> <code>mouseup</code> <code>mousemove</code> <code>mouseenter</code> <code>mouseleave</code></td><td><code>clientX</code>, <code>clientY</code> (GUI px), <code>offsetX</code>, <code>offsetY</code>, <code>button</code> (0 left, 1 middle, 2 right), <code>shiftKey</code>, <code>ctrlKey</code>, <code>altKey</code></td></tr><tr><td><code>WheelEvent</code></td><td><code>wheel</code></td><td><code>deltaX</code>, <code>deltaY</code> (px, positive = down) + mouse fields</td></tr><tr><td><code>KeyboardEvent</code></td><td><code>keydown</code> <code>keyup</code></td><td><code>key</code> (DOM names), <code>keyCode</code> (GLFW), <code>modifiers</code>, <code>shiftKey</code>, <code>ctrlKey</code>, <code>repeat</code></td></tr><tr><td><code>InputEvent</code></td><td><code>input</code> <code>change</code></td><td><code>value</code>, <code>checked</code></td></tr><tr><td><code>FocusEvent</code></td><td><code>focus</code> <code>blur</code></td><td><code>relatedTarget</code></td></tr><tr><td><code>ScrollEvent</code></td><td><code>scroll</code></td><td><code>scrollLeft</code>, <code>scrollTop</code></td></tr></tbody></table></div><h2 id="keyboard"><a class="anchor" href="#keyboard">#</a>Keyboard</h2><p><code>key</code> uses DOM names: <code>&quot;a&quot;</code>, <code>&quot;Enter&quot;</code>, <code>&quot;Escape&quot;</code>, <code>&quot;ArrowUp&quot;</code>, <code>&quot;Tab&quot;</code>, <code>&quot;Backspace&quot;</code>, <code>&quot;Delete&quot;</code>, <code>&quot;Home&quot;</code>, <code>&quot;End&quot;</code>, <code>&quot;PageUp&quot;</code>, <code>&quot; &quot;</code> …. Keyboard events go to the focused element, or to <code>body</code> when nothing is focused.</p><div class="code"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">useDocumentEvent(&quot;keydown&quot;) { e -&gt;
+    e as KeyboardEvent
+    if (e.ctrlKey &amp;&amp; e.key == &quot;f&quot;) { searchRef.current?.focus(); e.preventDefault() }
+}</code></pre></div><h2 id="default-actions"><a class="anchor" href="#default-actions">#</a>Default actions</h2><div class="table-wrap"><table><thead><tr><th>preventDefault() on</th><th>Effect</th></tr></thead><tbody><tr><td><code>mousedown</code></td><td>The element is not focused.</td></tr><tr><td><code>wheel</code></td><td>The scroll container doesn&#x27;t scroll.</td></tr><tr><td><code>keydown</code> (Escape)</td><td>The screen stays open.</td></tr><tr><td><code>keydown</code> (Enter / Space on a button)</td><td>The button isn&#x27;t clicked.</td></tr></tbody></table></div><p>The wheel scrolls the nearest scroll container; Shift + wheel scrolls sideways. A container that can only scroll horizontally also takes the plain wheel (unlike the web) and hands it on once it reaches its end.</p><h2 id="focus"><a class="anchor" href="#focus">#</a>Focus</h2><ul><li>Inputs, textareas, buttons, selects and elements with <code>tabIndex</code> are focusable. Tab / Shift+Tab move the focus.</li><li>Clicking focuses the nearest focusable element; style it with <code>:focus</code> or <code>:focus-within</code>.</li><li>The first Escape blurs a focused input; the next closes the screen (unless something called <code>preventDefault()</code>).</li><li>Use <code>autoFocus = true</code> on an input to focus it when it appears, or <code>ref.current?.focus()</code>.</li></ul><h2 id="element-api"><a class="anchor" href="#element-api">#</a>Element API</h2><p>Via <code>ref.current</code> (see <code>useElementRef</code>) or <code>useDocument()</code>:</p><div class="table-wrap"><table><thead><tr><th>Member</th><th>Description</th></tr></thead><tbody><tr><td><code>tagName</code>, <code>id</code>, <code>classList</code>, <code>children</code>, <code>parent</code></td><td>Tree and identity.</td></tr><tr><td><code>getBoundingClientRect()</code></td><td>Border box in screen (GUI) coordinates, including transforms.</td></tr><tr><td><code>querySelector(css)</code>, <code>querySelectorAll(css)</code></td><td>Find descendants with any supported selector.</td></tr><tr><td><code>contains(node)</code></td><td>Whether the node is this element or inside it.</td></tr><tr><td><code>focus()</code>, <code>blur()</code>, <code>isFocused</code></td><td>Focus control.</td></tr><tr><td><code>scrollTop</code>, <code>scrollLeft</code> (read &amp; write), <code>maxScrollTop</code>, <code>maxScrollLeft</code></td><td>Scroll position of scroll containers.</td></tr><tr><td><code>style</code></td><td>The computed style.</td></tr></tbody></table></div>
+      <nav class="pager"><a class="prev" href="overlays.html"><span>Previous</span>Panels &amp; overlays</a><a class="next" href="css.html"><span>Next</span>CSS</a></nav>
+    </article>
+    <footer class="footer">GuiLib 0.3.0 · Minecraft 26.1.2 / 26.2 (Fabric) · LGPL-3.0 · Screenshots taken in-game at GUI scale 2.</footer>
+  </main>
+  <aside class="toc"><div class="toc-title">On this page</div><nav id="toc"></nav></aside>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/kotlin.min.js"></script>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panels &amp; overlays · GuiLib docs</title>
+<meta name="description" content="Navigation, expandable sections, popups and notifications: tabs, accordions, context menus, toasts, tooltips, modals, exit animations and sortable lists.">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" aria-label="Menu">☰</button>
+  <a class="brand" href="index.html"><img src="assets/icon.svg" alt="" width="22" height="22"><span>GuiLib</span><span class="version">v0.3.0</span></a>
+  <div class="search">
+    <input id="search" type="search" placeholder="Search the docs…" autocomplete="off" spellcheck="false">
+    <kbd>/</kbd>
+    <div class="search-results" hidden></div>
+  </div>
+  <nav class="top-links"><a href="getting-started.html">Get started</a><a href="../">Maven</a></nav>
+</header>
+<div class="layout">
+  <aside class="sidebar"><div class="nav-group"><div class="nav-group-title">Overview</div><a class="nav-link" href="index.html">GuiLib</a><a class="nav-link" href="getting-started.html">Getting started</a></div><div class="nav-group"><div class="nav-group-title">Guide</div><a class="nav-link" href="components.html">Components &amp; hooks</a><a class="nav-link" href="differences.html">Differences from the web</a><a class="nav-link" href="recipes.html">Recipes</a></div><div class="nav-group"><div class="nav-group-title">Reference</div><a class="nav-link" href="elements.html">Elements</a><a class="nav-link" href="controls.html">Form controls</a><a class="nav-link active" href="overlays.html">Panels &amp; overlays</a><div class="nav-sub"><a href="#navigation" class="sub-h2">Navigation</a><a href="#tabs" class="sub-api"><code>tabs</code></a><a href="#expandable-sections" class="sub-h2">Expandable sections</a><a href="#details" class="sub-api"><code>details</code></a><a href="#collapse" class="sub-api"><code>collapse</code></a><a href="#menus" class="sub-h2">Menus</a><a href="#contextmenu" class="sub-api"><code>contextMenu</code></a><a href="#notifications" class="sub-h2">Notifications</a><a href="#usetoast" class="sub-api"><code>useToast</code></a><a href="#tooltip" class="sub-api"><code>tooltip</code></a><a href="#dialogs-animation" class="sub-h2">Dialogs &amp; animation</a><a href="#modal" class="sub-api"><code>modal</code></a><a href="#presence" class="sub-api"><code>presence</code></a><a href="#lists" class="sub-h2">Lists</a><a href="#sortablelist" class="sub-api"><code>sortableList</code></a></div><a class="nav-link" href="events.html">Events</a><a class="nav-link" href="css.html">CSS</a></div></aside>
+  <main class="content">
+    <article>
+      <div class="page-head"><div class="eyebrow">Reference</div><h1>Panels &amp; overlays</h1><p class="lead">Navigation, expandable sections, popups and notifications: tabs, accordions, context menus, toasts, tooltips, modals, exit animations and sortable lists.</p></div>
+      <figure class="shot"><a href="img/panels.png" target="_blank" rel="noopener"><img src="img/panels.png" alt="Tabs with sub-tabs (pills), accordion items and a textarea" loading="lazy"></a><figcaption>Tabs with sub-tabs (pills), accordion items and a textarea</figcaption></figure><h2 id="navigation"><a class="anchor" href="#navigation">#</a>Navigation</h2><section class="api" id="tabs"><h3 class="api-title"><a class="anchor" href="#tabs">#</a><code>tabs</code><span class="kind function">function</span></h3><div class="api-desc"><p>A tab bar whose indicator slides to the active tab.</p><p>Tabs with a content lambda render the active tab&#x27;s content below the bar. Without content lambdas only the bar is rendered and you render the content yourself from <code>value</code>.</p></div><div class="code"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">fun NodeBuilder.tabs(
+    value: String?,
+    onChange: ((String) -&gt; Unit)? = null,
+    variant: String = &quot;underline&quot;,
+    tabs: TabsBuilder.() -&gt; Unit,
+    className: String? = null,
+    id: String? = null,
+    key: Any? = null,
+)</code></pre></div><div class="table-wrap"><table class="params"><thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody><tr><td><code>value</code></td><td><code>String?</code></td><td><span class=req>required</span></td><td>Active tab.</td></tr><tr><td><code>onChange</code></td><td><code>((String) -&gt; Unit)?</code></td><td><code>null</code></td><td>The clicked tab&#x27;s value.</td></tr><tr><td><code>variant</code></td><td><code>String</code></td><td><code>&quot;underline&quot;</code></td><td><code>&quot;underline&quot;</code> or <code>&quot;pills&quot;</code> (good for sub-categories).</td></tr><tr><td><code>tabs</code></td><td><code>TabsBuilder.() -&gt; Unit</code></td><td><span class=req>required</span></td><td><code>tab(value, label, disabled = false) { content }</code>.</td></tr><tr class="common"><td colspan="3"><code>className</code>, <code>id</code>, <code>key</code></td><td>Standard props (see <a href="elements.html#common-props">Elements</a>).</td></tr></tbody></table></div><div class="keys"><span class="label">Keyboard</span>Left/Right (or Up/Down) switch tabs, skipping disabled ones</div><div class="code"><div class="code-title">Example</div><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">var category by useState(&quot;dungeons&quot;)
+var floor by useState(&quot;all&quot;)
+tabs(value = category, onChange = { category = it }) {
+    tab(&quot;dungeons&quot;, &quot;Dungeons&quot;) {
+        tabs(value = floor, onChange = { floor = it }, variant = &quot;pills&quot;) {
+            tab(&quot;all&quot;, &quot;All&quot;); tab(&quot;f7&quot;, &quot;F7&quot;); tab(&quot;m7&quot;, &quot;M7&quot;)
+        }
+        DungeonParties(floor)
+    }
+    tab(&quot;kuudra&quot;, &quot;Kuudra&quot;) { KuudraParties() }
+    tab(&quot;other&quot;, &quot;Other&quot;, disabled = true)
+}</code></pre></div><div class="css-classes"><span class="label">CSS</span><code>.guilib-tabs</code> <code>.underline</code> <code>.pills</code> <code>.guilib-tab-list</code> <code>.guilib-tab</code> <code>.active</code> <code>.guilib-tab-indicator</code> <code>.guilib-tab-panel</code></div></section><h2 id="expandable-sections"><a class="anchor" href="#expandable-sections">#</a>Expandable sections</h2><section class="api" id="details"><h3 class="api-title"><a class="anchor" href="#details">#</a><code>details</code><span class="kind function">function</span></h3><div class="api-desc"><p>An accordion item like HTML <code>&lt;details&gt;</code>: a clickable summary row with a chevron and a body whose height animates (also when its content changes).</p><p>Uncontrolled by default. Pass <code>open</code> + <code>onToggle</code> to control it, e.g. to keep only one item open.</p></div><div class="code"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">fun NodeBuilder.details(
+    summary: String / NodeBuilder.() -&gt; Unit,
+    open: Boolean? = null,
+    onToggle: ((Boolean) -&gt; Unit)? = null,
+    defaultOpen: Boolean = false,
+    disabled: Boolean = false,
+    durationMs: Long = 200,
+    children: NodeBuilder.() -&gt; Unit,
+    className: String? = null,
+    key: Any? = null,
+)</code></pre></div><div class="table-wrap"><table class="params"><thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody><tr><td><code>summary</code></td><td><code>String / NodeBuilder.() -&gt; Unit</code></td><td><span class=req>required</span></td><td>Text or custom content of the summary row.</td></tr><tr><td><code>open</code></td><td><code>Boolean?</code></td><td><code>null</code></td><td>Controlled state; <code>null</code> = uncontrolled.</td></tr><tr><td><code>onToggle</code></td><td><code>((Boolean) -&gt; Unit)?</code></td><td><code>null</code></td><td>Called with the new state.</td></tr><tr><td><code>defaultOpen</code></td><td><code>Boolean</code></td><td><code>false</code></td><td>Initial state when uncontrolled.</td></tr><tr><td><code>disabled</code></td><td><code>Boolean</code></td><td><code>false</code></td><td></td></tr><tr><td><code>durationMs</code></td><td><code>Long</code></td><td><code>200</code></td><td>Animation duration.</td></tr><tr><td><code>children</code></td><td><code>NodeBuilder.() -&gt; Unit</code></td><td><span class=req>required</span></td><td>The body.</td></tr><tr class="common"><td colspan="3"><code>className</code>, <code>key</code></td><td>Standard props (see <a href="elements.html#common-props">Elements</a>).</td></tr></tbody></table></div><div class="keys"><span class="label">Keyboard</span>Enter / Space toggle a focused summary</div><div class="code"><div class="code-title">Example</div><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">details(&quot;Requirements&quot;) { p { +&quot;Catacombs 45, 10k secrets&quot; } }
+
+// Accordion: only one open at a time
+var openId by useState&lt;String?&gt;(null)
+for (party in parties) {
+    details(
+        summary = { b { +party.leader }; span(className = &quot;muted&quot;) { +&quot; ${party.size}/5&quot; } },
+        open = openId == party.id,
+        onToggle = { openId = if (it) party.id else null },
+        key = party.id,
+    ) { PartyDetails(party) }
+}</code></pre></div><div class="css-classes"><span class="label">CSS</span><code>.guilib-details</code> <code>.open</code> <code>.guilib-details-summary</code> <code>.guilib-details-chevron</code> <code>.guilib-details-title</code> <code>.guilib-details-content</code></div></section><section class="api" id="collapse"><h3 class="api-title"><a class="anchor" href="#collapse">#</a><code>collapse</code><span class="kind function">function</span></h3><div class="api-desc"><p>The building block of <code>details</code>: animates its height between 0 and the height of its content. While open, the height follows the content. Closed content is unmounted after the animation unless <code>keepMounted</code>.</p></div><div class="code"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">fun NodeBuilder.collapse(
+    open: Boolean,
+    durationMs: Long = 200,
+    keepMounted: Boolean = false,
+    children: NodeBuilder.() -&gt; Unit,
+    className: String? = null,
+    key: Any? = null,
+)</code></pre></div><div class="table-wrap"><table class="params"><thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody><tr><td><code>open</code></td><td><code>Boolean</code></td><td><span class=req>required</span></td><td></td></tr><tr><td><code>durationMs</code></td><td><code>Long</code></td><td><code>200</code></td><td></td></tr><tr><td><code>keepMounted</code></td><td><code>Boolean</code></td><td><code>false</code></td><td>Keep the children (and their state) while closed.</td></tr><tr><td><code>children</code></td><td><code>NodeBuilder.() -&gt; Unit</code></td><td><span class=req>required</span></td><td></td></tr><tr class="common"><td colspan="3"><code>className</code>, <code>key</code></td><td>Standard props (see <a href="elements.html#common-props">Elements</a>).</td></tr></tbody></table></div><div class="code"><div class="code-title">Example</div><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">button(onClick = { more = !more }) { +&quot;More&quot; }
+collapse(open = more) { MoreOptions() }</code></pre></div><div class="css-classes"><span class="label">CSS</span><code>.guilib-collapse</code> <code>.open</code> <code>.guilib-collapse-inner</code></div></section><h2 id="menus"><a class="anchor" href="#menus">#</a>Menus</h2><section class="api" id="contextmenu"><h3 class="api-title"><a class="anchor" href="#contextmenu">#</a><code>contextMenu</code><span class="kind function">function</span></h3><div class="api-desc"><p>A right-click menu for its children: opens at the mouse and is kept inside the screen (it flips up/left near the edges). The entries are built when the menu opens, so they always reflect the current state.</p></div><div class="code"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">fun NodeBuilder.contextMenu(
+    menu: MenuBuilder.() -&gt; Unit,
+    disabled: Boolean = false,
+    children: NodeBuilder.() -&gt; Unit,
+    className: String? = null,
+    key: Any? = null,
+)</code></pre></div><div class="table-wrap"><table class="params"><thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody><tr><td><code>menu</code></td><td><code>MenuBuilder.() -&gt; Unit</code></td><td><span class=req>required</span></td><td><code>item(label, disabled, danger, shortcut) { onClick }</code>, <code>header(text)</code>, <code>separator()</code>.</td></tr><tr><td><code>disabled</code></td><td><code>Boolean</code></td><td><code>false</code></td><td>Don&#x27;t open the menu.</td></tr><tr><td><code>children</code></td><td><code>NodeBuilder.() -&gt; Unit</code></td><td><span class=req>required</span></td><td>Wrapped in a <code>div.guilib-context-anchor</code> (block).</td></tr><tr class="common"><td colspan="3"><code>className</code>, <code>key</code></td><td>Standard props (see <a href="elements.html#common-props">Elements</a>).</td></tr></tbody></table></div><div class="keys"><span class="label">Keyboard</span>ArrowUp/Down highlight, Enter/Space choose, Escape, Tab, a click outside or the wheel close</div><div class="code"><div class="code-title">Example</div><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">contextMenu(menu = {
+    header(player.name)
+    item(&quot;Invite&quot;) { invite(player) }
+    item(&quot;View profile&quot;, shortcut = &quot;P&quot;) { openProfile(player) }
+    separator()
+    item(&quot;Kick&quot;, danger = true, disabled = !isLeader) { kick(player) }
+}) {
+    PlayerRow(player)
+}</code></pre></div><div class="css-classes"><span class="label">CSS</span><code>.guilib-context-anchor</code> <code>.guilib-menu</code> <code>.guilib-menu-item</code> <code>.highlighted</code> <code>.danger</code> <code>.disabled</code> <code>.guilib-menu-label</code> <code>.guilib-menu-shortcut</code> <code>.guilib-menu-header</code> <code>.guilib-menu-separator</code></div><figure class="shot"><a href="img/context-menu.png" target="_blank" rel="noopener"><img src="img/context-menu.png" alt="Context menu with header, highlighted item, separator and a danger item" loading="lazy"></a><figcaption>Context menu with header, highlighted item, separator and a danger item</figcaption></figure></section><h2 id="notifications"><a class="anchor" href="#notifications">#</a>Notifications</h2><section class="api" id="usetoast"><h3 class="api-title"><a class="anchor" href="#usetoast">#</a><code>useToast</code><span class="kind hook">hook</span></h3><div class="api-desc"><p>Short messages that disappear on their own (&quot;Party created&quot;, &quot;Server not reachable&quot;), stacked in the bottom right corner above everything else. A click dismisses a toast; at most 5 are shown.</p><p>Safe to call from <strong>any thread</strong>, e.g. from a network callback.</p></div><div class="code"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">fun useToast(): Toaster
+
+class Toaster {
+    fun show(message: String, kind: String = &quot;info&quot;, title: String? = null, durationMs: Long = 3500): Toast
+    fun info(message: String, title: String? = null, durationMs: Long = 3500): Toast
+    fun success(message: String, title: String? = null, durationMs: Long = 3500): Toast
+    fun warning(message: String, title: String? = null, durationMs: Long = 3500): Toast
+    fun error(message: String, title: String? = null, durationMs: Long = 3500): Toast
+    fun clear()
+    companion object { fun of(doc: Document): Toaster }
+}
+
+class Toast { fun dismiss() }</code></pre></div><div class="callout info"><code>durationMs &lt;= 0</code> keeps the toast until it is clicked. <code>kind</code> becomes a CSS class, so custom kinds can be styled.</div><figure class="shot"><a href="img/toasts.png" target="_blank" rel="noopener" style="max-width: 340px"><img src="img/toasts.png" alt="Toasts" loading="lazy" style="aspect-ratio: 680 / 380"></a><figcaption>success, warning (with title) and error toasts</figcaption></figure><div class="code"><div class="code-title">Example</div><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">val toast = useToast()
+button(onClick = {
+    createParty(
+        onSuccess = { toast.success(&quot;Party created&quot;) },
+        onError = { toast.error(&quot;Server not reachable&quot;, title = &quot;Party finder&quot;) },
+    )
+}) { +&quot;Create party&quot; }</code></pre></div><div class="css-classes"><span class="label">CSS</span><code>.guilib-toasts</code> <code>.guilib-toast</code> <code>.info</code> <code>.success</code> <code>.warning</code> <code>.error</code> <code>.leaving</code> <code>.guilib-toast-accent</code> <code>.guilib-toast-title</code> <code>.guilib-toast-message</code> <code>.guilib-toast-close</code></div></section><section class="api" id="tooltip"><h3 class="api-title"><a class="anchor" href="#tooltip">#</a><code>tooltip</code><span class="kind function">function</span></h3><div class="api-desc"><p>A tooltip shown when hovering the children for <code>delayMs</code>. For simple text the <code>title</code> prop on any element works too.</p></div><div class="code"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">fun NodeBuilder.tooltip(
+    text: String,
+    placement: String = &quot;top&quot;,
+    delayMs: Long = 300,
+    children: NodeBuilder.() -&gt; Unit,
+    className: String? = null,
+    key: Any? = null,
+)
+
+fun NodeBuilder.tooltip(content: NodeBuilder.() -&gt; Unit, placement: String = &quot;top&quot;, delayMs: Long = 300, className: String? = null, key: Any? = null, children: NodeBuilder.() -&gt; Unit)</code></pre></div><div class="table-wrap"><table class="params"><thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody><tr><td><code>text</code></td><td><code>String</code></td><td><span class=req>required</span></td><td>Tooltip text (or <code>content = { … }</code> for rich content).</td></tr><tr><td><code>placement</code></td><td><code>String</code></td><td><code>&quot;top&quot;</code></td><td><code>top</code>, <code>bottom</code>, <code>left</code> or <code>right</code>.</td></tr><tr><td><code>delayMs</code></td><td><code>Long</code></td><td><code>300</code></td><td>Hover delay.</td></tr><tr><td><code>children</code></td><td><code>NodeBuilder.() -&gt; Unit</code></td><td><span class=req>required</span></td><td>The anchor.</td></tr><tr class="common"><td colspan="3"><code>className</code>, <code>key</code></td><td>Standard props (see <a href="elements.html#common-props">Elements</a>).</td></tr></tbody></table></div><div class="code"><div class="code-title">Example</div><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">tooltip(&quot;Refresh the list&quot;) { button(onClick = { refresh() }) { +&quot;⟳&quot; } }
+tooltip(content = { b { +&quot;Hyperion&quot; }; br(); +&quot;§6Legendary&quot; }, placement = &quot;right&quot;) { item(stack) }</code></pre></div><div class="css-classes"><span class="label">CSS</span><code>.guilib-tooltip-anchor</code> <code>.guilib-tooltip</code></div></section><h2 id="dialogs-animation"><a class="anchor" href="#dialogs-animation">#</a>Dialogs &amp; animation</h2><section class="api" id="modal"><h3 class="api-title"><a class="anchor" href="#modal">#</a><code>modal</code><span class="kind function">function</span></h3><div class="api-desc"><p>A dialog in a portal with a dimmed backdrop. Escape and (by default) a click on the backdrop call <code>onClose</code>.</p></div><div class="code"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">fun NodeBuilder.modal(
+    open: Boolean,
+    onClose: (() -&gt; Unit)? = null,
+    closeOnBackdropClick: Boolean = true,
+    children: NodeBuilder.() -&gt; Unit,
+    className: String? = null,
+    key: Any? = null,
+)</code></pre></div><div class="table-wrap"><table class="params"><thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody><tr><td><code>open</code></td><td><code>Boolean</code></td><td><span class=req>required</span></td><td></td></tr><tr><td><code>onClose</code></td><td><code>(() -&gt; Unit)?</code></td><td><code>null</code></td><td></td></tr><tr><td><code>closeOnBackdropClick</code></td><td><code>Boolean</code></td><td><code>true</code></td><td></td></tr><tr><td><code>children</code></td><td><code>NodeBuilder.() -&gt; Unit</code></td><td><span class=req>required</span></td><td>Dialog content.</td></tr><tr class="common"><td colspan="3"><code>className</code>, <code>key</code></td><td>Standard props (see <a href="elements.html#common-props">Elements</a>).</td></tr></tbody></table></div><div class="code"><div class="code-title">Example</div><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">modal(open = dialog, onClose = { dialog = false }) {
+    h3 { +&quot;Leave party?&quot; }
+    div(className = &quot;row&quot;) {
+        button(onClick = { dialog = false }) { +&quot;Cancel&quot; }
+        button(className = &quot;primary&quot;, onClick = { leave(); dialog = false }) { +&quot;Leave&quot; }
+    }
+}</code></pre></div><div class="css-classes"><span class="label">CSS</span><code>.guilib-modal-backdrop</code> <code>.guilib-modal</code></div><figure class="shot"><a href="img/modal.png" target="_blank" rel="noopener"><img src="img/modal.png" alt="A modal dialog" loading="lazy"></a><figcaption>A modal dialog</figcaption></figure></section><section class="api" id="presence"><h3 class="api-title"><a class="anchor" href="#presence">#</a><code>presence</code><span class="kind function">function</span></h3><div class="api-desc"><p>Keeps children mounted while they animate out (like Framer Motion&#x27;s <code>AnimatePresence</code>). When <code>visible</code> turns false the children render once more with <code>leaving = true</code> and are removed after <code>exitMs</code>. Becoming visible again cancels the exit.</p></div><div class="code"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">fun NodeBuilder.presence(visible: Boolean, exitMs: Long, key: Any? = null, children: NodeBuilder.(leaving: Boolean) -&gt; Unit)</code></pre></div><div class="code"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-css">.panel { animation: slide-in 200ms ease-out; }
+.panel.leaving { animation: slide-out 200ms ease-in forwards; }
+@keyframes slide-in { from { opacity: 0; transform: translateY(-8px); } }
+@keyframes slide-out { to { opacity: 0; transform: translateY(-8px); } }</code></pre></div><div class="code"><div class="code-title">Example</div><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">presence(visible = open, exitMs = 200) { leaving -&gt;
+    div(className = classNames(&quot;panel&quot;, &quot;leaving&quot; to leaving)) { … }
+}</code></pre></div></section><h2 id="lists"><a class="anchor" href="#lists">#</a>Lists</h2><section class="api" id="sortablelist"><h3 class="api-title"><a class="anchor" href="#sortablelist">#</a><code>sortableList</code><span class="kind function">function</span></h3><div class="api-desc"><p>A drag-to-reorder list. Items move with <code>transform</code> while dragging; dropping calls <code>onReorder</code> with the reordered list.</p><p>A drag starts after 3 px, so clicks inside items keep working, and the release after a drag clicks nothing. With <code>handle = true</code> only elements with the class <code>guilib-drag-handle</code> start a drag (use it when items contain inputs).</p></div><div class="code"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">fun NodeBuilder.sortableList(
+    items: List&lt;T&gt;,
+    key: (T) -&gt; Any?,
+    onReorder: ((List&lt;T&gt;) -&gt; Unit)?,
+    horizontal: Boolean = false,
+    handle: Boolean = false,
+    className: String? = null,
+    itemClassName: String? = null,
+    listKey: Any? = null,
+    children: NodeBuilder.(item: T, dragging: Boolean) -&gt; Unit,
+)</code></pre></div><div class="table-wrap"><table class="params"><thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody><tr><td><code>items</code></td><td><code>List&lt;T&gt;</code></td><td><span class=req>required</span></td><td></td></tr><tr><td><code>onReorder</code></td><td><code>((List&lt;T&gt;) -&gt; Unit)?</code></td><td><span class=req>required</span></td><td>The reordered list; store it in state.</td></tr><tr><td><code>horizontal</code></td><td><code>Boolean</code></td><td><code>false</code></td><td>Sort along x (e.g. in a horizontal scroll row).</td></tr><tr><td><code>handle</code></td><td><code>Boolean</code></td><td><code>false</code></td><td>Only <code>.guilib-drag-handle</code> starts a drag.</td></tr><tr><td><code>itemClassName</code></td><td><code>String?</code></td><td><code>null</code></td><td></td></tr><tr><td><code>listKey</code></td><td><code>Any?</code></td><td><code>null</code></td><td>Key of the list itself.</td></tr><tr><td><code>children</code></td><td><code>NodeBuilder.(item: T, dragging: Boolean) -&gt; Unit</code></td><td><span class=req>required</span></td><td>Item content.</td></tr><tr class="common"><td colspan="3"><code>key</code>, <code>className</code></td><td>Standard props (see <a href="elements.html#common-props">Elements</a>).</td></tr></tbody></table></div><div class="keys"><span class="label">Keyboard</span>Escape cancels a drag</div><div class="code"><div class="code-title">Example</div><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">var tasks by useState(listOf(&quot;Kill Diana&quot;, &quot;Dig burrows&quot;, &quot;Sell loot&quot;))
+sortableList(tasks, key = { it }, onReorder = { tasks = it }) { task, dragging -&gt;
+    span(className = &quot;grip guilib-drag-handle&quot;) { +&quot;⠿&quot; }
+    span { +task }
+}</code></pre></div><div class="css-classes"><span class="label">CSS</span><code>.guilib-sortable</code> <code>.horizontal</code> <code>.handle</code> <code>.sorting</code> <code>.guilib-sortable-item</code> <code>.dragging</code> <code>.guilib-drag-handle</code></div><figure class="shot"><a href="img/sortable.png" target="_blank" rel="noopener"><img src="img/sortable.png" alt="Vertical lists, a list with handles and a horizontal tab strip" loading="lazy"></a><figcaption>Vertical lists, a list with handles and a horizontal tab strip</figcaption></figure></section>
+      <nav class="pager"><a class="prev" href="controls.html"><span>Previous</span>Form controls</a><a class="next" href="events.html"><span>Next</span>Events</a></nav>
+    </article>
+    <footer class="footer">GuiLib 0.3.0 · Minecraft 26.1.2 / 26.2 (Fabric) · LGPL-3.0 · Screenshots taken in-game at GUI scale 2.</footer>
+  </main>
+  <aside class="toc"><div class="toc-title">On this page</div><nav id="toc"></nav></aside>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/kotlin.min.js"></script>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

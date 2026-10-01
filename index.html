@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SkyblockOverhaul Maven</title>
+<meta name="description" content="Maven repository for SkyblockOverhaul libraries, including GuiLib.">
+<link rel="icon" href="guilib/assets/icon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<style>
+    :root { color-scheme: dark; }
+    body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 16px;
+        box-sizing: border-box;
+        background: #111214;
+        color: #dbdee1;
+        font: 15px/1.6 Inter, system-ui, sans-serif;
+    }
+    main { width: 100%; max-width: 680px; }
+    h1 { margin: 0 0 6px; color: #f2f3f5; font-size: 30px; letter-spacing: -0.02em; }
+    p { margin: 0 0 18px; color: #b5bac1; }
+    pre {
+        margin: 0 0 24px;
+        padding: 14px 16px;
+        overflow-x: auto;
+        background: #16171a;
+        border: 1px solid #2e3035;
+        border-radius: 8px;
+        font: 13px/1.6 "JetBrains Mono", monospace;
+        color: #d7dae0;
+    }
+    a.card {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px 18px;
+        background: #1e1f22;
+        border: 1px solid #2e3035;
+        border-radius: 10px;
+        color: inherit;
+        text-decoration: none;
+    }
+    a.card:hover { border-color: #5b8def; }
+    a.card strong { display: block; color: #f2f3f5; }
+    a.card span { color: #949ba4; font-size: 14px; }
+    code { font-family: "JetBrains Mono", monospace; font-size: 0.88em; }
+</style>
+</head>
+<body>
+<main>
+    <h1>SkyblockOverhaul Maven</h1>
+    <p>Static Maven repository for SkyblockOverhaul libraries.</p>
+    <pre>repositories {
+    exclusiveContent {
+        forRepository { maven("https://skyblockoverhaul.github.io/maven") }
+        filter { includeGroup("net.sbo") }
+    }
+}</pre>
+    <a class="card" href="guilib/">
+        <img src="guilib/assets/icon.svg" alt="" width="36" height="36">
+        <div><strong>GuiLib documentation</strong><span>Web-style UI library for Fabric mods: <code>net.sbo:guilib-&lt;mc&gt;-fabric</code></span></div>
+    </a>
+</main>
+</body>
+</html>
