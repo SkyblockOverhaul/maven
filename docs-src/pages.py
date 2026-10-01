@@ -975,7 +975,7 @@ differences = Page("differences", "Differences from the web", "Guide", (
     raw(ul("Minecraft `§` codes work in all text. Text inputs show what the user types literally (`§` included).",
            "No kerning; `text-align: justify` behaves like `left`.",
            "No right-to-left or complex-script shaping. Characters missing from the font (CJK, emoji, …) fall back to Minecraft's font.",
-           "Rotated text is drawn at its unrotated resolution (slightly soft).")),
+           "Rotated or skewed text is rasterized at 2× and filtered: smooth, but a little softer than straight text.")),
     h2("Not supported (yet)"),
     raw(ul("3D transforms (a `transform` containing them is ignored), `repeating-*-gradient`, `conic-gradient`.",
            "`@import`, `@font-face` (register fonts with `FontManager`), pseudo-elements (`::before`), `:nth-child(… of S)`.",
