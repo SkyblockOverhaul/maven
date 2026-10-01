@@ -709,7 +709,7 @@ for (party in parties) {
         params=[("menu", "MenuBuilder.() -> Unit", None, "`item(label, disabled, danger, shortcut) { onClick }`, `header(text)`, `separator()`."),
                 ("disabled", "Boolean", "false", "Don't open the menu."),
                 ("children", "NodeBuilder.() -> Unit", None, "Wrapped in a `div.guilib-context-anchor` (block).")] + common("className", "key"),
-        keys="ArrowUp/Down highlight, Enter/Space choose, Escape, Tab, a click outside or the wheel close",
+        keys="ArrowUp/Down highlight, Enter/Space choose, Escape, Tab, a click outside, the wheel or a screen resize close",
         example="""
 contextMenu(menu = {
     header(player.name)
