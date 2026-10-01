@@ -857,8 +857,8 @@ css = Page("css", "CSS", "Reference", (
         ["Combinators", "descendant `a b`, child `a > b`, `a + b`, `a ~ b`, lists `a, b`"],
         ["State", "`:hover` `:active` `:focus` `:focus-within` `:disabled` `:enabled` `:checked`"],
         ["Structural", "`:first-child` `:last-child` `:only-child` `:root` `:not(…)` `:nth-child()` `:nth-last-child()` `:nth-of-type()` `:nth-last-of-type()` (`odd`, `even`, `3`, `2n+1`, `-n+3`)"],
-        ["At-rules", "`@keyframes`"],
-    ]), note("Not supported: pseudo-elements (`::before`), `@media`, `@import`, `@font-face`, `:nth-child(… of S)`.", "warn")),
+        ["At-rules", "`@keyframes`; `@media` (nestable): comma lists, `not`/`only`, `screen`/`all`/`print`, `and`/`or`; features `width` `height` `aspect-ratio` `orientation` in GUI px, `resolution` = Minecraft's GUI scale (`min-resolution: 3dppx` or `3x`), `hover` (hover), `pointer` (fine), `prefers-reduced-motion` (no-preference), `prefers-color-scheme` (dark); `min-`/`max-` prefixes and range syntax `(400px <= width < 640px)`. Styles update when the window size or GUI scale changes."],
+    ]), note("Not supported: pseudo-elements (`::before`), `@import`, `@font-face`, `@container`, `@supports`, `:nth-child(… of S)`.", "warn")),
     h2("Values"),
     raw(table(["Kind", "Supported"], [
         ["Lengths", "`px` (GUI pixels), `%`, `em`, `rem`, `vw`, `vh`, `vmin`, `vmax`, unitless `0`"],
@@ -960,7 +960,7 @@ differences = Page("differences", "Differences from the web", "Guide", (
            "Rotated text is drawn at its unrotated resolution (slightly soft).")),
     h2("Not supported (yet)"),
     raw(ul("3D transforms (a `transform` containing them is ignored), `repeating-*-gradient`, `conic-gradient`.",
-           "`@media`, `@import`, `@font-face` (register fonts with `FontManager`), pseudo-elements (`::before`), `:nth-child(… of S)`.",
+           "`@import`, `@font-face` (register fonts with `FontManager`), pseudo-elements (`::before`), `:nth-child(… of S)`.",
            "`float`, `align-content`, `vertical-align`, `letter-spacing`, subgrid, named grid lines. Grid `auto-fit` behaves like `auto-fill`.",
            "Images are resource locations (PNG, SVG or GIF), no URLs.")),
 ])
