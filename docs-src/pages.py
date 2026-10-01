@@ -290,6 +290,16 @@ val Toolbar = component("Toolbar") {
 """),
     api("useContext", "hook", "Reads the value of the nearest `Provider` above, or the context's default. The component re-renders when the provided value changes.",
         receiver="ComponentScope", sig="fun <T> useContext(context: Context<T>): T"),
+    h2("Translations", "translations"),
+    api("useTranslation", "hook", ["Translates keys from the game's language files (`assets/<modid>/lang/<lang>.json`) like `I18n.get`. The component re-renders when the language changes or resource packs reload. Missing keys return the key.",
+                                   "`t.language` is the language code (`en_us`), `t.has(key)` checks a key. Import from `net.sbo.guilib.fabric`."],
+        receiver="ComponentScope", sig="fun useTranslation(): Translator",
+        example="""
+val t = useTranslation()
+h1 { +t("mymod.gui.title") }
+p { +t("mymod.gui.kills", kills) }      // "Kills: %s"
+text(Component.translatable("mymod.gui.hint").withStyle(ChatFormatting.GRAY))
+"""),
     h2("Document & misc"),
     api("useDocument", "hook", "The `Document` of the screen: `viewportWidth` / `viewportHeight`, `focusedElement`, `focus(el)`, `addEventListener`, `setTimeout` / `setInterval`, `post { }`.",
         receiver="ComponentScope", sig="fun useDocument(): Document"),
@@ -339,6 +349,7 @@ div(className = "card", id = "main", style = "padding: 4px", title = "A card", o
         ["`hr`", "block", "Thin divider line."],
         ["`span` `a` `strong` `b` `em` `i` `small` `code` `label`", "inline", "`b`/`strong` bold, `em`/`i` italic, `small` 0.85em, `code` Minecraft font. `label` forwards clicks to the first input/select/button inside."],
         ["`br`", "–", "Line break inside text."],
+        ["`text(component)`", "inline", "A Minecraft `Component` (chat message, item name, `Component.translatable`): colors incl. RGB, bold/italic/underline/strikethrough, `show_text` hover events as tooltips, click events (links, commands, copy) like in chat. `span.guilib-text`, clickable parts `.guilib-text-link`."],
         ["`button`", "inline-flex", "Centered content, `disabled`. Enter/Space activate a focused button. Disabled elements get no mouse events."],
     ])),
     h2("GuiLib tags"),
