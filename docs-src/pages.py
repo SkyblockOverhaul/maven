@@ -949,7 +949,7 @@ differences = Page("differences", "Differences from the web", "Guide", (
     h2("Rendering"),
     raw(ul("`overflow: hidden` clips **rectangularly**. With `border-radius` on the clipping element, child backgrounds that sit exactly in one of its corners (headers, footers, sidebars) are rounded to match; other content is not cut to the curve.",
            "Per-side borders on a box with `border-radius` are drawn as straight strips that stop at the rounded corners. Uniform borders are exact.",
-           "Inline elements (`span`, …) ignore padding, border and background; use `display: inline-block` for boxes inside text.",
+           "Inline elements (`span`, `code`, …) paint background, border and shadow per line like the web; vertical padding/border don't change the line height. Use `display: inline-block` for boxes that must not wrap or need a size.",
            "Every positioned element (`relative` / `absolute` / `fixed`) is its own paint layer; `z-index` orders layers among siblings. Use `portal { }` for things that must be on top of everything. `position: fixed` ignores ancestors' `transform`.",
            "`display: inline-block`, `img` and `item` sit on the text baseline; `vertical-align` is not supported.",
            "Flex items have `min-width: auto` like the web; for ellipsis inside flex, set `min-width: 0`.")),
