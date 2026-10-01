@@ -883,7 +883,7 @@ css = Page("css", "CSS", "Reference", (
         ["Text", "`color` `font-family` `font-size` `font-weight` `font-style` `line-height` `text-align` `white-space` `text-overflow` `text-decoration` `text-shadow`"],
         ["Background", "`background` `background-color` `background-image`: comma list of layers (first on top): `url(\"modid:path.png\")`, `linear-gradient(…)` (angles, `to right`, stops with positions, hard stops), `radial-gradient(…)` (`circle`/`ellipse`, size keywords, `at <position>`). Gradients respect `border-radius`."],
         ["Visual", "`opacity` `visibility` `object-fit`"],
-        ["Interaction", "`cursor` (`auto` `default` `pointer` `text` `not-allowed` `crosshair` `move` `ns-resize` `ew-resize` `grab`), `pointer-events`, `user-select` (parsed only)"],
+        ["Interaction", "`cursor` (`auto` `default` `pointer` `text` `not-allowed` `crosshair` `move` `ns-resize` `ew-resize` `row-resize` `col-resize` `grab` `grabbing`; a drag cursor stays while the left button is held), `pointer-events`, `user-select` (parsed only)"],
     ]), shot("boxes.png", "Rounded corners, borders, gradients and opacity, drawn by GuiLib's own anti-aliased shader")),
     h2("Animation"),
     raw(p("`transition` (+ `-property` `-duration` `-timing-function` `-delay`) and `animation` (+ `-name` `-duration` "
@@ -961,8 +961,7 @@ differences = Page("differences", "Differences from the web", "Guide", (
     raw(ul("3D transforms (a `transform` containing them is ignored), `box-shadow`, `repeating-*-gradient`, `conic-gradient`.",
            "`@media`, `@import`, `@font-face` (register fonts with `FontManager`), pseudo-elements (`::before`), `:nth-child(… of S)`.",
            "`float`, `align-content`, `vertical-align`, `letter-spacing`, subgrid, named grid lines. Grid `auto-fit` behaves like `auto-fill`.",
-           "Images are resource locations (PNG or SVG), no URLs.",
-           "`cursor: grabbing` (only `grab`).")),
+           "Images are resource locations (PNG, SVG or GIF), no URLs.")),
 ])
 
 # =====================================================================================================================
