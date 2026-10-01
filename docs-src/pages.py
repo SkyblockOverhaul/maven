@@ -757,7 +757,9 @@ presence(visible = open, exitMs = 200) { leaving ->
 """, "css")),
     h2("Lists"),
     api("sortableList", "function", ["A drag-to-reorder list. Items move with `transform` while dragging; dropping calls `onReorder` with the reordered list.",
-                                     "A drag starts after 3 px, so clicks inside items keep working, and the release after a drag clicks nothing. With `handle = true` only elements with the class `guilib-drag-handle` start a drag (use it when items contain inputs)."],
+                                     "A drag starts after 3 px, so clicks inside items keep working, and the release after a drag clicks nothing. With `handle = true` only elements with the class `guilib-drag-handle` start a drag (use it when items contain inputs).",
+                                     "Dragging near the edge of a scroll container scrolls it. Items are focusable; Alt + arrow keys move the focused item.",
+                                     "Lists with the same `group` exchange items (kanban boards): outside its list the item follows the mouse as a ghost (in a portal; it repeats `className`/`itemClassName`, so style it through those), the list under the mouse opens a gap, and the drop calls the source's `onReorder` without the item and the target's with it. Give empty lists a `min-height`."],
         params=[("items", "List<T>", None, ""),
                 ("key", "(T) -> Any?", None, "Stable key per item."),
                 ("onReorder", "((List<T>) -> Unit)?", None, "The reordered list; store it in state."),
@@ -765,16 +767,21 @@ presence(visible = open, exitMs = 200) { leaving ->
                 ("handle", "Boolean", "false", "Only `.guilib-drag-handle` starts a drag."),
                 ("className", "String?", "null", ""), ("itemClassName", "String?", "null", ""),
                 ("listKey", "Any?", "null", "Key of the list itself."),
+                ("group", "String?", "null", "Lists with the same group exchange items."),
                 ("children", "NodeBuilder.(item: T, dragging: Boolean) -> Unit", None, "Item content.")],
-        keys="Escape cancels a drag",
+        keys="Escape cancels a drag; Alt + ↑/↓ (←/→ when horizontal), Alt + Home/End move the focused item",
         example="""
 var tasks by useState(listOf("Kill Diana", "Dig burrows", "Sell loot"))
 sortableList(tasks, key = { it }, onReorder = { tasks = it }) { task, dragging ->
     span(className = "grip guilib-drag-handle") { +"⠿" }
     span { +task }
 }
-""", css=[".guilib-sortable", ".horizontal", ".handle", ".sorting", ".guilib-sortable-item", ".dragging", ".guilib-drag-handle"],
-        img=("sortable.png", "Vertical lists, a list with handles and a horizontal tab strip")),
+
+// Kanban: items move between lists of the same group
+sortableList(todo, key = { it }, onReorder = { todo = it }, group = "board", className = "column") { task, _ -> span { +task } }
+sortableList(done, key = { it }, onReorder = { done = it }, group = "board", className = "column") { task, _ -> span { +task } }
+""", css=[".guilib-sortable", ".horizontal", ".handle", ".sorting", ".receiving", ".guilib-sortable-item", ".dragging", ".away", ".guilib-sortable-ghost", ".guilib-drag-handle"],
+        img=("sortable.png", "Vertical lists, a list with handles, a horizontal tab strip and a kanban board mid-drag")),
 ])
 
 # =====================================================================================================================
@@ -822,7 +829,7 @@ useDocumentEvent("keydown") { e ->
           "horizontally also takes the plain wheel (unlike the web) and hands it on once it reaches its end.")),
     h2("Focus"),
     raw(ul("Inputs, textareas, buttons, selects and elements with `tabIndex` are focusable. Tab / Shift+Tab move the focus.",
-           "Clicking focuses the nearest focusable element; style it with `:focus` or `:focus-within`.",
+           "Clicking focuses the nearest focusable element; style it with `:focus`, `:focus-visible` (only keyboard focus, like browsers) or `:focus-within`.",
            "The first Escape blurs a focused input; the next closes the screen (unless something called `preventDefault()`).",
            "Use `autoFocus = true` on an input to focus it when it appears, or `ref.current?.focus()`.")),
     h2("Element API", "element-api"),
@@ -855,7 +862,7 @@ css = Page("css", "CSS", "Reference", (
     raw(table(["Kind", "Supported"], [
         ["Simple", "`*` `tag` `.class` `#id` `[attr]` `[attr=v]` `[attr^=v]` `[attr$=v]` `[attr*=v]`, compounds like `button.primary:hover`"],
         ["Combinators", "descendant `a b`, child `a > b`, `a + b`, `a ~ b`, lists `a, b`"],
-        ["State", "`:hover` `:active` `:focus` `:focus-within` `:disabled` `:enabled` `:checked`"],
+        ["State", "`:hover` `:active` `:focus` `:focus-visible` `:focus-within` `:disabled` `:enabled` `:checked`"],
         ["Structural", "`:first-child` `:last-child` `:only-child` `:root` `:not(…)` `:nth-child()` `:nth-last-child()` `:nth-of-type()` `:nth-last-of-type()` (`odd`, `even`, `3`, `2n+1`, `-n+3`)"],
         ["At-rules", "`@keyframes`; `@media` (nestable): comma lists, `not`/`only`, `screen`/`all`/`print`, `and`/`or`; features `width` `height` `aspect-ratio` `orientation` in GUI px, `resolution` = Minecraft's GUI scale (`min-resolution: 3dppx` or `3x`), `hover` (hover), `pointer` (fine), `prefers-reduced-motion` (no-preference), `prefers-color-scheme` (dark); `min-`/`max-` prefixes and range syntax `(400px <= width < 640px)`. Styles update when the window size or GUI scale changes."],
     ]), note("Not supported: pseudo-elements (`::before`), `@import`, `@font-face`, `@container`, `@supports`, `:nth-child(… of S)`.", "warn")),
