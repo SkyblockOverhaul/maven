@@ -882,15 +882,16 @@ css = Page("css", "CSS", "Reference", (
     raw(table(["Group", "Properties"], [
         ["Text", "`color` `font-family` `font-size` `font-weight` `font-style` `line-height` `text-align` `white-space` `text-overflow` `text-decoration` `text-shadow`"],
         ["Background", "`background` `background-color` `background-image`: comma list of layers (first on top): `url(\"modid:path.png\")`, `linear-gradient(…)` (angles, `to right`, stops with positions, hard stops), `radial-gradient(…)` (`circle`/`ellipse`, size keywords, `at <position>`). Gradients respect `border-radius`."],
+        ["Shadow", "`box-shadow`: `none` or a comma list of `[inset] <x> <y> [<blur> [<spread>]] [<color>]` (first on top, color defaults to `currentColor`). Real Gaussian blur that follows `border-radius`; outer shadows are never drawn under the box, so translucent backgrounds stay clean. Animatable."],
         ["Visual", "`opacity` `visibility` `object-fit`"],
         ["Interaction", "`cursor` (`auto` `default` `pointer` `text` `not-allowed` `crosshair` `move` `ns-resize` `ew-resize` `row-resize` `col-resize` `grab` `grabbing`; a drag cursor stays while the left button is held), `pointer-events`, `user-select` (parsed only)"],
-    ]), shot("boxes.png", "Rounded corners, borders, gradients and opacity, drawn by GuiLib's own anti-aliased shader")),
+    ]), shot("boxes.png", "Rounded corners, borders, gradients, shadows and opacity, drawn by GuiLib's own anti-aliased shader")),
     h2("Animation"),
     raw(p("`transition` (+ `-property` `-duration` `-timing-function` `-delay`) and `animation` (+ `-name` `-duration` "
           "`-timing-function` `-delay` `-iteration-count` `-direction` `-fill-mode` `-play-state`) with `@keyframes`. "
           "Easing: `linear` `ease` `ease-in` `ease-out` `ease-in-out` `cubic-bezier()` `steps()`."),
         p("Animatable: colors, lengths (also px ↔ % via calc), numbers (`opacity`, `flex-grow`, `font-size` …), radii, "
-          "`line-height`, `text-shadow`, scrollbar colors, gradient stop colors, `visibility`, `transform`, "
+          "`line-height`, `text-shadow`, `box-shadow`, scrollbar colors, gradient stop colors, `visibility`, `transform`, "
           "`transform-origin`. Other values switch at 50 % in keyframes and don't transition."),
         code("""
 .card { transition: background-color 150ms, transform 150ms ease-out; }
@@ -958,7 +959,7 @@ differences = Page("differences", "Differences from the web", "Guide", (
            "No right-to-left or complex-script shaping. Characters missing from the font (CJK, emoji, …) fall back to Minecraft's font.",
            "Rotated text is drawn at its unrotated resolution (slightly soft).")),
     h2("Not supported (yet)"),
-    raw(ul("3D transforms (a `transform` containing them is ignored), `box-shadow`, `repeating-*-gradient`, `conic-gradient`.",
+    raw(ul("3D transforms (a `transform` containing them is ignored), `repeating-*-gradient`, `conic-gradient`.",
            "`@media`, `@import`, `@font-face` (register fonts with `FontManager`), pseudo-elements (`::before`), `:nth-child(… of S)`.",
            "`float`, `align-content`, `vertical-align`, `letter-spacing`, subgrid, named grid lines. Grid `auto-fit` behaves like `auto-fill`.",
            "Images are resource locations (PNG, SVG or GIF), no URLs.")),
