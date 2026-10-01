@@ -177,7 +177,7 @@ GuiLib.open(listOf("mymod:ui/hello.css")) { div(className = "hello") { +"Hi!" } 
     h2("Stylesheets & resources"),
     raw(ul("CSS files live in your mod's resources and are referenced by resource location: `\"mymod:ui/app.css\"` → `src/main/resources/assets/mymod/ui/app.css`.",
            "Several stylesheets can be passed; later ones win on equal specificity. GuiLib's built-in stylesheet (`assets/guilib/css/ua.css`) has the lowest priority, so you can override every built-in control.",
-           "Images (`img`, `background-image: url(...)`) use resource locations too: `\"mymod:textures/gui/logo.png\"` (PNG or SVG).",
+           "Images (`img`, `background-image: url(...)`) use resource locations too: `\"mymod:textures/gui/logo.png\"` (PNG, SVG or animated GIF).",
            "Invalid CSS never crashes: unknown properties and values are skipped with a warning (`file:line:col`, with \"did you mean …\") in the log.")),
     h2("Development workflow"),
     raw(ul("`/guilib showcase` opens a demo of every feature (the screenshots on this site are taken from it).",
@@ -349,11 +349,11 @@ scroll(className = "list", style = "max-height: 120px") {
     for (p in parties) PartyRow(p, key = p.id)
 }
 """, img=("scroll.png", "Scroll containers, horizontal scrolling and scrollbar styling")),
-    api("img", "tag", "An image from your resources (PNG or SVG). Its natural size is the image size; `object-fit` is supported.",
+    api("img", "tag", "An image from your resources (PNG, SVG or GIF). Its natural size is the image size; `object-fit` is supported. Animated GIFs (since 0.3.1) loop like in a browser; all images with the same `src` play in sync.",
         params=[("src", "String", None, "Resource location, e.g. `\"mymod:textures/gui/logo.png\"`."),
                 ("alt", "String?", "null", "Alternative text.")] + common("className", "id", "style", "key"),
         example='img("mymod:textures/gui/logo.svg", className = "logo", style = "width: 32px; height: 32px")',
-        img=("images.png", "PNG and SVG images with object-fit")),
+        img=("images.png", "PNG, SVG and animated GIF images with object-fit")),
     api("item", "GuiLib tag", "Renders a Minecraft item stack like in an inventory slot (16×16 by default; size it with CSS). Needs a loaded world.",
         params=[("stack", "ItemStack", None, "The item stack (typed `Any` so the core stays Minecraft-free)."),
                 ("decorations", "Boolean", "true", "Show count and durability bar.")] + common("className", "id", "style", "key"),
