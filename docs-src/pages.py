@@ -305,6 +305,15 @@ text(Component.translatable("mymod.gui.hint").withStyle(ChatFormatting.GRAY))
         receiver="ComponentScope", sig="fun useDocument(): Document"),
     api("useToast", "hook", "The toaster of this screen, for short notifications. See [Toasts](overlays.html#usetoast).",
         receiver="ComponentScope", sig="fun useToast(): Toaster"),
+    api("useClipboard", "hook", "The system clipboard, e.g. for a \"Copy note\" button. `set(text)` is safe to call from any thread; call `get()` on the UI thread (event handlers, effects). The same object as `useDocument().clipboard`.",
+        receiver="ComponentScope", sig="""fun useClipboard(): Clipboard
+
+interface Clipboard { fun get(): String; fun set(text: String) }""",
+        example="""
+val clipboard = useClipboard()
+val toast = useToast()
+button(onClick = { clipboard.set(note); toast.success("Note copied") }) { +"Copy note" }
+"""),
     api("useForceUpdate", "hook", "Returns a function that re-renders the component. An escape hatch; prefer state.",
         receiver="ComponentScope", sig="fun useForceUpdate(): () -> Unit"),
     api("classNames", "function", "Joins class names and skips falsy ones, like the `clsx` package.",
@@ -390,6 +399,16 @@ FakePlayer.of(name: String): FakePlayer?
 FakePlayer.of(uuid: UUID): FakePlayer?
 FakePlayer.of(profile: GameProfile): FakePlayer?
 FakePlayer.of(player: AbstractClientPlayer): FakePlayer?"""),
+    api("playerHead", "GuiLib tag", "A player's face like in the tab list (16×16 by default), scaled to its box. The skin loads in the background (the default skin is shown until then); no world is needed. The CSS tag selector is `player-head`.",
+        params=[("player", "Any", None, "A name (`String`), `UUID`, `GameProfile`, `ResolvableProfile` or `AbstractClientPlayer`."),
+                ("hat", "Boolean", "true", "Draw the hat layer.")] + common("className", "id", "style", "key"),
+        example="""
+for (member in party) div(className = "member") {
+    playerHead(member.name, style = "margin-right: 4px")
+    +member.name
+}
+playerHead(uuid, style = "width: 32px; height: 32px")
+"""),
     h2("Structure helpers"),
     api("fragment", "function", "Groups children without a wrapper element (like `<>…</>`), e.g. to give a group of elements a key.",
         sig="fun NodeBuilder.fragment(key: Any? = null, children: NodeBuilder.() -> Unit)"),
@@ -439,6 +458,7 @@ controls = Page("controls", "Form controls", "Reference", (
                 ("placeholder", "String?", "null", "Shown while empty."),
                 ("rows", "Int", "3", "Visible lines (sets the height; override with `style`)."),
                 ("maxLength", "Int?", "null", "Maximum length."),
+                ("maxLines", "Int?", "null", "Maximum number of lines: Enter does nothing at the limit, extra line breaks in pasted text become spaces. Wrapped lines don't count."),
                 ("disabled", "Boolean", "false", ""),
                 ("autoFocus", "Boolean", "false", ""),
                 ("ref", "Ref<Element?>?", "null", ""),
@@ -446,7 +466,7 @@ controls = Page("controls", "Form controls", "Reference", (
         keys="Arrows (Up/Down keep the column), Home/End (line; Ctrl: whole text), PageUp/PageDown, Enter, Ctrl+A/C/X/V",
         example="""
 var note by useState("")
-textarea(value = note, onChange = { note = it.value }, placeholder = "Describe your party…", rows = 4, maxLength = 256)
+textarea(value = note, onChange = { note = it.value }, placeholder = "Describe your party…", rows = 4, maxLength = 256, maxLines = 4)
 span(className = "muted") { +"${note.length}/256" }
 """, css=["textarea", ".guilib-textarea-line", ".guilib-placeholder", ".guilib-caret", ".guilib-selection"],
         img=("textarea.png", "A textarea with two lines (and toasts in the corner)")),
@@ -506,9 +526,10 @@ var kills by useState(5000 to 20000)
 rangeSlider(low = kills.first, high = kills.second, onChange = { lo, hi -> kills = lo to hi },
             min = 0, max = 50000, step = 500, showValue = true, format = { "%,d".format(it) })
 """, css=[".guilib-range-slider", ".guilib-slider-thumb.low", ".guilib-slider-thumb.high", "+ all .guilib-slider-* classes"]),
-    api("numberInput", "function", "A number field with − and + buttons that keeps the value within `min..max`. Values inside the range are reported while typing; anything else is clamped when the field loses focus or on Enter. `Int` and `Double` overloads (the `Double` one shows as many decimals as `step`).",
+    api("numberInput", "function", "A number field with − and + buttons that keeps the value within `min..max`. Values inside the range are reported while typing; anything else is clamped when the field loses focus or on Enter. `Int` and `Double` overloads (the `Double` one shows as many decimals as `step`). With `allowEmpty = true` the value is an `Int?` / `Double?`: `null` shows an empty field with the placeholder, clearing the field reports `null`, and stepping an empty field starts at 0 (or the nearest bound).",
         params=[("value", "Int / Double", None, "Current value."),
-                ("onChange", "((Int) -> Unit)?", "null", "New, clamped value."),
+                ("onChange", "((Int) -> Unit)?", "null", "New, clamped value (`Int?` with `allowEmpty`)."),
+                ("allowEmpty", "Boolean", "–", "Only on the `Int?` / `Double?` overloads (required there): the field may be empty."),
                 ("min", "Int", "Int.MIN_VALUE", ""), ("max", "Int", "Int.MAX_VALUE", ""),
                 ("step", "Int", "1", "Step of the buttons, arrows and wheel."),
                 ("wheel", "Boolean", "true", "Mouse wheel over the field steps the value."),
@@ -521,6 +542,9 @@ numberInput(value = slots, onChange = { slots = it }, min = 1, max = 5)
 
 var price by useState(1.5)
 numberInput(value = price, onChange = { price = it }, min = 0.0, max = 10.0, step = 0.25)
+
+var minCata by useState<Int?>(null)   // empty = no requirement
+numberInput(value = minCata, onChange = { minCata = it }, allowEmpty = true, min = 0, max = 50, placeholder = "any")
 """, css=[".guilib-number", ".guilib-number-input", ".guilib-number-dec", ".guilib-number-inc"]),
     h2("Choices"),
     api("select", "function", "A dropdown. The menu opens in a portal, so it's never clipped by scroll containers. With `searchable = true` the menu starts with a search field that filters the options while typing (case-insensitive, by label or value; `§` codes are ignored).",
