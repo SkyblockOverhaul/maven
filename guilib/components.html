@@ -14,7 +14,7 @@
 <body>
 <header class="topbar">
   <button class="menu-btn" type="button" aria-label="Menu">☰</button>
-  <a class="brand" href="index.html"><img src="assets/icon.svg" alt="" width="22" height="22"><span>GuiLib</span><span class="version">v0.4.1</span></a>
+  <a class="brand" href="index.html"><img src="assets/icon.svg" alt="" width="22" height="22"><span>GuiLib</span><span class="version">v0.4.2</span></a>
   <div class="search">
     <input id="search" type="search" placeholder="Search the docs…" autocomplete="off" spellcheck="false">
     <kbd>/</kbd>
@@ -80,7 +80,7 @@ val toast = useToast()
 button(onClick = { clipboard.set(note); toast.success(&quot;Note copied&quot;) }) { +&quot;Copy note&quot; }</code></pre></div></section><section class="api" id="useforceupdate"><h3 class="api-title"><a class="anchor" href="#useforceupdate">#</a><code>useForceUpdate</code><span class="kind hook">hook</span></h3><div class="api-desc"><p>Returns a function that re-renders the component. An escape hatch; prefer state.</p></div><div class="code"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">fun useForceUpdate(): () -&gt; Unit</code></pre></div></section><section class="api" id="classnames"><h3 class="api-title"><a class="anchor" href="#classnames">#</a><code>classNames</code><span class="kind function">function</span></h3><div class="api-desc"><p>Joins class names and skips falsy ones, like the <code>clsx</code> package.</p></div><div class="code"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">fun classNames(vararg parts: Any?): String</code></pre></div><div class="code"><div class="code-title">Example</div><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code class="language-kotlin">div(className = classNames(&quot;tab&quot;, &quot;active&quot; to isActive, extraClass)) { … }</code></pre></div></section><h2 id="rules-of-hooks"><a class="anchor" href="#rules-of-hooks">#</a>Rules of hooks</h2><ul><li>Call hooks unconditionally at the top of the component, not inside <code>div { }</code> blocks, loops or <code>if</code>s.</li><li>Hook misuse (a different number or order of hooks between renders) is detected and logged.</li><li>Hooks are extension functions on <code>ComponentScope</code>, so they&#x27;re only callable inside component render lambdas.</li></ul>
       <nav class="pager"><a class="prev" href="getting-started.html"><span>Previous</span>Getting started</a><a class="next" href="differences.html"><span>Next</span>Differences from the web</a></nav>
     </article>
-    <footer class="footer">GuiLib 0.4.1 · Minecraft 26.1.2 / 26.2 (Fabric) · LGPL-3.0 · Screenshots taken in-game at GUI scale 2.</footer>
+    <footer class="footer">GuiLib 0.4.2 · Minecraft 26.1.2 / 26.2 (Fabric) · LGPL-3.0 · Screenshots taken in-game at GUI scale 2.</footer>
   </main>
   <aside class="toc"><div class="toc-title">On this page</div><nav id="toc"></nav></aside>
 </div>
