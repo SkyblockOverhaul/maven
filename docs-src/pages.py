@@ -949,16 +949,17 @@ css = Page("css", "CSS", "Reference", (
         ["Box", "`width` `height` `min-width` `min-height` `max-width` `max-height` `box-sizing` `margin(-*)` `padding(-*)`"],
         ["Border", "`border` `border-(top|right|bottom|left)` `border-width` `border-style` `border-color` `border-*-width/-style/-color` `border-radius` `border-*-radius`"],
         ["Display", "`display`: `block` `inline` `inline-block` `flex` `inline-flex` `grid` `inline-grid` `none`"],
+        ["Inline", "`vertical-align` (`baseline sub super text-top text-bottom middle top bottom`, a length, or a % of the line height) for `inline-block` / `inline-flex` / `img` / `item` boxes; text in inline elements always sits on the baseline"],
         ["Position", "`position`: `static` `relative` `absolute` `fixed`; `top` `right` `bottom` `left` `inset` `z-index`"],
         ["Overflow", "`overflow` `overflow-x` `overflow-y` (`visible` `hidden` `auto` `scroll`), `scrollbar-width` (`auto` `thin` `none`), `scrollbar-color: <thumb> <track>`"],
-        ["Flexbox", "`flex` `flex-direction` `flex-wrap` `flex-flow` `flex-grow` `flex-shrink` `flex-basis` `justify-content` `align-items` `align-self` `place-items` `gap` `row-gap` `column-gap` `order`, auto margins"],
-        ["Grid", "`grid-template-columns` / `-rows` (`px % fr auto min-content max-content minmax() repeat(n | auto-fill | auto-fit, …)`), `grid-template-areas` `grid-area` `grid-row` `grid-column` `grid-*-start/-end` (lines, negative lines, `span n`, area names), `grid-auto-rows` `grid-auto-columns` `grid-auto-flow` (`row` `column` `dense`), `justify-items` `justify-self` `place-self`"],
+        ["Flexbox", "`flex` `flex-direction` `flex-wrap` `flex-flow` `flex-grow` `flex-shrink` `flex-basis` `justify-content` `align-items` `align-self` `align-content` (lines of a wrapping container with a fixed height; `normal` stretches them) `place-items` `place-content` `gap` `row-gap` `column-gap` `order`, auto margins"],
+        ["Grid", "`grid-template-columns` / `-rows` (`px % fr auto min-content max-content minmax() repeat(n | auto-fill | auto-fit, …)`), `grid-template-areas` `grid-area` `grid-row` `grid-column` `grid-*-start/-end` (lines, negative lines, `span n`, area names), `grid-auto-rows` `grid-auto-columns` `grid-auto-flow` (`row` `column` `dense`), `justify-items` `justify-self` `place-self`; `justify-content` / `align-content` distribute the columns / rows"],
     ]), shot("grid.png", "CSS grid: fr tracks, spans, template areas and auto-fill"),
         shot("layout.png", "Flexbox and positioning")),
     h2("Text & visuals"),
     raw(table(["Group", "Properties"], [
-        ["Text", "`color` `font-family` `font-size` `font-weight` `font-style` `line-height` `text-align` `white-space` `text-overflow` `text-decoration` `text-shadow`"],
-        ["Background", "`background` `background-color` `background-image`: comma list of layers (first on top): `url(\"modid:path.png\")`, `linear-gradient(…)` (angles, `to right`, stops with positions, hard stops), `radial-gradient(…)` (`circle`/`ellipse`, size keywords, `at <position>`). Gradients respect `border-radius`."],
+        ["Text", "`color` `font-family` `font-size` `font-weight` `font-style` `line-height` `text-align` `white-space` `text-overflow` `text-decoration` `text-shadow` `letter-spacing` (`normal` or a length, also negative; added after every character)"],
+        ["Background", "`background` `background-color` `background-image`: comma list of layers (first on top): `url(\"modid:path.png\")`, `linear-gradient(…)` (angles, `to right`, stops with positions, hard stops), `radial-gradient(…)` (`circle`/`ellipse`, size keywords, `at <position>`), `conic-gradient(…)` (`from <angle>`, `at <position>`, stops in angles or %; `from` is animatable) and the `repeating-linear/radial/conic-gradient(…)` forms. Gradients respect `border-radius`."],
         ["Shadow", "`box-shadow`: `none` or a comma list of `[inset] <x> <y> [<blur> [<spread>]] [<color>]` (first on top, color defaults to `currentColor`). Real Gaussian blur that follows `border-radius`; outer shadows are never drawn under the box, so translucent backgrounds stay clean. Animatable."],
         ["Visual", "`opacity` `visibility` `object-fit`"],
         ["Interaction", "`cursor` (`auto` `default` `pointer` `text` `not-allowed` `crosshair` `move` `ns-resize` `ew-resize` `row-resize` `col-resize` `grab` `grabbing` `none`; `none` hides the system cursor (draw your own at the mouse with `onMouseMove`); a drag cursor stays while the left button is held), `pointer-events`, `user-select` (parsed only)"],
@@ -969,7 +970,7 @@ css = Page("css", "CSS", "Reference", (
           "`-timing-function` `-delay` `-iteration-count` `-direction` `-fill-mode` `-play-state`) with `@keyframes`. "
           "Easing: `linear` `ease` `ease-in` `ease-out` `ease-in-out` `cubic-bezier()` `steps()`."),
         p("Animatable: colors, lengths (also px ↔ % via calc), numbers (`opacity`, `flex-grow`, `font-size` …), radii, "
-          "`line-height`, `text-shadow`, `box-shadow`, scrollbar colors, gradient stop colors, `visibility`, `transform`, "
+          "`line-height`, `text-shadow`, `letter-spacing`, `box-shadow`, scrollbar colors, gradient stop colors, `visibility`, `transform`, "
           "`transform-origin`. Other values switch at 50 % in keyframes and don't transition."),
         code("""
 .card { transition: background-color 150ms, transform 150ms ease-out; }
@@ -1029,7 +1030,7 @@ differences = Page("differences", "Differences from the web", "Guide", (
            "Per-side borders on a box with `border-radius` are drawn as straight strips that stop at the rounded corners. Uniform borders are exact.",
            "Inline elements (`span`, `code`, …) paint background, border and shadow per line like the web; vertical padding/border don't change the line height. Use `display: inline-block` for boxes that must not wrap or need a size.",
            "Every positioned element (`relative` / `absolute` / `fixed`) is its own paint layer; `z-index` orders layers among siblings. Use `portal { }` for things that must be on top of everything. `position: fixed` ignores ancestors' `transform`.",
-           "`display: inline-block`, `img` and `item` sit on the text baseline; `vertical-align` is not supported.",
+           "`vertical-align` only moves atomic boxes (`inline-block`, `img`, `item`); text inside inline elements stays on the baseline.",
            "Flex items have `min-width: auto` like the web; for ellipsis inside flex, set `min-width: 0`.")),
     h2("Text"),
     raw(ul("Minecraft `§` codes work in all text. Text inputs show what the user types literally (`§` included).",
@@ -1037,9 +1038,9 @@ differences = Page("differences", "Differences from the web", "Guide", (
            "No right-to-left or complex-script shaping. Characters missing from the font (CJK, emoji, …) fall back to Minecraft's font.",
            "Rotated or skewed text is rasterized at 2× and filtered: smooth, but a little softer than straight text.")),
     h2("Not supported (yet)"),
-    raw(ul("3D transforms (a `transform` containing them is ignored), `repeating-*-gradient`, `conic-gradient`.",
+    raw(ul("3D transforms (a `transform` containing them is ignored).",
            "`@import`, `@font-face` (register fonts with `FontManager`), pseudo-elements other than `::before` / `::after`, `:nth-child(… of S)`.",
-           "`float`, `align-content`, `vertical-align`, `letter-spacing`, subgrid, named grid lines. Grid `auto-fit` behaves like `auto-fill`.",
+           "`float`, subgrid, named grid lines. Grid `auto-fit` behaves like `auto-fill`.",
            "Images are resource locations (PNG, SVG or GIF), no URLs.")),
 ])
 
@@ -1128,7 +1129,12 @@ changelog = Page("changelog", "Changelog", "Overview", "What changed in each Gui
              "`presenceList(items, key, exitMs) { item, leaving -> }`: removed list items animate out at their old position.",
              "`::before` and `::after` with `content` (strings, `attr()`): generated boxes that can be styled, positioned and animated like elements.",
              "`text(component)`: `show_item` hover events (item links like `stack.displayName`) show Minecraft's item tooltip; `show_entity` shows the entity info with advanced tooltips (F3+H), like in chat.",
-             "`cursor: none` hides the mouse cursor over an element (e.g. to draw a custom one)."),
+             "`cursor: none` hides the mouse cursor over an element (e.g. to draw a custom one).",
+             "`letter-spacing` (lengths incl. `em` and negative values, animatable), for the TTF and the Minecraft font.",
+             "`vertical-align` for inline-block boxes, images and items: `baseline` `middle` `top` `bottom` `text-top` `text-bottom` `sub` `super` and lengths.",
+             "`align-content` and `place-content` for wrapping flex containers and grids (rows). A wrapping flex container with a fixed height now stretches its lines by default (`normal`), like browsers; use `align-content: flex-start` for the old packing.",
+             "`conic-gradient` (with an animatable `from` angle) and `repeating-linear-gradient` / `repeating-radial-gradient` / `repeating-conic-gradient` (stripes, rings, pie charts, checkerboards).",
+             "**Fix:** hard color stops in `radial-gradient` (`white 10px, black 10px`) are sharp again instead of fading to the next ring."),
     *release("0.4.3", "2026-10-02",
              "**Fix:** `select` (also searchable / `multiSelect`), `colorInput` and `tooltip` popups stay attached to their element when the window is resized or moved to another monitor. An open `contextMenu` closes on a viewport change, like in browsers.",
              "`numberInput(allowEmpty = true)`: + on an empty field starts at `step` (at least `min`), − on an empty field does nothing, − at `min` empties the field again."),
