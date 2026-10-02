@@ -1166,6 +1166,8 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
+    *release("next", "unreleased",
+             "**Fix:** a finished `@keyframes` animation no longer plays again whenever its element is restyled (hover, class or inline style changes). Sortable items with an entry animation jumped back to their old place over and over while being dragged."),
     *release("0.7.0", "2026-10-02",
              "**Fix:** `textarea(rows = n)` is exactly n lines tall (it was slightly too short, so n lines already showed a scrollbar), also with custom padding or borders.",
              "**Fix:** the `textarea` caret and selection were 1px off (right and down) when the field has a border.",
