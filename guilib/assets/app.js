@@ -58,6 +58,11 @@
     var index = window.GUILIB_SEARCH || [];
     var sel = -1;
 
+    // Lower case without spaces/punctuation, so "hotreload" matches "hot-reloaded" and "hot reload".
+    function squash(s) { return (s || "").toLowerCase().replace(/[^a-z0-9]+/g, ""); }
+
+    index.forEach(function (e) { e.bl = (e.b || "").toLowerCase(); e.bq = squash(e.b); });
+
     function score(e, q) {
         var t = e.t.toLowerCase();
         if (t === q) return 100;
@@ -65,7 +70,25 @@
         if (t.indexOf(q) >= 0) return 60;
         if ((e.c || "").toLowerCase().indexOf(q) >= 0) return 40;
         if ((e.s || "").toLowerCase().indexOf(q) >= 0) return 25;
+        if (e.bl.indexOf(q) >= 0) return 10;
+        var sq = squash(q);
+        if (sq && (squash(e.t).indexOf(sq) >= 0 || e.bq.indexOf(sq) >= 0)) return 8;
         return 0;
+    }
+
+    // Text shown under a result: its summary, or the passage of the body that matched.
+    function snippet(e, words) {
+        if (e.s) return e.s;
+        var b = e.b || "", i = -1;
+        // Whole query first, letters may be separated by spaces/hyphens ("hotreload" finds "hot-reloaded").
+        var tries = [words.join("")].concat(words);
+        for (var k = 0; k < tries.length && i < 0; k++) {
+            var sq = squash(tries[k]);
+            if (sq) i = e.bl.search(new RegExp(sq.split("").join("[^a-z0-9]*")));
+        }
+        if (i < 0) return b.slice(0, 120);
+        var from = Math.max(0, i - 40);
+        return (from > 0 ? "…" : "") + b.slice(from, from + 120) + (from + 120 < b.length ? "…" : "");
     }
 
     function escapeHtml(s) {
@@ -83,9 +106,10 @@
             if (e.k === "page") s += 5;
             return { e: e, s: s };
         }).filter(Boolean).sort(function (a, b) { return b.s - a.s; }).slice(0, 12);
+        hits.forEach(function (h) { h.sn = snippet(h.e, words); });
         box.innerHTML = hits.length ? hits.map(function (h) {
             return '<a href="' + h.e.u + '"><span class="r-title">' + escapeHtml(h.e.t) + '</span><span class="r-kind">' +
-                escapeHtml(h.e.k) + "</span>" + (h.e.s ? '<span class="r-sub">' + escapeHtml(h.e.s) + "</span>" : "") + "</a>";
+                escapeHtml(h.e.k) + "</span>" + (h.sn ? '<span class="r-sub">' + escapeHtml(h.sn) + "</span>" : "") + "</a>";
         }).join("") : '<div class="empty">No results for “' + escapeHtml(input.value) + "”</div>";
         box.hidden = false;
     }

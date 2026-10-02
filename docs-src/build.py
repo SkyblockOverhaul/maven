@@ -295,15 +295,21 @@ def build():
         )
         with open(os.path.join(OUT, pg.file), "w", encoding="utf-8", newline="\n") as f:
             f.write(doc)
-        index.append({"t": pg.title, "u": pg.file, "k": "page", "s": plain(md(pg.lead))[:140]})
+        # Full text search: every heading entry carries the plain text of the blocks below it ("b"), so words that only
+        # appear in paragraphs or lists (e.g. "hot reload") are found too. API entries carry their whole rendered text.
+        section = {"t": pg.title, "u": pg.file, "k": "page", "s": plain(md(pg.lead))[:140], "b": plain(md(pg.lead))}
+        index.append(section)
         for b in pg.blocks:
             if b[0] in ("h2", "h3"):
-                index.append({"t": b[1], "u": f"{pg.file}#{b[2]}", "k": pg.title, "s": ""})
+                section = {"t": b[1], "u": f"{pg.file}#{b[2]}", "k": pg.title, "s": "", "b": ""}
+                index.append(section)
+            elif b[0] == "raw":
+                section["b"] = (section["b"] + " " + plain(b[1])).strip()
             elif b[0] == "api":
                 e = b[1]
                 d = e["desc"] if isinstance(e["desc"], str) else e["desc"][0]
                 index.append({"t": e["name"], "u": f"{pg.file}#{e['anchor']}", "k": e["kind"], "s": plain(md(d))[:140],
-                              "c": " ".join(e["css"])})
+                              "c": " ".join(e["css"]), "b": plain(render_api(e))})
     assets = os.path.join(OUT, "assets")
     os.makedirs(assets, exist_ok=True)
     for f in os.listdir(os.path.join(ROOT, "assets")):
