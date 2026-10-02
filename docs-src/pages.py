@@ -220,6 +220,30 @@ val Header = component("Header") {
     raw(p("Add text with `+\"text\"` or `text(value)` (any value, converted with `toString()`). Minecraft `§` color and format "
           "codes work in all text: `+\"§6Gold §lbold\"`."),
         code('span { +"Hello " ; b { +name } ; text(count) }')),
+    h3("Helper functions (NodeBuilder)"),
+    raw(p("Every `{ }` block of the DSL is a `NodeBuilder`, and all tags (`div`, `span`, `button`, …) are extension functions "
+          "on it. To move part of a UI into its own function, declare the function on `NodeBuilder` too. Call it inside any "
+          "block and the elements it creates end up there. Parameters decide what it renders."),
+        code("""import net.sbo.guilib.core.dsl.NodeBuilder
+
+fun NodeBuilder.renderGraph(values: List<Int>) {
+    div(className = "graph") {
+        for (v in values) div(className = "bar", style = "height: ${v}px")
+    }
+}
+
+val App = component("App") {
+    div(className = "window") {
+        div(className = "body") {
+            renderGraph(listOf(10, 40, 25))   // the graph is placed inside .body
+        }
+    }
+}"""),
+        p("A plain `fun renderGraph() = div { … }` doesn't compile: without the `NodeBuilder.` receiver there is no block to "
+          "add the element to."),
+        p("**Helper or component?** A helper is just code that runs as part of the caller's render. It can't use hooks "
+          "(`useState`, `useEffect`, `useAsync`, …) and re-renders whenever the caller does. As soon as a part needs its own "
+          "state or effects, or should skip re-rendering when its data hasn't changed, make it a `component` instead.")),
     h2("State"),
     api("useState", "hook", "Local state. Use it as a delegate or destructure it like React. Assigning a different value re-renders the component. Setters may be called from **any thread** (they are posted to the UI thread).",
         receiver="ComponentScope", sig="fun <T> useState(initial: T): State<T>",
