@@ -919,8 +919,23 @@ css = Page("css", "CSS", "Reference", (
         ["Combinators", "descendant `a b`, child `a > b`, `a + b`, `a ~ b`, lists `a, b`"],
         ["State", "`:hover` `:active` `:focus` `:focus-visible` `:focus-within` `:disabled` `:enabled` `:checked`"],
         ["Structural", "`:first-child` `:last-child` `:only-child` `:root` `:not(…)` `:nth-child()` `:nth-last-child()` `:nth-of-type()` `:nth-last-of-type()` (`odd`, `even`, `3`, `2n+1`, `-n+3`)"],
+        ["Pseudo-elements", "`::before` `::after` (also `:before`/`:after`) at the end of a selector, e.g. `.crumb + .crumb::before`, `.btn:hover::after`"],
         ["At-rules", "`@keyframes`; `@media` (nestable): comma lists, `not`/`only`, `screen`/`all`/`print`, `and`/`or`; features `width` `height` `aspect-ratio` `orientation` in GUI px, `resolution` = Minecraft's GUI scale (`min-resolution: 3dppx` or `3x`), `hover` (hover), `pointer` (fine), `prefers-reduced-motion` (no-preference), `prefers-color-scheme` (dark); `min-`/`max-` prefixes and range syntax `(400px <= width < 640px)`. Styles update when the window size or GUI scale changes."],
-    ]), note("Not supported: pseudo-elements (`::before`), `@import`, `@font-face`, `@container`, `@supports`, `:nth-child(… of S)`.", "warn")),
+    ]), note("Not supported: other pseudo-elements (`::placeholder`, `::selection`, …), `@import`, `@font-face`, `@container`, `@supports`, `:nth-child(… of S)`.", "warn")),
+    h2("::before and ::after"),
+    raw(p("Generated boxes before and after an element's children, like the web. A rule needs `content` to create one: strings, `attr(name)` (an attribute of the element, e.g. `attr(title)`), or `\"\"` for purely decorative boxes. `content: none` (or `normal`) removes it."),
+        ul("The box is inline by default, inherits from the element and can be styled like any element: `display`, sizes, `position: absolute`, backgrounds, borders, shadows, transitions and animations.",
+           "Hover and clicks on the box count as the element (it is not in `children` and `querySelector` doesn't find it).",
+           "Inputs, textareas, images, items and `<br>` don't get pseudo-elements. `content` has no `url()`, counters or quotes."),
+        code("""
+.crumb + .crumb::before { content: "›"; margin: 0 5px; color: #949ba4 }
+.required::after { content: " *"; color: #e5484d }
+.bell { position: relative }
+.bell::after { content: ""; position: absolute; top: -3px; right: -3px; width: 7px; height: 7px; border-radius: 4px; background-color: #e5484d }
+.more::after { content: " →"; opacity: 0; transition: opacity 150ms }
+.more:hover::after { opacity: 1 }
+.tip::after { content: attr(title) }
+""", "css")),
     h2("Values"),
     raw(table(["Kind", "Supported"], [
         ["Lengths", "`px` (GUI pixels), `%`, `em`, `rem`, `vw`, `vh`, `vmin`, `vmax`, unitless `0`"],
@@ -947,6 +962,7 @@ css = Page("css", "CSS", "Reference", (
         ["Shadow", "`box-shadow`: `none` or a comma list of `[inset] <x> <y> [<blur> [<spread>]] [<color>]` (first on top, color defaults to `currentColor`). Real Gaussian blur that follows `border-radius`; outer shadows are never drawn under the box, so translucent backgrounds stay clean. Animatable."],
         ["Visual", "`opacity` `visibility` `object-fit`"],
         ["Interaction", "`cursor` (`auto` `default` `pointer` `text` `not-allowed` `crosshair` `move` `ns-resize` `ew-resize` `row-resize` `col-resize` `grab` `grabbing`; a drag cursor stays while the left button is held), `pointer-events`, `user-select` (parsed only)"],
+        ["Generated content", "`content` (strings, `attr(name)`, `none` / `normal`), only on `::before` / `::after`"],
     ]), shot("boxes.png", "Rounded corners, borders, gradients, shadows and opacity, drawn by GuiLib's own anti-aliased shader")),
     h2("Animation"),
     raw(p("`transition` (+ `-property` `-duration` `-timing-function` `-delay`) and `animation` (+ `-name` `-duration` "
@@ -1022,7 +1038,7 @@ differences = Page("differences", "Differences from the web", "Guide", (
            "Rotated or skewed text is rasterized at 2× and filtered: smooth, but a little softer than straight text.")),
     h2("Not supported (yet)"),
     raw(ul("3D transforms (a `transform` containing them is ignored), `repeating-*-gradient`, `conic-gradient`.",
-           "`@import`, `@font-face` (register fonts with `FontManager`), pseudo-elements (`::before`), `:nth-child(… of S)`.",
+           "`@import`, `@font-face` (register fonts with `FontManager`), pseudo-elements other than `::before` / `::after`, `:nth-child(… of S)`.",
            "`float`, `align-content`, `vertical-align`, `letter-spacing`, subgrid, named grid lines. Grid `auto-fit` behaves like `auto-fill`.",
            "Images are resource locations (PNG, SVG or GIF), no URLs.")),
 ])
@@ -1109,7 +1125,8 @@ def release(ver, date, *items):
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("0.5.0", "unreleased",
-             "`presenceList(items, key, exitMs) { item, leaving -> }`: removed list items animate out at their old position."),
+             "`presenceList(items, key, exitMs) { item, leaving -> }`: removed list items animate out at their old position.",
+             "`::before` and `::after` with `content` (strings, `attr()`): generated boxes that can be styled, positioned and animated like elements."),
     *release("0.4.3", "2026-10-02",
              "**Fix:** `select` (also searchable / `multiSelect`), `colorInput` and `tooltip` popups stay attached to their element when the window is resized or moved to another monitor. An open `contextMenu` closes on a viewport change, like in browsers.",
              "`numberInput(allowEmpty = true)`: + on an empty field starts at `step` (at least `min`), − on an empty field does nothing, − at `min` empties the field again."),
