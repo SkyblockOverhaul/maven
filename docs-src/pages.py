@@ -1182,7 +1182,7 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
-    *release("next", "unreleased",
+    *release("0.8.1", "2026-10-02",
              "**Fix:** crash `Scissor size must be >0, was 0x0` when an element with its own clip (`overflow: hidden/auto`, e.g. a scroll box) was scrolled completely out of view inside another scroll container (0.8.0 only)."),
     *release("0.8.0", "2026-10-02",
              "`useAsync { … }`, `useFuture { … }` and `usePromise { resolve, reject -> … }`: load data in the background (HTTP, files) and render `loading` / `value` / `error`, with `reload()`; outdated results are dropped.",
