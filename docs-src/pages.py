@@ -376,8 +376,9 @@ scroll(className = "list", style = "max-height: 120px") {
         img=("images.png", "PNG, SVG and animated GIF images with object-fit")),
     api("item", "GuiLib tag", "Renders a Minecraft item stack like in an inventory slot (16×16 by default; size it with CSS). Needs a loaded world.",
         params=[("stack", "ItemStack", None, "The item stack (typed `Any` so the core stays Minecraft-free)."),
-                ("decorations", "Boolean", "true", "Show count and durability bar.")] + common("className", "id", "style", "key"),
-        example='item(ItemStack(Items.DIAMOND_SWORD), style = "width: 32px; height: 32px")',
+                ("decorations", "Boolean", "true", "Show count and durability bar."),
+                ("tooltip", "Boolean", "false", "Show Minecraft's item tooltip (name, lore, enchantments …) while the icon is hovered, like in an inventory.")] + common("className", "id", "style", "key"),
+        example='item(ItemStack(Items.DIAMOND_SWORD), tooltip = true, style = "width: 32px; height: 32px")',
         img=("items.png", "Item icons at different sizes, with decorations")),
     api("entity", "GuiLib tag", "Renders a living entity scaled to fit its box, like the inventory player model (48×72 by default).",
         params=[("entity", "LivingEntity", None, "The entity, e.g. a `FakePlayer`."),
@@ -1125,6 +1126,8 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
+    *release("next", "unreleased",
+             "`item(stack, tooltip = true)`: shows Minecraft's item tooltip while the icon is hovered, like in an inventory."),
     *release("0.5.0", "2026-10-02",
              "`presenceList(items, key, exitMs) { item, leaving -> }`: removed list items animate out at their old position.",
              "`::before` and `::after` with `content` (strings, `attr()`): generated boxes that can be styled, positioned and animated like elements.",
