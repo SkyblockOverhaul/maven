@@ -116,7 +116,7 @@ def raw(*parts):
 
 COMMON = {"className", "id", "style", "key"}
 COMMON_DESC = {
-    "className": "CSS classes separated by spaces, like HTML: `\"btn primary\"`. For conditional classes see `classNames(...)`.",
+    "className": "CSS classes separated by spaces, like HTML: `\"btn primary\"`.",
     "id": "Element id (`#id` selectors).",
     "style": "Inline CSS string, e.g. `\"width: 120px\"`.",
     "key": "Identity among siblings, like React keys.",
