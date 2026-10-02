@@ -413,7 +413,7 @@ scroll(className = "list", style = "max-height: 120px") {
                 ("tooltip", "Boolean", "false", "Show Minecraft's item tooltip (name, lore, enchantments …) while the icon is hovered, like in an inventory.")] + common("className", "id", "style", "key"),
         example='item(ItemStack(Items.DIAMOND_SWORD), tooltip = true, style = "width: 32px; height: 32px")',
         img=("items.png", "Item icons at different sizes, with decorations")),
-    api("entity", "GuiLib tag", "Renders a living entity scaled to fit its box, like the inventory player model (48×72 by default).",
+    api("entity", "GuiLib tag", "Renders a living entity scaled to fit its box, like the inventory player model (48×72 by default). Scrolling, clipping, `scale()` and `useScreenScale` work; inside `rotate()` / `skew()` the model stays upright.",
         params=[("entity", "LivingEntity", None, "The entity, e.g. a `FakePlayer`."),
                 ("followMouse", "Boolean", "false", "Look at the mouse cursor."),
                 ("lookX", "Float", "0f", "Look offset in px when not following the mouse."),
@@ -1167,6 +1167,7 @@ def release(ver, date, *items):
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("next", "unreleased",
+             "**Fix:** `entity(...)` models were drawn at the wrong place (or not at all) with an own screen scale (`useScreenScale`, `GuiLib.open(…, scale = …)`).",
              "Grid `repeat(auto-fit, …)` now collapses empty repeated tracks like browsers (before it behaved like `auto-fill`), so a few items stretch over the whole row.",
              "Scrollbars that hide when idle: add the class `guilib-autohide` to a scroll container; it fades out 600 ms after scrolling stops and comes back on scroll or hover. Built on the new GuiLib-only pseudo-class `:scrolling`, which you can use for your own effects.",
              "`:nth-child(An+B of S)` / `:nth-last-child(… of S)`: count only siblings matching a selector list, e.g. zebra rows that skip hidden ones with `.row:nth-child(even of :not(.hidden))`.",
