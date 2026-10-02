@@ -34,7 +34,7 @@ body { display: flex; align-items: center; justify-content: center; }
 .primary:hover { background-color: #6f9cf2; }
 """, "css", "CSS"),
         '<div class="badges">' + "".join(f'<span class="badge">{esc(b)}</span>' for b in [
-            f"Version {VERSION}", "Minecraft 26.1.2 & 26.2", "Fabric", "Kotlin", "LGPL-3.0"]) + "</div>"),
+            f"Version {VERSION}", "Minecraft 26.1.2, 26.2 & 26.3", "Fabric", "Kotlin", "LGPL-3.0"]) + "</div>"),
     h2("Why GuiLib"),
     raw(p("Developers and AI models already know HTML, React and CSS extremely well. GuiLib keeps their names and "
           "behaviour wherever possible (`padding`, `justify-content`, `:hover`, `useState`, `onClick`, `className`, "
@@ -79,7 +79,7 @@ getting_started = Page("getting-started", "Getting started", "Overview", (
     "Add GuiLib to a Fabric mod, write a component and a stylesheet, and open it as a screen."), [
     h2("Installation"),
     raw(p("GuiLib is a Fabric mod published as `net.sbo:guilib-<mc>-fabric` to the SkyblockOverhaul Maven repository. "
-          "Pick the artifact for your Minecraft version (`26.1.2-fabric` or `26.2-fabric`) and bundle it jar-in-jar:"),
+          "Pick the artifact for your Minecraft version (`26.1.2-fabric`, `26.2-fabric` or `26.3-fabric`) and bundle it jar-in-jar:"),
         code(f"""
 repositories {{
     exclusiveContent {{
@@ -946,7 +946,7 @@ scroll(onScroll = { e -> atBottom = e.scrollTop >= maxScroll })
         ["`UIEvent`", "all", "`type`, `target`, `currentTarget`, `stopPropagation()`, `preventDefault()`, `defaultPrevented`"],
         ["`MouseEvent`", "`click` `dblclick` `contextmenu` `mousedown` `mouseup` `mousemove` `mouseenter` `mouseleave`", "`clientX`, `clientY` (GUI px), `offsetX`, `offsetY`, `button` (0 left, 1 middle, 2 right), `shiftKey`, `ctrlKey`, `altKey`"],
         ["`WheelEvent`", "`wheel`", "`deltaX`, `deltaY` (px, positive = down) + mouse fields"],
-        ["`KeyboardEvent`", "`keydown` `keyup`", "`key` (DOM names), `keyCode` (GLFW), `modifiers`, `shiftKey`, `ctrlKey`, `repeat`"],
+        ["`KeyboardEvent`", "`keydown` `keyup`", "`key` (DOM names), `keyCode` (raw: GLFW key code up to 26.2, SDL scancode on 26.3 - prefer `key`), `modifiers`, `shiftKey`, `ctrlKey`, `repeat`"],
         ["`InputEvent`", "`input` `change`", "`value`, `checked`"],
         ["`FocusEvent`", "`focus` `blur`", "`relatedTarget`"],
         ["`ScrollEvent`", "`scroll`", "`scrollLeft`, `scrollTop`"],
@@ -1212,6 +1212,9 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
+    *release("0.9.0", "2026-10-03",
+             "Minecraft 26.3 support: artifact `net.sbo:guilib-26.3-fabric`. Everything works the same as on 26.1.2 / 26.2 (typing, shortcuts, IME, cursors, shaders).",
+             "On 26.3 `KeyboardEvent.keyCode` is Minecraft's new raw key code (an SDL scancode instead of a GLFW key code). Compare `key` (`\"Enter\"`, `\"a\"` …) instead, which is the same on every version."),
     *release("0.8.1", "2026-10-02",
              "**Fix:** crash `Scissor size must be >0, was 0x0` when an element with its own clip (`overflow: hidden/auto`, e.g. a scroll box) was scrolled completely out of view inside another scroll container (0.8.0 only)."),
     *release("0.8.0", "2026-10-02",
