@@ -815,7 +815,7 @@ presenceList(parties, key = { it.id }, exitMs = 200) { party, leaving ->
     api("sortableList", "function", ["A drag-to-reorder list. Items move with `transform` while dragging; dropping calls `onReorder` with the reordered list.",
                                      "A drag starts after 3 px, so clicks inside items keep working, and the release after a drag clicks nothing. With `handle = true` only elements with the class `guilib-drag-handle` start a drag (use it when items contain inputs).",
                                      "Dragging near the edge of a scroll container scrolls it. Items are focusable; Alt + arrow keys move the focused item.",
-                                     "Lists with the same `group` exchange items (kanban boards): outside its list the item follows the mouse as a ghost (in a portal; it repeats `className`/`itemClassName`, so style it through those), the list under the mouse opens a gap, and the drop calls the source's `onReorder` without the item and the target's with it. Give empty lists a `min-height`.",
+                                     "Lists with the same `group` exchange items (kanban boards): outside its list the item follows the mouse as a ghost (in a portal; it repeats `className`/`itemClassName`, so style it through those), the list under the mouse opens a gap, and the drop calls the source's `onReorder` without the item and the target's with it. An item can also be dropped anywhere in the element around a list that holds no other list of the group (its kanban column, even below a short or empty list); lists placed directly next to each other without a wrapper need a `min-height` when empty.",
                                      "With `exitMs` > 0 removed items stay at their old position for that long with the item class `.leaving` (not clickable, no drag starts meanwhile), so CSS can animate them out. Items dragged into another list of the group move without an exit."],
         params=[("items", "List<T>", None, ""),
                 ("key", "(T) -> Any?", None, "Stable key per item."),
@@ -1130,6 +1130,8 @@ def release(ver, date, *items):
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("next", "unreleased",
+             "`sortableList(group = …)`: an item can be dropped anywhere in a list's column (below a short list, or into an empty list without a `min-height`).",
+             "**Fix:** sortable items with their own margins (e.g. one item with `margin-top`) no longer make the other items shift by the wrong distance while dragging.",
              "**Fix:** the first SVG image no longer freezes the game for ~0.1 s; SVG support is warmed up in the background at startup."),
     *release("0.6.0", "2026-10-02",
              "`item(stack, tooltip = true)`: shows Minecraft's item tooltip while the icon is hovered, like in an inventory.",
