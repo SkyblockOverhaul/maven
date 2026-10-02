@@ -493,7 +493,7 @@ controls = Page("controls", "Form controls", "Reference", (
         params=[("value", "String?", "null", "Controlled text (with `\\n` line breaks)."),
                 ("onChange", "((InputEvent) -> Unit)?", "null", "Every edit; `it.value`."),
                 ("placeholder", "String?", "null", "Shown while empty."),
-                ("rows", "Int", "3", "Visible lines (sets the height; override with `style`)."),
+                ("rows", "Int", "3", "Visible lines: without a CSS `height` the field is exactly this many lines tall plus padding and border; more text scrolls."),
                 ("maxLength", "Int?", "null", "Maximum length."),
                 ("maxLines", "Int?", "null", "Maximum number of lines: Enter does nothing at the limit, extra line breaks in pasted text become spaces. Wrapped lines don't count."),
                 ("disabled", "Boolean", "false", ""),
@@ -1167,6 +1167,8 @@ def release(ver, date, *items):
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("next", "unreleased",
+             "**Fix:** `textarea(rows = n)` is exactly n lines tall (it was slightly too short, so n lines already showed a scrollbar), also with custom padding or borders.",
+             "**Fix:** the `textarea` caret and selection were 1px off (right and down) when the field has a border.",
              "**Fix:** `text-align: center` / `right` on `input` and `textarea`: the caret, the selection and mouse clicks now follow the aligned text (before only the text moved).",
              "**Fix:** `entity(...)` models were drawn at the wrong place (or not at all) with an own screen scale (`useScreenScale`, `GuiLib.open(…, scale = …)`).",
              "Grid `repeat(auto-fit, …)` now collapses empty repeated tracks like browsers (before it behaved like `auto-fill`), so a few items stretch over the whole row.",
