@@ -993,7 +993,7 @@ css = Page("css", "CSS", "Reference", (
         ["Overflow", "`overflow` `overflow-x` `overflow-y` (`visible` `hidden` `auto` `scroll`), `scrollbar-width` (`auto` `thin` `none`), `scrollbar-color: <thumb> <track>` (animatable); class `guilib-autohide` = scrollbar that fades out when idle, colors via `--guilib-scrollbar-thumb` / `--guilib-scrollbar-track`"],
         ["Flexbox", "`flex` `flex-direction` `flex-wrap` `flex-flow` `flex-grow` `flex-shrink` `flex-basis` `justify-content` `align-items` `align-self` `align-content` (lines of a wrapping container with a fixed height; `normal` stretches them) `place-items` `place-content` `gap` `row-gap` `column-gap` `order`, auto margins"],
         ["Grid", "`grid-template-columns` / `-rows` (`px % fr auto min-content max-content minmax() repeat(n | auto-fill | auto-fit, …)`), `grid-template-areas` `grid-area` `grid-row` `grid-column` `grid-*-start/-end` (lines, negative lines, `span n`, area names), `grid-auto-rows` `grid-auto-columns` `grid-auto-flow` (`row` `column` `dense`), `justify-items` `justify-self` `place-self`; `justify-content` / `align-content` distribute the columns / rows"],
-    ]), shot("grid.png", "CSS grid: fr tracks, spans, template areas and auto-fill"),
+    ]), shot("grid.png", "CSS grid: fr tracks, spans, template areas, auto-fill and auto-fit"),
         shot("layout.png", "Flexbox and positioning")),
     h2("Text & visuals"),
     raw(table(["Group", "Properties"], [
@@ -1079,7 +1079,7 @@ differences = Page("differences", "Differences from the web", "Guide", (
     h2("Not supported (yet)"),
     raw(ul("3D transforms (a `transform` containing them is ignored).",
            "`@import`, pseudo-elements other than `::before` / `::after`.",
-           "`float`, subgrid, named grid lines. Grid `auto-fit` behaves like `auto-fill`.",
+           "`float`, subgrid, named grid lines.",
            "Images are resource locations (PNG, SVG or GIF), no URLs.")),
 ])
 
@@ -1093,7 +1093,7 @@ recipes = Page("recipes", "Recipes", "Guide", "Short answers to common UI tasks.
         ["Full-screen centered panel", "`body { display: flex; align-items: center; justify-content: center }` + a sized child"],
         ["Scrollable list filling the rest", "Parent `display: flex; flex-direction: column; height: …`, list `flex-grow: 1; min-height: 0; overflow: auto`"],
         ["Ellipsis", "`white-space: nowrap; overflow: hidden; text-overflow: ellipsis` (+ `min-width: 0` in flex rows)"],
-        ["Responsive tiles", "`display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 4px`"],
+        ["Responsive tiles", "`display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 4px` (`auto-fit` collapses empty columns so a few tiles stretch)"],
         ["Sidebar + content", "`display: grid; grid-template-columns: 80px 1fr` (or `grid-template-areas`)"],
         ["Horizontal scroll row", "`display: flex; overflow-x: auto; overflow-y: hidden` with `flex-shrink: 0` on the children"],
         ["Scrollbar that hides when idle", "`scroll(className = \"list guilib-autohide\")`; color: `.list { --guilib-scrollbar-thumb: #5b8def }`"],
@@ -1167,6 +1167,7 @@ def release(ver, date, *items):
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("next", "unreleased",
+             "Grid `repeat(auto-fit, …)` now collapses empty repeated tracks like browsers (before it behaved like `auto-fill`), so a few items stretch over the whole row.",
              "Scrollbars that hide when idle: add the class `guilib-autohide` to a scroll container; it fades out 600 ms after scrolling stops and comes back on scroll or hover. Built on the new GuiLib-only pseudo-class `:scrolling`, which you can use for your own effects.",
              "`:nth-child(An+B of S)` / `:nth-last-child(… of S)`: count only siblings matching a selector list, e.g. zebra rows that skip hidden ones with `.row:nth-child(even of :not(.hidden))`.",
              "**Fix:** sibling selectors like `.a:hover + .b` or `.a.active ~ .b` now update when the earlier sibling's state or classes change.",
