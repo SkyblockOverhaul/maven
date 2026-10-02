@@ -1182,7 +1182,7 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
-    *release("next", "unreleased",
+    *release("0.8.0", "2026-10-02",
              "`useAsync { … }`, `useFuture { … }` and `usePromise { resolve, reject -> … }`: load data in the background (HTTP, files) and render `loading` / `value` / `error`, with `reload()`; outdated results are dropped.",
              "Faster rendering (2-8x less time per frame on big screens): GuiLib adds its elements to Minecraft's GUI layers directly instead of through Minecraft's overlap search (which got slow with many elements), gradients are cached instead of rebuilt on every repaint, animated screens are laid out and painted once per frame instead of twice, and drawn text no longer allocates every frame.",
              "**Fix:** a finished `@keyframes` animation no longer plays again whenever its element is restyled (hover, class or inline style changes). Sortable items with an entry animation jumped back to their old place over and over while being dragged."),
