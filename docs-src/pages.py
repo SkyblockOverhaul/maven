@@ -421,9 +421,12 @@ portal {
 }
 """),
     h2("Fonts"),
-    raw(p("`font-family` accepts `inter` (default, bundled), `minecraft` (the vanilla font; alias `monospace`) and fonts you register. "
-          "Weights map to the nearest registered face (400/500/600/700)."),
-        code('FontManager.register("roboto", 400, false, "mymod:fonts/roboto-regular.ttf")\nFontManager.register("roboto", 700, false, "mymod:fonts/roboto-bold.ttf")'),
+    raw(p("`font-family` accepts `inter` (default, bundled), `minecraft` (the vanilla font; alias `monospace`) and your own TTF/OTF fonts, "
+          "declared with `@font-face` in a stylesheet or registered in code. `src` takes resource locations (the first one that exists is used; "
+          "`local()` and web URLs are not supported). Weights map to the nearest face (400/500/600/700); a range like `font-weight: 100 900` "
+          "covers every weight (variable fonts are drawn at their default instance). Fonts are global: a family declared once works in every screen."),
+        code('@font-face {\n    font-family: "Roboto";\n    src: url("mymod:fonts/roboto-regular.ttf") format("truetype");\n}\n@font-face {\n    font-family: "Roboto";\n    src: url("mymod:fonts/roboto-bold.ttf");\n    font-weight: bold;\n}\n.title { font-family: "Roboto", inter; }'),
+        code('// The same in code:\nFontManager.register("roboto", 400, false, "mymod:fonts/roboto-regular.ttf")\nFontManager.register("roboto", 700, false, "mymod:fonts/roboto-bold.ttf")'),
         shot("text.png", "Text: weights, sizes, wrapping, ellipsis, § codes and the Minecraft font")),
 ])
 
@@ -924,7 +927,7 @@ css = Page("css", "CSS", "Reference", (
         ["Structural", "`:first-child` `:last-child` `:only-child` `:root` `:not(…)` `:nth-child()` `:nth-last-child()` `:nth-of-type()` `:nth-last-of-type()` (`odd`, `even`, `3`, `2n+1`, `-n+3`)"],
         ["Pseudo-elements", "`::before` `::after` (also `:before`/`:after`) at the end of a selector, e.g. `.crumb + .crumb::before`, `.btn:hover::after`"],
         ["At-rules", "`@keyframes`; `@media` (nestable): comma lists, `not`/`only`, `screen`/`all`/`print`, `and`/`or`; features `width` `height` `aspect-ratio` `orientation` in GUI px, `resolution` = Minecraft's GUI scale (`min-resolution: 3dppx` or `3x`), `hover` (hover), `pointer` (fine), `prefers-reduced-motion` (no-preference), `prefers-color-scheme` (dark); `min-`/`max-` prefixes and range syntax `(400px <= width < 640px)`. Styles update when the window size or GUI scale changes."],
-    ]), note("Not supported: other pseudo-elements (`::placeholder`, `::selection`, …), `@import`, `@font-face`, `@container`, `@supports`, `:nth-child(… of S)`.", "warn")),
+    ]), note("Not supported: other pseudo-elements (`::placeholder`, `::selection`, …), `@import`, `@container`, `@supports`, `:nth-child(… of S)`.", "warn")),
     h2("::before and ::after"),
     raw(p("Generated boxes before and after an element's children, like the web. A rule needs `content` to create one: strings, `attr(name)` (an attribute of the element, e.g. `attr(title)`), or `\"\"` for purely decorative boxes. `content: none` (or `normal`) removes it."),
         ul("The box is inline by default, inherits from the element and can be styled like any element: `display`, sizes, `position: absolute`, backgrounds, borders, shadows, transitions and animations.",
@@ -1042,7 +1045,7 @@ differences = Page("differences", "Differences from the web", "Guide", (
            "Rotated or skewed text is rasterized at 2× and filtered: smooth, but a little softer than straight text.")),
     h2("Not supported (yet)"),
     raw(ul("3D transforms (a `transform` containing them is ignored).",
-           "`@import`, `@font-face` (register fonts with `FontManager`), pseudo-elements other than `::before` / `::after`, `:nth-child(… of S)`.",
+           "`@import`, pseudo-elements other than `::before` / `::after`, `:nth-child(… of S)`.",
            "`float`, subgrid, named grid lines. Grid `auto-fit` behaves like `auto-fill`.",
            "Images are resource locations (PNG, SVG or GIF), no URLs.")),
 ])
@@ -1130,6 +1133,7 @@ def release(ver, date, *items):
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("next", "unreleased",
+             "`@font-face` in stylesheets: declare your own TTF/OTF fonts (`src: url(\"mymod:fonts/x.ttf\")`, `font-weight` incl. ranges, `font-style`).",
              "`sortableList(group = …)`: an item can be dropped anywhere in a list's column (below a short list, or into an empty list without a `min-height`).",
              "**Fix:** sortable items with their own margins (e.g. one item with `margin-top`) no longer make the other items shift by the wrong distance while dragging.",
              "**Fix:** the first SVG image no longer freezes the game for ~0.1 s; SVG support is warmed up in the background at startup."),
