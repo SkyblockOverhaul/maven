@@ -448,11 +448,30 @@ scroll(className = "list", style = "max-height: 120px") {
     for (p in parties) PartyRow(p, key = p.id)
 }
 """, img=("scroll.png", "Scroll containers, horizontal scrolling and scrollbar styling")),
-    api("img", "tag", "An image from your resources (PNG, SVG or GIF). Its natural size is the image size; `object-fit` is supported. Animated GIFs (since 0.3.1) loop like in a browser; all images with the same `src` play in sync. GIFs are decoded in the background: a big one stays empty for a moment instead of freezing the game.",
+    api("img", "tag", "An image from your resources (PNG, SVG or GIF). Its natural size is the image size; `object-fit` is supported. Animated GIFs (since 0.3.1) loop like in a browser; all images with the same `src` play in sync. GIFs are decoded in the background: a big one stays empty for a moment instead of freezing the game. `currentColor` inside an SVG is the element's CSS `color`, so one icon file can be tinted from CSS (see below).",
         params=[("src", "String", None, "Resource location, e.g. `\"mymod:textures/gui/logo.png\"`."),
                 ("alt", "String?", "null", "Alternative text.")] + common("className", "id", "style", "key"),
         example='img("mymod:textures/gui/logo.svg", className = "logo", style = "width: 32px; height: 32px")',
         img=("images.png", "PNG, SVG and animated GIF images with object-fit")),
+    h3("Tinting SVG icons", "svg-current-color"),
+    raw(p("Draw the icon with `currentColor` and set the color in CSS. The icon follows `color` like text does: inherited "
+          "from its button, on `:hover`, in themes. One file is enough for light and dark UIs."),
+        code("""
+<!-- assets/mymod/icons/refresh.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+  <path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/>
+</svg>
+""", "xml", "SVG"), code("""
+button(className = "refresh") { img("mymod:icons/refresh.svg"); +"Refresh" }
+""", "kotlin", "Kotlin"), code("""
+.refresh img { width: 9px; height: 9px; }
+.refresh:hover { color: var(--guilib-accent); }   /* text and icon turn blue together */
+.light-theme .refresh { color: #1f2328; }           /* the same file on a light background */
+""", "css"), shot("svg-tint.png", "One refresh.svg in six colors, the light button hovered (Showcase → Images)"),
+        note("Browsers don't pass `color` into `<img>` SVGs (only into inline SVG); GuiLib does, for `img` and "
+             "`background-image: url(…)`. Parts with a fixed color stay as they are, and a `color` attribute on the root "
+             "`<svg>` wins. Each color is rasterized once and cached, so animating `color` on a big SVG costs a "
+             "re-rasterization per frame.")),
     api("item", "GuiLib tag", "Renders a Minecraft item stack like in an inventory slot (16×16 by default; size it with CSS). Needs a loaded world.",
         params=[("stack", "ItemStack", None, "The item stack (typed `Any` so the core stays Minecraft-free)."),
                 ("decorations", "Boolean", "true", "Show count and durability bar."),
@@ -1169,7 +1188,8 @@ differences = Page("differences", "Differences from the web", "Guide", (
     raw(ul("3D transforms (a `transform` containing them is ignored).",
            "`@import`, pseudo-elements other than `::before` / `::after`.",
            "`float`, subgrid, named grid lines.",
-           "Images are resource locations (PNG, SVG or GIF), no URLs.")),
+           "Images are resource locations (PNG, SVG or GIF), no URLs.",
+           "`currentColor` inside an SVG image is the element's CSS `color` (browsers use black for `<img>` SVGs).")),
 ])
 
 # =====================================================================================================================
@@ -1256,7 +1276,8 @@ def release(ver, date, *items):
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("next", "unreleased",
-             "Every color of the built-in controls is now a `--guilib-*` variable (`--guilib-button`, `--guilib-surface-3`, `--guilib-text-subtle`, `--guilib-danger` …). A theme only overrides variables on `:root` instead of the control rules; the defaults look the same as before. See [Theming built-in controls](css.html#theming)."),
+             "Every color of the built-in controls is now a `--guilib-*` variable (`--guilib-button`, `--guilib-surface-3`, `--guilib-text-subtle`, `--guilib-danger` …). A theme only overrides variables on `:root` instead of the control rules; the defaults look the same as before. See [Theming built-in controls](css.html#theming).",
+             "SVG images can be tinted from CSS: `currentColor` inside the SVG is the element's `color` (for `img` and `background-image`), so one icon file works on light and dark backgrounds and follows `:hover`. See [Tinting SVG icons](elements.html#svg-current-color)."),
     *release("0.9.0", "2026-10-03",
              "Minecraft 26.3 support: artifact `net.sbo:guilib-26.3-fabric`. Everything works the same as on 26.1.2 / 26.2 (typing, shortcuts, IME, cursors, shaders).",
              "On 26.3 `KeyboardEvent.keyCode` is Minecraft's new raw key code (an SDL scancode instead of a GLFW key code). Compare `key` (`\"Enter\"`, `\"a\"` …) instead, which is the same on every version."),
