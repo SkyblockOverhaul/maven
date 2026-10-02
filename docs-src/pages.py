@@ -476,7 +476,7 @@ controls = Page("controls", "Form controls", "Reference", (
              "comes from `--guilib-accent`.", "info"),
         shot("forms.png", "Text inputs, select, checkbox, switches and sliders")),
     h2("Text"),
-    api("input", "tag", "Single-line text field (`text`, `password`, `number`) or checkbox. Supports a blinking caret, mouse and Shift+arrow selection, double-click word selection and Ctrl/Cmd+A/C/X/V with the system clipboard. Typed `§` is shown literally.",
+    api("input", "tag", "Single-line text field (`text`, `password`, `number`) or checkbox. Supports a blinking caret, mouse and Shift+arrow selection, double-click word selection and Ctrl/Cmd+A/C/X/V with the system clipboard. Typed `§` is shown literally. `text-align: center` / `right` aligns the text, placeholder and caret.",
         params=[("type", "String", "\"text\"", "`\"text\"`, `\"password\"`, `\"number\"` (filters to digits, `-`, `.`, `,`) or `\"checkbox\"`."),
                 ("value", "String?", "null", "Controlled text. Without it the input keeps its own text."),
                 ("placeholder", "String?", "null", "Shown while empty."),
@@ -489,7 +489,7 @@ controls = Page("controls", "Form controls", "Reference", (
         keys="Arrows, Ctrl+arrows (words), Home/End, Backspace/Delete (Ctrl: words), Ctrl+A/C/X/V, first Escape blurs",
         example='input(value = name, onChange = { name = it.value }, placeholder = "Your IGN", maxLength = 16)',
         css=["input", ".guilib-input-text", ".guilib-placeholder", ".guilib-caret", ".guilib-selection"]),
-    api("textarea", "function", "Multi-line text field with word wrap. Enter inserts a line break; it scrolls vertically when the text is taller than `rows` lines.",
+    api("textarea", "function", "Multi-line text field with word wrap. Enter inserts a line break; it scrolls vertically when the text is taller than `rows` lines. `text-align: center` / `right` aligns every line.",
         params=[("value", "String?", "null", "Controlled text (with `\\n` line breaks)."),
                 ("onChange", "((InputEvent) -> Unit)?", "null", "Every edit; `it.value`."),
                 ("placeholder", "String?", "null", "Shown while empty."),
@@ -1167,6 +1167,7 @@ def release(ver, date, *items):
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("next", "unreleased",
+             "**Fix:** `text-align: center` / `right` on `input` and `textarea`: the caret, the selection and mouse clicks now follow the aligned text (before only the text moved).",
              "**Fix:** `entity(...)` models were drawn at the wrong place (or not at all) with an own screen scale (`useScreenScale`, `GuiLib.open(…, scale = …)`).",
              "Grid `repeat(auto-fit, …)` now collapses empty repeated tracks like browsers (before it behaved like `auto-fill`), so a few items stretch over the whole row.",
              "Scrollbars that hide when idle: add the class `guilib-autohide` to a scroll container; it fades out 600 ms after scrolling stops and comes back on scroll or hover. Built on the new GuiLib-only pseudo-class `:scrolling`, which you can use for your own effects.",
