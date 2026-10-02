@@ -956,7 +956,7 @@ css = Page("css", "CSS", "Reference", (
     raw(table(["Kind", "Supported"], [
         ["Simple", "`*` `tag` `.class` `#id` `[attr]` `[attr=v]` `[attr^=v]` `[attr$=v]` `[attr*=v]`, compounds like `button.primary:hover`"],
         ["Combinators", "descendant `a b`, child `a > b`, `a + b`, `a ~ b`, lists `a, b`"],
-        ["State", "`:hover` `:active` `:focus` `:focus-visible` `:focus-within` `:disabled` `:enabled` `:checked`"],
+        ["State", "`:hover` `:active` `:focus` `:focus-visible` `:focus-within` `:disabled` `:enabled` `:checked`, `:scrolling` (GuiLib-only: while the scroll position changes and 150 ms after)"],
         ["Structural", "`:first-child` `:last-child` `:only-child` `:root` `:not(…)` `:nth-child()` `:nth-last-child()` `:nth-of-type()` `:nth-last-of-type()` (`odd`, `even`, `3`, `2n+1`, `-n+3`); `:nth-child(even of .x)` / `:nth-last-child(… of S)` count only siblings matching S"],
         ["Pseudo-elements", "`::before` `::after` (also `:before`/`:after`) at the end of a selector, e.g. `.crumb + .crumb::before`, `.btn:hover::after`"],
         ["At-rules", "`@keyframes`; `@media` (nestable): comma lists, `not`/`only`, `screen`/`all`/`print`, `and`/`or`; features `width` `height` `aspect-ratio` `orientation` in GUI px, `resolution` = Minecraft's GUI scale (`min-resolution: 3dppx` or `3x`), `hover` (hover), `pointer` (fine), `prefers-reduced-motion` (no-preference), `prefers-color-scheme` (dark); `min-`/`max-` prefixes and range syntax `(400px <= width < 640px)`. Styles update when the window size or GUI scale changes. `@supports` (nestable with `@media`): `(property: value)` is true when GuiLib knows the property and can parse the value (custom properties and `var()` values count), `selector(…)` when it can parse the selector, plus `not` / `and` / `or` and parentheses; decided once when the sheet loads. Use it for fallbacks: `@supports not (display: contents) { … }`. `@font-face` (see [Fonts](elements.html#fonts))."],
@@ -990,7 +990,7 @@ css = Page("css", "CSS", "Reference", (
         ["Display", "`display`: `block` `inline` `inline-block` `flex` `inline-flex` `grid` `inline-grid` `none`"],
         ["Inline", "`vertical-align` (`baseline sub super text-top text-bottom middle top bottom`, a length, or a % of the line height) for `inline-block` / `inline-flex` / `img` / `item` boxes, and on `display: inline` elements (`span`, `sub`, `sup`, …) to raise or lower their text (shifts add up when nested; the line grows to fit)"],
         ["Position", "`position`: `static` `relative` `absolute` `fixed`; `top` `right` `bottom` `left` `inset` `z-index`"],
-        ["Overflow", "`overflow` `overflow-x` `overflow-y` (`visible` `hidden` `auto` `scroll`), `scrollbar-width` (`auto` `thin` `none`), `scrollbar-color: <thumb> <track>`"],
+        ["Overflow", "`overflow` `overflow-x` `overflow-y` (`visible` `hidden` `auto` `scroll`), `scrollbar-width` (`auto` `thin` `none`), `scrollbar-color: <thumb> <track>` (animatable); class `guilib-autohide` = scrollbar that fades out when idle, colors via `--guilib-scrollbar-thumb` / `--guilib-scrollbar-track`"],
         ["Flexbox", "`flex` `flex-direction` `flex-wrap` `flex-flow` `flex-grow` `flex-shrink` `flex-basis` `justify-content` `align-items` `align-self` `align-content` (lines of a wrapping container with a fixed height; `normal` stretches them) `place-items` `place-content` `gap` `row-gap` `column-gap` `order`, auto margins"],
         ["Grid", "`grid-template-columns` / `-rows` (`px % fr auto min-content max-content minmax() repeat(n | auto-fill | auto-fit, …)`), `grid-template-areas` `grid-area` `grid-row` `grid-column` `grid-*-start/-end` (lines, negative lines, `span n`, area names), `grid-auto-rows` `grid-auto-columns` `grid-auto-flow` (`row` `column` `dense`), `justify-items` `justify-self` `place-self`; `justify-content` / `align-content` distribute the columns / rows"],
     ]), shot("grid.png", "CSS grid: fr tracks, spans, template areas and auto-fill"),
@@ -1096,6 +1096,7 @@ recipes = Page("recipes", "Recipes", "Guide", "Short answers to common UI tasks.
         ["Responsive tiles", "`display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 4px`"],
         ["Sidebar + content", "`display: grid; grid-template-columns: 80px 1fr` (or `grid-template-areas`)"],
         ["Horizontal scroll row", "`display: flex; overflow-x: auto; overflow-y: hidden` with `flex-shrink: 0` on the children"],
+        ["Scrollbar that hides when idle", "`scroll(className = \"list guilib-autohide\")`; color: `.list { --guilib-scrollbar-thumb: #5b8def }`"],
         ["Zebra rows", "`.row:nth-child(even) { background-color: #2b2d31 }`; skipping hidden rows: `.row:nth-child(even of :not(.hidden))`"],
         ["Theme", "Define `--vars` on `:root` in one CSS file and use `var(--x)` everywhere"],
     ])),
@@ -1166,6 +1167,7 @@ def release(ver, date, *items):
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("next", "unreleased",
+             "Scrollbars that hide when idle: add the class `guilib-autohide` to a scroll container; it fades out 600 ms after scrolling stops and comes back on scroll or hover. Built on the new GuiLib-only pseudo-class `:scrolling`, which you can use for your own effects.",
              "`:nth-child(An+B of S)` / `:nth-last-child(… of S)`: count only siblings matching a selector list, e.g. zebra rows that skip hidden ones with `.row:nth-child(even of :not(.hidden))`.",
              "**Fix:** sibling selectors like `.a:hover + .b` or `.a.active ~ .b` now update when the earlier sibling's state or classes change.",
              "Own GUI scale per screen: `useScreenScale(2.5f)` / `GuiLib.open(…, scale = …)`, independent of Minecraft's, also fractional; everything incl. portals is laid out and drawn with it, text stays sharp, `vw`/`vh` and `@media (resolution)` follow, changes apply live.",
