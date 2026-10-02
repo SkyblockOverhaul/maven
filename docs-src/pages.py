@@ -369,7 +369,7 @@ scroll(className = "list", style = "max-height: 120px") {
     for (p in parties) PartyRow(p, key = p.id)
 }
 """, img=("scroll.png", "Scroll containers, horizontal scrolling and scrollbar styling")),
-    api("img", "tag", "An image from your resources (PNG, SVG or GIF). Its natural size is the image size; `object-fit` is supported. Animated GIFs (since 0.3.1) loop like in a browser; all images with the same `src` play in sync.",
+    api("img", "tag", "An image from your resources (PNG, SVG or GIF). Its natural size is the image size; `object-fit` is supported. Animated GIFs (since 0.3.1) loop like in a browser; all images with the same `src` play in sync. GIFs are decoded in the background: a big one stays empty for a moment instead of freezing the game.",
         params=[("src", "String", None, "Resource location, e.g. `\"mymod:textures/gui/logo.png\"`."),
                 ("alt", "String?", "null", "Alternative text.")] + common("className", "id", "style", "key"),
         example='img("mymod:textures/gui/logo.svg", className = "logo", style = "width: 32px; height: 32px")',
@@ -1132,7 +1132,8 @@ changelog = Page("changelog", "Changelog", "Overview", "What changed in each Gui
     *release("next", "unreleased",
              "`item(stack, tooltip = true)`: shows Minecraft's item tooltip while the icon is hovered, like in an inventory.",
              "`sortableList(exitMs = 200)`: removed items stay in place with `.leaving` so CSS can animate them out.",
-             "`sub` / `sup` tags and `vertical-align` on inline elements: text can be raised or lowered (H₂O, mc², footnotes)."),
+             "`sub` / `sup` tags and `vertical-align` on inline elements: text can be raised or lowered (H₂O, mc², footnotes).",
+             "**Fix:** big animated GIFs no longer freeze the game for a moment when they first appear; they are decoded in the background."),
     *release("0.5.0", "2026-10-02",
              "`presenceList(items, key, exitMs) { item, leaving -> }`: removed list items animate out at their old position.",
              "`::before` and `::after` with `content` (strings, `attr()`): generated boxes that can be styled, positioned and animated like elements.",
