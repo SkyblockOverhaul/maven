@@ -220,6 +220,17 @@ val Header = component("Header") {
     raw(p("Add text with `+\"text\"` or `text(value)` (any value, converted with `toString()`). Minecraft `§` color and format "
           "codes work in all text: `+\"§6Gold §lbold\"`."),
         code('span { +"Hello " ; b { +name } ; text(count) }')),
+    h3("Classes"),
+    raw(p("`className` works like HTML's `class` attribute: several classes are separated by **spaces**. "
+          "Commas don't separate classes, `\"a, b\"` would give the class `a,` (with the comma), so `.a` wouldn't match."),
+        code('''div(className = "card")                    // one class
+div(className = "card selected big")      // three classes: .card, .selected, .big
+div(className = "a, b")                   // wrong: classes "a," and "b"'''),
+        p("For classes that depend on a condition use `classNames(...)` (like the `clsx` package). It joins its parts with "
+          "spaces and skips `null`, `false`, empty strings and pairs whose condition is `false`. You don't need it for "
+          "fixed classes."),
+        code('''div(className = classNames("tab", "active" to isActive, "disabled" to !enabled, extraClass)) { … }
+// isActive = true, enabled = true, extraClass = null  →  "tab active"''')),
     h3("Helper functions (NodeBuilder)"),
     raw(p("Every `{ }` block of the DSL is a `NodeBuilder`, and all tags (`div`, `span`, `button`, …) are extension functions "
           "on it. To move part of a UI into its own function, declare the function on `NodeBuilder` too. Call it inside any "
@@ -409,7 +420,7 @@ elements = Page("elements", "Elements", "Reference", (
     "children go in the trailing lambda."), [
     h2("Common props", "common-props"),
     raw(table(["Prop", "Type", "Description"], [
-        ["`className`", "`String?`", "CSS classes, space separated. Use `classNames(...)` to build them conditionally."],
+        ["`className`", "`String?`", "CSS classes separated by **spaces**, like HTML `class`: `className = \"btn primary big\"`. Not commas. For conditional classes use `classNames(...)` (see [Classes](components.html#classes))."],
         ["`id`", "`String?`", "Element id for `#id` selectors and `querySelector`."],
         ["`style`", "`String?`", "Inline CSS as a **string**: `style = \"width: 20px; color: red\"`."],
         ["`key`", "`Any?`", "Identity among siblings (lists)."],
