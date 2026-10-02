@@ -1076,21 +1076,64 @@ css = Page("css", "CSS", "Reference", (
            "Transforms interpolate when both lists have the same functions in the same order (`none` matches anything).")),
     h2("Theming built-in controls", "theming"),
     raw(p("Every built-in control is made of plain elements with `guilib-*` classes and is styled by `ua.css`, which has the "
-          "lowest priority. Override anything in your own stylesheet, or change the shared variables on `:root`:"),
+          "lowest priority. **Every color in `ua.css` comes from a `--guilib-*` variable**, so a theme only overrides variables "
+          "on `:root` and never has to repeat the control rules:"),
         code("""
+/* A light theme for every built-in control */
 :root {
-    --guilib-accent: #e67e22;        /* sliders, switches, tabs, focus borders, selected states */
-    --guilib-surface: #2b2d31;
-    --guilib-surface-2: #1e1f22;
-    --guilib-border: #4e5058;
-    --guilib-text-muted: #b5bac1;
+    --guilib-text: #1f2328;
+    --guilib-text-muted: #59636e;
+    --guilib-accent: #0969da;
+    --guilib-surface: #f6f8fa;      /* select menu, modal, color picker */
+    --guilib-surface-2: #ffffff;    /* inputs, select, chips */
+    --guilib-surface-3: #ffffff;    /* tooltips, toasts, menus */
+    --guilib-border: #d1d9e0;
+    --guilib-button: #f0f2f4;
+    --guilib-button-hover: #e4e8eb;
 }
 
-/* Restyle a single control */
+/* Or restyle a single control */
 .guilib-switch.checked .guilib-switch-track { background-color: #3ba55d; border-color: #3ba55d; }
 .guilib-slider { width: 160px; }
-.guilib-toast.error { background-color: #2a1416; }
-""", "css"), p("The CSS classes of each control are listed on [Form controls](controls.html) and [Panels & overlays](overlays.html).")),
+""", "css"), shot("theming.png", "The same controls with the default, a light and an emerald set of variables (Showcase → Colors)"),
+        table(["Variable", "Default", "Used for"], [
+            ["`--guilib-text`", "`#f2f3f5`", "default text, buttons, inputs"],
+            ["`--guilib-text-strong`", "`#ffffff`", "selected tabs, segments, chips"],
+            ["`--guilib-text-secondary`", "`#dbdee1`", "toast messages"],
+            ["`--guilib-text-muted`", "`#b5bac1`", "inactive tabs / segments / chips, slider value, select arrow"],
+            ["`--guilib-text-subtle`", "`#80848e`", "placeholders, menu shortcuts and headers, empty hints"],
+            ["`--guilib-link`", "`#6cb6ff`", "`a`"],
+            ["`--guilib-accent`", "`#5b8def`", "sliders, switches, tabs, focus borders, selected states"],
+            ["`--guilib-accent-soft`", "`rgba(91, 141, 239, 0.25)`", "selected chip background"],
+            ["`--guilib-on-accent`", "`#ffffff`", "text and check marks on an accent background"],
+            ["`--guilib-on-accent-muted`", "`#e3e5e8`", "menu shortcut of the highlighted item"],
+            ["`--guilib-selection`", "`rgba(91, 141, 239, 0.45)`", "text selection in inputs"],
+            ["`--guilib-surface`", "`#2b2d31`", "select menu, modal, color picker, number input buttons"],
+            ["`--guilib-surface-2`", "`#1e1f22`", "inputs, select, radio, segmented, chips"],
+            ["`--guilib-surface-3`", "`#111214`", "tooltips, toasts, menus"],
+            ["`--guilib-highlight`", "`#3f4248`", "highlighted select option"],
+            ["`--guilib-tint` / `--guilib-tint-strong`", "`rgba(255, 255, 255, 0.06)` / `0.08`", "hover and focus tint on tabs, segments, details"],
+            ["`--guilib-shade`", "`rgba(0, 0, 0, 0.15)`", "details background"],
+            ["`--guilib-backdrop`", "`rgba(0, 0, 0, 0.55)`", "modal backdrop"],
+            ["`--guilib-border`", "`#4e5058`", "inputs, select, menus, modal, chips, radio"],
+            ["`--guilib-border-hover`", "`#6d6f78`", "hovered input, select, number input"],
+            ["`--guilib-border-strong`", "`#80848e`", "hovered switch, radio, chip"],
+            ["`--guilib-border-subtle`", "`#3f4147`", "tooltips, toasts, menus, tab underline, details, separators"],
+            ["`--guilib-divider`", "`rgba(255, 255, 255, 0.15)`", "`hr`"],
+            ["`--guilib-focus`", "`#ffffff`", "focus border of switch, radio, chip, slider"],
+            ["`--guilib-button` / `-hover` / `-active` / `-border`", "`#3c3f45` / `#4a4e55` / `#2f3236` / `#55595f`", "`button`"],
+            ["`--guilib-track` / `--guilib-track-border`", "`#4e5058` / `#5d6068`", "switch and slider track"],
+            ["`--guilib-thumb`", "`#ffffff`", "switch / slider thumb, checked radio dot"],
+            ["`--guilib-success` / `--guilib-warning` / `--guilib-danger`", "`#3ba55d` / `#faa61a` / `#ed4245`", "toast kinds, danger menu item (highlighted)"],
+            ["`--guilib-danger-text`", "`#f47b7d`", "danger menu item"],
+            ["`--guilib-scrollbar-thumb` / `-track`", "`#ffffff80` / `#00000020`", "scrollbars (also `.guilib-autohide`)"],
+            ["`--guilib-picker-handle` / `--guilib-swatch-border`", "`#ffffff` / `#ffffff55`", "color picker handles, color input swatch"],
+        ]),
+        note("Variables can also be set on any element to restyle just that subtree. Set `color: var(--guilib-text)` there "
+             "too, because the inherited text color was already resolved on `body`. Menus, tooltips, select dropdowns, modals "
+             "and toasts are rendered in an overlay under `body`, so they follow the variables on `:root` (or a "
+             "[`useBodyClass`](components.html#usebodyclass) theme class), not the subtree they were opened from."),
+        p("The CSS classes of each control are listed on [Form controls](controls.html) and [Panels & overlays](overlays.html).")),
 ])
 
 # =====================================================================================================================
@@ -1212,6 +1255,8 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
+    *release("next", "unreleased",
+             "Every color of the built-in controls is now a `--guilib-*` variable (`--guilib-button`, `--guilib-surface-3`, `--guilib-text-subtle`, `--guilib-danger` …). A theme only overrides variables on `:root` instead of the control rules; the defaults look the same as before. See [Theming built-in controls](css.html#theming)."),
     *release("0.9.0", "2026-10-03",
              "Minecraft 26.3 support: artifact `net.sbo:guilib-26.3-fabric`. Everything works the same as on 26.1.2 / 26.2 (typing, shortcuts, IME, cursors, shaders).",
              "On 26.3 `KeyboardEvent.keyCode` is Minecraft's new raw key code (an SDL scancode instead of a GLFW key code). Compare `key` (`\"Enter\"`, `\"a\"` …) instead, which is the same on every version."),
