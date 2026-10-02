@@ -1077,4 +1077,53 @@ val PartyFinder = component("PartyFinder") {
 """)),
 ])
 
-PAGES = [overview, getting_started, components, differences, recipes, elements, controls, overlays, events, css]
+# =====================================================================================================================
+# Changelog
+# =====================================================================================================================
+
+
+def release(ver, date, *items):
+    return [h2(f"{ver} · {date}", "v" + ver.replace(".", "-")), raw(ul(*items))]
+
+
+changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
+    *release("0.4.3", "2026-10-02",
+             "**Fix:** `select` (also searchable / `multiSelect`), `colorInput` and `tooltip` popups stay attached to their element when the window is resized or moved to another monitor. An open `contextMenu` closes on a viewport change, like in browsers.",
+             "`numberInput(allowEmpty = true)`: + on an empty field starts at `step` (at least `min`), − on an empty field does nothing, − at `min` empties the field again."),
+    *release("0.4.2", "2026-10-01",
+             "**Fix:** an element with both `height` and `max-height` (or `min-height`) now gives its children the clamped height, like the web. A `flex: 1` scroll body inside a `max-height` panel no longer overflows it."),
+    *release("0.4.1", "2026-10-01",
+             "`useClipboard()` to read and write the system clipboard (safe to call from any thread).",
+             "`numberInput(value: Int?/Double?, allowEmpty = true)`: the field may be empty (`null`).",
+             "`textarea(maxLines = …)`.",
+             "`playerHead(player, hat = true)` draws a player's face from a name, UUID, profile or player."),
+    *release("0.4.0", "2026-10-01",
+             "`box-shadow` (blur, spread, inset, several layers, animatable).",
+             "`@media` queries: width/height, orientation, aspect-ratio, `resolution` (= GUI scale), hover/pointer, range syntax, nesting.",
+             "Inline elements (`span`, `code`, …) paint background, border and shadow per line; their horizontal padding/border take space.",
+             "`text(component)` renders Minecraft `Component`s with colors, styles, hover text and click events; `useTranslation()` for translation keys with live language switching.",
+             "`sortableList`: drag between lists (`group`), auto-scroll near scroll edges, Alt + arrow keys move items. New `:focus-visible`.",
+             "Animated GIFs in `img` and `background-image`.",
+             "`cursor: grab / grabbing / row-resize / col-resize` with real hand cursors; drag cursors stay while the button is held.",
+             "Smoother rotated and skewed text.",
+             "**Fix:** a cancelled transition (e.g. dropping a sortable item quickly) no longer leaves a stale offset."),
+    *release("0.3.0", "2026-10-01",
+             "New controls: `switch`, `slider`, `rangeSlider`, `numberInput`, `radioGroup`, `segmented`, `chips`, `tabs`, `details` / `collapse`, `contextMenu`, `useToast()`, searchable `select`, `multiSelect`, `textarea`.",
+             "**Fix:** positioned elements no longer escape the clip of a scroll container."),
+    *release("0.2.1", "2026-10-01",
+             "`transform`: translate, scale, rotate, skew, matrix (animatable, hit-testing follows the shape). `presence()` for exit animations.",
+             "`:nth-child()`, `:nth-last-child()`, `:nth-of-type()`, `:nth-last-of-type()`.",
+             "`sortableList` (drag to reorder).",
+             "`entity(...)` and a fake player for rendering entities.",
+             "**Fixes:** Shift + wheel scrolls horizontally in game; horizontal-only scroll containers scroll with the plain wheel; § codes, selection and system clipboard in text inputs; caret stays on whole characters (emoji)."),
+    *release("0.2.0", "2026-10-01",
+             "CSS grid, transitions and `@keyframes`, linear and radial gradients (several background layers), `calc()` / `min()` / `max()` / `clamp()`.",
+             "`colorPicker` and `colorInput`.",
+             "Per-side borders on rounded boxes; child backgrounds in the corners of a rounded clip are rounded too."),
+    *release("0.1.1", "2026-10-01",
+             "Development tooling is no longer part of the published jar."),
+    *release("0.1.0", "2026-09-30",
+             "First release: components and hooks, CSS cascade and variables, box model, block/inline flow, flexbox, positioning, rounded corners, TTF text (Inter), PNG/SVG images, input, checkbox, select, tooltip, modal, portals, CSS hot reload."),
+])
+
+PAGES = [overview, getting_started, changelog, components, differences, recipes, elements, controls, overlays, events, css]
