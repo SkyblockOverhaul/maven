@@ -358,7 +358,7 @@ div(className = "card", id = "main", style = "padding: 4px", title = "A card", o
         ["`hr`", "block", "Thin divider line."],
         ["`span` `a` `strong` `b` `em` `i` `small` `code` `label`", "inline", "`b`/`strong` bold, `em`/`i` italic, `small` 0.85em, `code` Minecraft font. `label` forwards clicks to the first input/select/button inside."],
         ["`br`", "–", "Line break inside text."],
-        ["`text(component)`", "inline", "A Minecraft `Component` (chat message, item name, `Component.translatable`): colors incl. RGB, bold/italic/underline/strikethrough, `show_text` hover events as tooltips, click events (links, commands, copy) like in chat. `span.guilib-text`, clickable parts `.guilib-text-link`."],
+        ["`text(component)`", "inline", "A Minecraft `Component` (chat message, item name, `Component.translatable`): colors incl. RGB, bold/italic/underline/strikethrough, `show_text` hover events as tooltips, `show_item` hover events as Minecraft's item tooltip (`text(stack.displayName)` = an item link like in chat), click events (links, commands, copy) like in chat. `span.guilib-text`, clickable parts `.guilib-text-link`."],
         ["`button`", "inline-flex", "Centered content, `disabled`. Enter/Space activate a focused button. Disabled elements get no mouse events."],
     ])),
     h2("GuiLib tags"),
@@ -1126,7 +1126,8 @@ def release(ver, date, *items):
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("0.5.0", "unreleased",
              "`presenceList(items, key, exitMs) { item, leaving -> }`: removed list items animate out at their old position.",
-             "`::before` and `::after` with `content` (strings, `attr()`): generated boxes that can be styled, positioned and animated like elements."),
+             "`::before` and `::after` with `content` (strings, `attr()`): generated boxes that can be styled, positioned and animated like elements.",
+             "`text(component)`: `show_item` hover events (item links like `stack.displayName`) show Minecraft's item tooltip; `show_entity` shows the entity info with advanced tooltips (F3+H), like in chat."),
     *release("0.4.3", "2026-10-02",
              "**Fix:** `select` (also searchable / `multiSelect`), `colorInput` and `tooltip` popups stay attached to their element when the window is resized or moved to another monitor. An open `contextMenu` closes on a viewport change, like in browsers.",
              "`numberInput(allowEmpty = true)`: + on an empty field starts at `step` (at least `min`), − on an empty field does nothing, − at `min` empties the field again."),
