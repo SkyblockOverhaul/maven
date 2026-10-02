@@ -13,7 +13,7 @@ import shutil
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(os.path.dirname(ROOT), "guilib")
-VERSION = "0.4.3"
+VERSION = "0.5.0"
 MC_VERSIONS = ["26.1.2", "26.2"]
 
 

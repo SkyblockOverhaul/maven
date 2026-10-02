@@ -1125,7 +1125,7 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
-    *release("0.5.0", "unreleased",
+    *release("0.5.0", "2026-10-02",
              "`presenceList(items, key, exitMs) { item, leaving -> }`: removed list items animate out at their old position.",
              "`::before` and `::after` with `content` (strings, `attr()`): generated boxes that can be styled, positioned and animated like elements.",
              "`text(component)`: `show_item` hover events (item links like `stack.displayName`) show Minecraft's item tooltip; `show_entity` shows the entity info with advanced tooltips (F3+H), like in chat.",
