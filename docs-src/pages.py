@@ -265,6 +265,22 @@ useEffect(partyId) {                          // whenever partyId changes
     api("useInterval", "hook", "Calls the callback every `ms` milliseconds while mounted. Always calls the latest lambda, so it sees current state.",
         receiver="ComponentScope", sig="fun useInterval(ms: Long, callback: () -> Unit)",
         example="useInterval(1000) { elapsed++ }"),
+    api("useAsync", "hook", "Loads data without blocking the game: runs `load` on a GuiLib background thread after mount and whenever one of `keys` changes, then re-renders with the result. Returns `Async<T>`: `loading`, `value` (the last successful result, kept while a reload runs), `error`, `isSuccess`, `reload()`. Results of outdated loads (keys changed, component unmounted) are dropped. `load` runs on another thread: never touch the UI in it.",
+        receiver="ComponentScope", sig="""fun <T> useAsync(vararg keys: Any?, load: () -> T): Async<T>
+fun <T> useFuture(vararg keys: Any?, start: () -> CompletableFuture<T>): Async<T>
+fun <T> usePromise(vararg keys: Any?, start: (resolve: (T) -> Unit, reject: (Throwable) -> Unit) -> Unit): Async<T>""",
+        example="""
+val commit = useAsync { fetchLatestCommit() }          // blocking HTTP call, runs in the background
+span { +when {
+    commit.error != null -> "unavailable"
+    commit.loading -> "loading…"
+    else -> commit.value!!
+} }
+button(onClick = { commit.reload() }, disabled = commit.loading) { +"Reload" }
+
+// Already have a CompletableFuture?   useFuture(partyId) { api.party(partyId) }
+// Callback-style API (like JS Promise): usePromise(floor) { resolve, reject -> api.load(floor, resolve, reject) }
+""", notes=["`useFuture` does not cancel outdated futures (they may be shared); their result is ignored. `usePromise` ignores every call after the first `resolve`/`reject`."]),
     api("useDocumentEvent", "hook", "Listens to an event on the whole document while mounted (like `document.addEventListener` in an effect). Runs **before** element handlers; call `stopPropagation()` / `preventDefault()` to swallow the event.",
         receiver="ComponentScope", sig="fun useDocumentEvent(type: String, listener: (UIEvent) -> Unit)",
         example="""
@@ -1103,7 +1119,7 @@ recipes = Page("recipes", "Recipes", "Guide", "Short answers to common UI tasks.
     h2("Behaviour"),
     raw(table(["Task", "How"], [
         ["Close button", "`button(onClick = { GuiLib.close() }) { +\"✕\" }`"],
-        ["Async data", "Fetch in `useEffect`, call the state setter from the callback (thread-safe). Other work: `GuiLib.runOnUi { }`"],
+        ["Async data", "`val r = useAsync { slowCall() }` → show `r.loading` / `r.error` / `r.value`, `r.reload()` to refresh; `useFuture` / `usePromise` for futures and callback APIs"],
         ["Keyboard shortcut for the screen", "`useDocumentEvent(\"keydown\") { e -> if ((e as KeyboardEvent).key == \"r\") refresh() }`"],
         ["Feedback after an action", "`val toast = useToast()` → `toast.success(\"Saved\")`"],
         ["Save a setting once, not while dragging", "`slider(..., onChangeEnd = { config.save() })`"],
@@ -1167,6 +1183,8 @@ def release(ver, date, *items):
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("next", "unreleased",
+             "`useAsync { … }`, `useFuture { … }` and `usePromise { resolve, reject -> … }`: load data in the background (HTTP, files) and render `loading` / `value` / `error`, with `reload()`; outdated results are dropped.",
+             "Faster rendering: gradients are cached instead of rebuilt on every repaint, animated screens are laid out and painted once per frame instead of twice, and drawn text no longer allocates every frame.",
              "**Fix:** a finished `@keyframes` animation no longer plays again whenever its element is restyled (hover, class or inline style changes). Sortable items with an entry animation jumped back to their old place over and over while being dragged."),
     *release("0.7.0", "2026-10-02",
              "**Fix:** `textarea(rows = n)` is exactly n lines tall (it was slightly too short, so n lines already showed a scrollbar), also with custom padding or borders.",
