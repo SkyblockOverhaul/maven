@@ -1129,7 +1129,7 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
-    *release("next", "unreleased",
+    *release("0.6.0", "2026-10-02",
              "`item(stack, tooltip = true)`: shows Minecraft's item tooltip while the icon is hovered, like in an inventory.",
              "`sortableList(exitMs = 200)`: removed items stay in place with `.leaving` so CSS can animate them out.",
              "`sub` / `sup` tags and `vertical-align` on inline elements: text can be raised or lowered (H₂O, mc², footnotes).",
