@@ -303,6 +303,29 @@ text(Component.translatable("mymod.gui.hint").withStyle(ChatFormatting.GRAY))
     h2("Document & misc"),
     api("useDocument", "hook", "The `Document` of the screen: `viewportWidth` / `viewportHeight`, `focusedElement`, `focus(el)`, `addEventListener`, `setTimeout` / `setInterval`, `post { }`.",
         receiver="ComponentScope", sig="fun useDocument(): Document"),
+    api("useBodyClass", "hook", "Puts a class on the body while the component is mounted and `enabled`, e.g. a theme or font switch without reopening the screen. Portals (modals, tooltips, toasts) live under the body, so they follow too. Removed again on unmount.",
+        receiver="ComponentScope", sig="fun useBodyClass(className: String, enabled: Boolean = true)",
+        example="""
+// CSS: body.font-mc { font-family: minecraft }
+useBodyClass("font-mc", settings.minecraftFont)
+"""),
+    api("useBodyStyle", "hook", "Sets one inline property or CSS variable on the body while mounted (`null` sets nothing). Inherited properties and variables reach every element.",
+        receiver="ComponentScope", sig="fun useBodyStyle(property: String, value: String?)",
+        example="""
+useBodyStyle("--accent", accentColor)   // CSS: .button { background: var(--accent) }
+"""),
+    api("Element.classList / setStyleProperty", "function", "Change an element's classes and inline style like in the DOM: `classList.add(…)`, `remove(…)`, `toggle(name, force)`, `replace(old, new)`, `inlineStyle = \"…\"`, `setStyleProperty(name, value)`, `removeStyleProperty(name)`, `getStyleProperty(name)`. Meant for `useDocument().body`; from outside the UI use `GuiLib.currentDocument()?.body` on the render thread. On an element you render with `className` / `style`, the next render sets them back (like React).",
+        receiver="Element", sig="""val classList: ClassList   // Set<String> + add / remove / toggle / replace
+var inlineStyle: String?
+fun setStyleProperty(property: String, value: String?)
+fun removeStyleProperty(property: String)
+fun getStyleProperty(property: String): String?
+
+fun GuiLib.currentDocument(): Document?""",
+        example="""
+// After a config change, outside any component:
+GuiLib.runOnUi { GuiLib.currentDocument()?.body?.classList?.toggle("font-mc", config.minecraftFont) }
+"""),
     api("useToast", "hook", "The toaster of this screen, for short notifications. See [Toasts](overlays.html#usetoast).",
         receiver="ComponentScope", sig="fun useToast(): Toaster"),
     api("useClipboard", "hook", "The system clipboard, e.g. for a \"Copy note\" button. `set(text)` is safe to call from any thread; call `get()` on the UI thread (event handlers, effects). The same object as `useDocument().clipboard`.",
@@ -1133,6 +1156,7 @@ def release(ver, date, *items):
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("next", "unreleased",
+             "`useBodyClass` / `useBodyStyle` and DOM-like `classList.add/remove/toggle`, `setStyleProperty` on elements (and `GuiLib.currentDocument()`): switch a theme or font at runtime without reopening the screen.",
              "`@font-face` in stylesheets: declare your own TTF/OTF fonts (`src: url(\"mymod:fonts/x.ttf\")`, `font-weight` incl. ranges, `font-style`).",
              "`sortableList(group = …)`: an item can be dropped anywhere in a list's column (below a short list, or into an empty list without a `min-height`).",
              "**Fix:** sortable items with their own margins (e.g. one item with `margin-top`) no longer make the other items shift by the wrong distance while dragging.",
