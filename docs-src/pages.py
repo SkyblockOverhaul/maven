@@ -949,8 +949,8 @@ css = Page("css", "CSS", "Reference", (
         ["State", "`:hover` `:active` `:focus` `:focus-visible` `:focus-within` `:disabled` `:enabled` `:checked`"],
         ["Structural", "`:first-child` `:last-child` `:only-child` `:root` `:not(…)` `:nth-child()` `:nth-last-child()` `:nth-of-type()` `:nth-last-of-type()` (`odd`, `even`, `3`, `2n+1`, `-n+3`)"],
         ["Pseudo-elements", "`::before` `::after` (also `:before`/`:after`) at the end of a selector, e.g. `.crumb + .crumb::before`, `.btn:hover::after`"],
-        ["At-rules", "`@keyframes`; `@media` (nestable): comma lists, `not`/`only`, `screen`/`all`/`print`, `and`/`or`; features `width` `height` `aspect-ratio` `orientation` in GUI px, `resolution` = Minecraft's GUI scale (`min-resolution: 3dppx` or `3x`), `hover` (hover), `pointer` (fine), `prefers-reduced-motion` (no-preference), `prefers-color-scheme` (dark); `min-`/`max-` prefixes and range syntax `(400px <= width < 640px)`. Styles update when the window size or GUI scale changes."],
-    ]), note("Not supported: other pseudo-elements (`::placeholder`, `::selection`, …), `@import`, `@container`, `@supports`, `:nth-child(… of S)`.", "warn")),
+        ["At-rules", "`@keyframes`; `@media` (nestable): comma lists, `not`/`only`, `screen`/`all`/`print`, `and`/`or`; features `width` `height` `aspect-ratio` `orientation` in GUI px, `resolution` = Minecraft's GUI scale (`min-resolution: 3dppx` or `3x`), `hover` (hover), `pointer` (fine), `prefers-reduced-motion` (no-preference), `prefers-color-scheme` (dark); `min-`/`max-` prefixes and range syntax `(400px <= width < 640px)`. Styles update when the window size or GUI scale changes. `@supports` (nestable with `@media`): `(property: value)` is true when GuiLib knows the property and can parse the value (custom properties and `var()` values count), `selector(…)` when it can parse the selector, plus `not` / `and` / `or` and parentheses; decided once when the sheet loads. Use it for fallbacks: `@supports not (display: contents) { … }`. `@font-face` (see [Fonts](elements.html#fonts))."],
+    ]), note("Not supported: other pseudo-elements (`::placeholder`, `::selection`, …), `@import`, `@container`, `:nth-child(… of S)`.", "warn")),
     h2("::before and ::after"),
     raw(p("Generated boxes before and after an element's children, like the web. A rule needs `content` to create one: strings, `attr(name)` (an attribute of the element, e.g. `attr(title)`), or `\"\"` for purely decorative boxes. `content: none` (or `normal`) removes it."),
         ul("The box is inline by default, inherits from the element and can be styled like any element: `display`, sizes, `position: absolute`, backgrounds, borders, shadows, transitions and animations.",
@@ -1156,6 +1156,7 @@ def release(ver, date, *items):
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("next", "unreleased",
+             "`@supports` with `(property: value)`, `selector(…)`, `not` / `and` / `or` (true when GuiLib can parse it), for CSS fallbacks.",
              "`useBodyClass` / `useBodyStyle` and DOM-like `classList.add/remove/toggle`, `setStyleProperty` on elements (and `GuiLib.currentDocument()`): switch a theme or font at runtime without reopening the screen.",
              "`@font-face` in stylesheets: declare your own TTF/OTF fonts (`src: url(\"mymod:fonts/x.ttf\")`, `font-weight` incl. ranges, `font-style`).",
              "`sortableList(group = …)`: an item can be dropped anywhere in a list's column (below a short list, or into an empty list without a `min-height`).",
