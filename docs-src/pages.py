@@ -790,6 +790,26 @@ presence(visible = open, exitMs = 200) { leaving ->
 @keyframes slide-in { from { opacity: 0; transform: translateY(-8px); } }
 @keyframes slide-out { to { opacity: 0; transform: translateY(-8px); } }
 """, "css")),
+    api("presenceList", "function", ["`presence` for every item of a list. Items removed from `items` stay rendered at their old position with `leaving = true` for `exitMs`, then they are removed. New items mount normally, so their CSS `animation` plays.",
+                                     "The items are rendered straight into the parent (no wrapper element). An item that comes back during its exit is a normal item again. To let the rows below slide up, give rows a fixed `height` with `overflow: hidden` and animate `height` and `margin` to 0 in the exit keyframes. Not for `sortableList` items."],
+        sig="fun <T> NodeBuilder.presenceList(items: List<T>, key: (T) -> Any?, exitMs: Long, listKey: Any? = null, children: NodeBuilder.(item: T, leaving: Boolean) -> Unit)",
+        params=[("items", "List<T>", None, ""),
+                ("key", "(T) -> Any?", None, "Stable key per item."),
+                ("exitMs", "Long", None, "How long a removed item stays (match your exit animation)."),
+                ("listKey", "Any?", "null", "Key of the list itself.")],
+        example="""
+presenceList(parties, key = { it.id }, exitMs = 200) { party, leaving ->
+    div(className = classNames("row", "leaving" to leaving)) {
+        span { +party.leader }
+        button(onClick = { parties = parties - party }) { +"✕" }
+    }
+}
+""", extra=code("""
+.row { height: 16px; overflow: hidden; margin-bottom: 2px; animation: row-in 200ms ease-out; }
+.row.leaving { animation: row-out 200ms ease-in forwards; pointer-events: none; }
+@keyframes row-in { from { opacity: 0; height: 0; margin-bottom: 0; } }
+@keyframes row-out { to { opacity: 0; height: 0; margin-bottom: 0; transform: translateX(12px); } }
+""", "css")),
     h2("Lists"),
     api("sortableList", "function", ["A drag-to-reorder list. Items move with `transform` while dragging; dropping calls `onReorder` with the reordered list.",
                                      "A drag starts after 3 px, so clicks inside items keep working, and the release after a drag clicks nothing. With `handle = true` only elements with the class `guilib-drag-handle` start a drag (use it when items contain inputs).",
@@ -1039,6 +1059,7 @@ recipes = Page("recipes", "Recipes", "Guide", "Short answers to common UI tasks.
         ["Fade in on open", "`@keyframes fade-in { from { opacity: 0 } }` + `.panel { animation: fade-in 200ms ease-out }`"],
         ["Staggered slide-in", "`.item { animation: slide-in 300ms ease-out backwards }` and `style = \"animation-delay: ${i * 50}ms\"`"],
         ["Slide out before removal", "`presence(visible = open, exitMs = 200) { leaving -> … }` + `.leaving { animation: slide-out 200ms forwards }`"],
+        ["Animate removed list rows", "`presenceList(rows, key = { it.id }, exitMs = 200) { row, leaving -> … }` + `.leaving { animation: row-out 200ms forwards }`"],
         ["Grow on hover", "`.card { transition: transform 150ms ease-out } .card:hover { transform: scale(1.05) }`"],
         ["Spinner", "`@keyframes spin { to { transform: rotate(360deg) } }` + `.spinner { animation: spin 1s linear infinite }`"],
         ["Animated height", "`collapse(open = expanded) { … }` (or `details`)"],
@@ -1087,6 +1108,8 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
+    *release("0.5.0", "unreleased",
+             "`presenceList(items, key, exitMs) { item, leaving -> }`: removed list items animate out at their old position."),
     *release("0.4.3", "2026-10-02",
              "**Fix:** `select` (also searchable / `multiSelect`), `colorInput` and `tooltip` popups stay attached to their element when the window is resized or moved to another monitor. An open `contextMenu` closes on a viewport change, like in browsers.",
              "`numberInput(allowEmpty = true)`: + on an empty field starts at `step` (at least `min`), − on an empty field does nothing, − at `min` empties the field again."),
