@@ -792,7 +792,7 @@ presence(visible = open, exitMs = 200) { leaving ->
 @keyframes slide-out { to { opacity: 0; transform: translateY(-8px); } }
 """, "css")),
     api("presenceList", "function", ["`presence` for every item of a list. Items removed from `items` stay rendered at their old position with `leaving = true` for `exitMs`, then they are removed. New items mount normally, so their CSS `animation` plays.",
-                                     "The items are rendered straight into the parent (no wrapper element). An item that comes back during its exit is a normal item again. To let the rows below slide up, give rows a fixed `height` with `overflow: hidden` and animate `height` and `margin` to 0 in the exit keyframes. Not for `sortableList` items."],
+                                     "The items are rendered straight into the parent (no wrapper element). An item that comes back during its exit is a normal item again. To let the rows below slide up, give rows a fixed `height` with `overflow: hidden` and animate `height` and `margin` to 0 in the exit keyframes. For `sortableList` use its `exitMs` parameter."],
         sig="fun <T> NodeBuilder.presenceList(items: List<T>, key: (T) -> Any?, exitMs: Long, listKey: Any? = null, children: NodeBuilder.(item: T, leaving: Boolean) -> Unit)",
         params=[("items", "List<T>", None, ""),
                 ("key", "(T) -> Any?", None, "Stable key per item."),
@@ -815,7 +815,8 @@ presenceList(parties, key = { it.id }, exitMs = 200) { party, leaving ->
     api("sortableList", "function", ["A drag-to-reorder list. Items move with `transform` while dragging; dropping calls `onReorder` with the reordered list.",
                                      "A drag starts after 3 px, so clicks inside items keep working, and the release after a drag clicks nothing. With `handle = true` only elements with the class `guilib-drag-handle` start a drag (use it when items contain inputs).",
                                      "Dragging near the edge of a scroll container scrolls it. Items are focusable; Alt + arrow keys move the focused item.",
-                                     "Lists with the same `group` exchange items (kanban boards): outside its list the item follows the mouse as a ghost (in a portal; it repeats `className`/`itemClassName`, so style it through those), the list under the mouse opens a gap, and the drop calls the source's `onReorder` without the item and the target's with it. Give empty lists a `min-height`."],
+                                     "Lists with the same `group` exchange items (kanban boards): outside its list the item follows the mouse as a ghost (in a portal; it repeats `className`/`itemClassName`, so style it through those), the list under the mouse opens a gap, and the drop calls the source's `onReorder` without the item and the target's with it. Give empty lists a `min-height`.",
+                                     "With `exitMs` > 0 removed items stay at their old position for that long with the item class `.leaving` (not clickable, no drag starts meanwhile), so CSS can animate them out. Items dragged into another list of the group move without an exit."],
         params=[("items", "List<T>", None, ""),
                 ("key", "(T) -> Any?", None, "Stable key per item."),
                 ("onReorder", "((List<T>) -> Unit)?", None, "The reordered list; store it in state."),
@@ -824,6 +825,7 @@ presenceList(parties, key = { it.id }, exitMs = 200) { party, leaving ->
                 ("className", "String?", "null", ""), ("itemClassName", "String?", "null", ""),
                 ("listKey", "Any?", "null", "Key of the list itself."),
                 ("group", "String?", "null", "Lists with the same group exchange items."),
+                ("exitMs", "Long", "0", "How long removed items stay with `.leaving` (match your exit animation)."),
                 ("children", "NodeBuilder.(item: T, dragging: Boolean) -> Unit", None, "Item content.")],
         keys="Escape cancels a drag; Alt + ↑/↓ (←/→ when horizontal), Alt + Home/End move the focused item",
         example="""
@@ -1078,6 +1080,7 @@ recipes = Page("recipes", "Recipes", "Guide", "Short answers to common UI tasks.
         ["Staggered slide-in", "`.item { animation: slide-in 300ms ease-out backwards }` and `style = \"animation-delay: ${i * 50}ms\"`"],
         ["Slide out before removal", "`presence(visible = open, exitMs = 200) { leaving -> … }` + `.leaving { animation: slide-out 200ms forwards }`"],
         ["Animate removed list rows", "`presenceList(rows, key = { it.id }, exitMs = 200) { row, leaving -> … }` + `.leaving { animation: row-out 200ms forwards }`"],
+        ["Animate removed sortable rows", "`sortableList(…, exitMs = 200)` + `.my-list .guilib-sortable-item.leaving { animation: row-out 200ms forwards }`"],
         ["Grow on hover", "`.card { transition: transform 150ms ease-out } .card:hover { transform: scale(1.05) }`"],
         ["Spinner", "`@keyframes spin { to { transform: rotate(360deg) } }` + `.spinner { animation: spin 1s linear infinite }`"],
         ["Animated height", "`collapse(open = expanded) { … }` (or `details`)"],
@@ -1127,7 +1130,8 @@ def release(ver, date, *items):
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("next", "unreleased",
-             "`item(stack, tooltip = true)`: shows Minecraft's item tooltip while the icon is hovered, like in an inventory."),
+             "`item(stack, tooltip = true)`: shows Minecraft's item tooltip while the icon is hovered, like in an inventory.",
+             "`sortableList(exitMs = 200)`: removed items stay in place with `.leaving` so CSS can animate them out."),
     *release("0.5.0", "2026-10-02",
              "`presenceList(items, key, exitMs) { item, leaving -> }`: removed list items animate out at their old position.",
              "`::before` and `::after` with `content` (strings, `attr()`): generated boxes that can be styled, positioned and animated like elements.",
