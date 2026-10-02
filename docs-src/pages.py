@@ -1129,6 +1129,8 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
+    *release("next", "unreleased",
+             "**Fix:** the first SVG image no longer freezes the game for ~0.1 s; SVG support is warmed up in the background at startup."),
     *release("0.6.0", "2026-10-02",
              "`item(stack, tooltip = true)`: shows Minecraft's item tooltip while the icon is hovered, like in an inventory.",
              "`sortableList(exitMs = 200)`: removed items stay in place with `.leaving` so CSS can animate them out.",
