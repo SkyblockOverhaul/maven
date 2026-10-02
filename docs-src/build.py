@@ -284,7 +284,13 @@ REFERENCE_NOTE = note(
     "events and CSS features need no extra dependency or setup, they are available in every DSL block and every "
     "stylesheet. Elements and controls come with default styles from GuiLib's built-in stylesheet "
     "(`guilib:css/ua.css`, like a browser's defaults): a `button` already looks like a button, a `select` opens a "
-    "menu. Your own CSS always wins over these defaults.", kind="tip", title="Built in")
+    "menu. Your own CSS always wins over these defaults. Add GuiLib as a dependency (see "
+    "[Installation](getting-started.html#installation)) and import:", kind="tip", title="Built in") + code("""
+import net.sbo.guilib.core.dsl.*      // all tags, controls, overlays, hooks: div, button, select, modal, useToast, …
+import net.sbo.guilib.core.dom.*      // component, createContext, Element
+import net.sbo.guilib.core.event.*    // MouseEvent, KeyboardEvent, InputEvent, … (only when you name the types)
+import net.sbo.guilib.fabric.*        // GuiLib.open / close, text(Component), useTranslation()
+""")
 
 
 def build():
