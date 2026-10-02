@@ -413,11 +413,6 @@ events_props = "`onClick`, `onDoubleClick`, `onContextMenu`, `onMouseDown`, `onM
 elements = Page("elements", "Elements", "Reference", (
     "Tag functions build elements with HTML names. Every tag takes the same common props and event handlers; "
     "children go in the trailing lambda."), [
-    raw(p("All tags on this page (and the controls on [Form controls](controls.html) and [Panels & overlays](overlays.html)) "
-          "are **built into GuiLib and ready to use**: they are available in every DSL block without any setup, and they "
-          "come with default styles from GuiLib's built-in stylesheet (`guilib:css/ua.css`, like a browser's default "
-          "styles). A `button` already looks like a button, a `select` opens a menu, `h1` is big and bold. Your own "
-          "stylesheets always win over these defaults, so every tag can be restyled with normal CSS.")),
     h2("Common props", "common-props"),
     raw(table(["Prop", "Type", "Description"], [
         ["`className`", "`String?`", "CSS classes separated by **spaces**, like HTML `class`: `className = \"btn primary big\"`. Not commas (see [Classes](components.html#classes))."],

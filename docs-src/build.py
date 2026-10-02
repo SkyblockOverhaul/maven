@@ -278,6 +278,15 @@ def plain(htm):
     return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", htm))).strip()
 
 
+# Shown at the top of every Reference page.
+REFERENCE_NOTE = note(
+    "Everything on the Reference pages is **included in GuiLib and ready to use**: the tags, controls, overlays, "
+    "events and CSS features need no extra dependency or setup, they are available in every DSL block and every "
+    "stylesheet. Elements and controls come with default styles from GuiLib's built-in stylesheet "
+    "(`guilib:css/ua.css`, like a browser's defaults): a `button` already looks like a button, a `select` opens a "
+    "menu. Your own CSS always wins over these defaults.", kind="tip", title="Built in")
+
+
 def build():
     from pages import PAGES
     os.makedirs(OUT, exist_ok=True)
@@ -288,6 +297,8 @@ def build():
         prev = f'<a class="prev" href="{prev_pg.file}"><span>Previous</span>{esc(prev_pg.title)}</a>' if prev_pg else "<span></span>"
         nxt = f'<a class="next" href="{next_pg.file}"><span>Next</span>{esc(next_pg.title)}</a>' if next_pg else "<span></span>"
         body = render_blocks(pg.blocks)
+        if pg.group == "Reference":
+            body = REFERENCE_NOTE + body
         doc = TEMPLATE.format(
             title=esc(pg.title), desc=esc(plain(md(pg.lead))[:160]), version=VERSION, social=SOCIAL, nav=render_nav(PAGES, pg),
             group=esc(pg.group), lead=f'<p class="lead">{md(pg.lead)}</p>', body=body, prev=prev, next=nxt,
