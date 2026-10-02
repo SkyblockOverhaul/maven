@@ -112,6 +112,11 @@ code { font-family: var(--mono); font-size: 0.86em; font-variant-ligatures: none
 .top-links { display: flex; gap: 16px; font-size: 14px; }
 .top-links a { color: var(--muted); }
 .top-links a:hover { color: var(--text-strong); text-decoration: none; }
+.top-links { align-items: center; }
+.icon-link { display: inline-flex; align-items: center; color: var(--muted); }
+.icon-link svg { display: block; }
+.icon-link:hover { color: var(--text-strong); text-decoration: none; }
+.footer-links { display: flex; gap: 14px; margin-top: 10px; }
 
 /* ---- layout ---- */
 .layout {
