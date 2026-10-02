@@ -656,7 +656,7 @@ numberInput(value = minCata, onChange = { minCata = it }, allowEmpty = true, min
                 ("placeholder", "String?", "null", "Shown when nothing is selected."),
                 ("searchable", "Boolean", "false", "Add a search field to the menu."),
                 ("searchPlaceholder", "String?", "null", "Placeholder of the search field (default \"Search…\")."),
-                ("options", "SelectBuilder.() -> Unit", None, "`option(value, label, disabled = false)` or `option(value) { +\"Label\" }`.")] + C,
+                ("options", "SelectBuilder.() -> Unit", None, "`option(value, label, disabled = false, title = null)` or `option(value) { +\"Label\" }`. `title` is a tooltip for that entry, shown above the open menu (the same `option` works in `multiSelect`, `radioGroup`, `segmented` and `chips`).")] + C,
         keys="ArrowUp/Down open and move, Enter/Space choose, Escape closes; typing goes to the search field",
         example="""
 select(value = mode, onChange = { mode = it.value }) {
@@ -1279,7 +1279,8 @@ changelog = Page("changelog", "Changelog", "Overview", "What changed in each Gui
     *release("next", "unreleased",
              "Every color of the built-in controls is now a `--guilib-*` variable (`--guilib-button`, `--guilib-surface-3`, `--guilib-text-subtle`, `--guilib-danger` …). A theme only overrides variables on `:root` instead of the control rules; the defaults look the same as before. See [Theming built-in controls](css.html#theming).",
              "SVG images can be tinted from CSS: `currentColor` inside the SVG is the element's `color` (for `img` and `background-image`), so one icon file works on light and dark backgrounds and follows `:hover`. See [Tinting SVG icons](elements.html#svg-current-color).",
-             "`border-style: dashed` and `dotted` are drawn (before, they were drawn solid): Chrome-like dash spacing, round dots, rounded corners supported. Handy for drop zones: `border: 1px dashed var(--guilib-text-subtle)`."),
+             "`border-style: dashed` and `dotted` are drawn (before, they were drawn solid): Chrome-like dash spacing, round dots, rounded corners supported. Handy for drop zones: `border: 1px dashed var(--guilib-text-subtle)`.",
+             "`option(…, title = \"…\")`: hover text for single entries of `select`, `multiSelect`, `radioGroup`, `segmented` and `chips`. **Fix:** `title` tooltips are drawn above open menus and dropdowns instead of behind them."),
     *release("0.9.0", "2026-10-03",
              "Minecraft 26.3 support: artifact `net.sbo:guilib-26.3-fabric`. Everything works the same as on 26.1.2 / 26.2 (typing, shortcuts, IME, cursors, shaders).",
              "On 26.3 `KeyboardEvent.keyCode` is Minecraft's new raw key code (an SDL scancode instead of a GLFW key code). Compare `key` (`\"Enter\"`, `\"a\"` …) instead, which is the same on every version."),
