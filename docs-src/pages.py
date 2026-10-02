@@ -1051,7 +1051,7 @@ css = Page("css", "CSS", "Reference", (
     h2("Box model & layout", "layout"),
     raw(table(["Group", "Properties"], [
         ["Box", "`width` `height` `min-width` `min-height` `max-width` `max-height` `box-sizing` `margin(-*)` `padding(-*)`"],
-        ["Border", "`border` `border-(top|right|bottom|left)` `border-width` `border-style` `border-color` `border-*-width/-style/-color` `border-radius` `border-*-radius`"],
+        ["Border", "`border` `border-(top|right|bottom|left)` `border-width` `border-style` `border-color` `border-*-width/-style/-color` `border-radius` `border-*-radius`; styles `none` `hidden` `solid` `dashed` `dotted` (dashes are 3× the border width with the gaps stretched to fit and a dash in each square corner, like Chrome; dots are round from 2px; a uniform dashed border draws its rounded corners as solid arcs, a dotted one puts dots along them; the background shows through the gaps)"],
         ["Display", "`display`: `block` `inline` `inline-block` `flex` `inline-flex` `grid` `inline-grid` `none`"],
         ["Inline", "`vertical-align` (`baseline sub super text-top text-bottom middle top bottom`, a length, or a % of the line height) for `inline-block` / `inline-flex` / `img` / `item` boxes, and on `display: inline` elements (`span`, `sub`, `sup`, …) to raise or lower their text (shifts add up when nested; the line grows to fit)"],
         ["Position", "`position`: `static` `relative` `absolute` `fixed`; `top` `right` `bottom` `left` `inset` `z-index`"],
@@ -1068,7 +1068,7 @@ css = Page("css", "CSS", "Reference", (
         ["Visual", "`opacity` `visibility` `object-fit`"],
         ["Interaction", "`cursor` (`auto` `default` `pointer` `text` `not-allowed` `crosshair` `move` `ns-resize` `ew-resize` `row-resize` `col-resize` `grab` `grabbing` `none`; `none` hides the system cursor (draw your own at the mouse with `onMouseMove`); a drag cursor stays while the left button is held), `pointer-events`, `user-select` (parsed only)"],
         ["Generated content", "`content` (strings, `attr(name)`, `none` / `normal`), only on `::before` / `::after`"],
-    ]), shot("boxes.png", "Rounded corners, borders, gradients, shadows and opacity, drawn by GuiLib's own anti-aliased shader")),
+    ]), shot("boxes.png", "Rounded corners, borders (solid, dashed, dotted), gradients, shadows and opacity, drawn by GuiLib's own anti-aliased shader")),
     h2("Animation"),
     raw(p("`transition` (+ `-property` `-duration` `-timing-function` `-delay`) and `animation` (+ `-name` `-duration` "
           "`-timing-function` `-delay` `-iteration-count` `-direction` `-fill-mode` `-play-state`) with `@keyframes`. "
@@ -1175,6 +1175,7 @@ differences = Page("differences", "Differences from the web", "Guide", (
     h2("Rendering"),
     raw(ul("`overflow: hidden` clips **rectangularly**. With `border-radius` on the clipping element, child backgrounds that sit exactly in one of its corners (headers, footers, sidebars) are rounded to match; other content is not cut to the curve.",
            "Per-side borders on a box with `border-radius` are drawn as straight strips that stop at the rounded corners. Uniform borders are exact.",
+           "`dashed` / `dotted` follow Chrome's look (dash 3× the width, a dash in each square corner). Rounded corners of a uniform dashed border are solid arcs; `double` `groove` `ridge` `inset` `outset` are not supported (skipped with a warning).",
            "Inline elements (`span`, `code`, …) paint background, border and shadow per line like the web; vertical padding/border don't change the line height. Use `display: inline-block` for boxes that must not wrap or need a size.",
            "Every positioned element (`relative` / `absolute` / `fixed`) is its own paint layer; `z-index` orders layers among siblings. Use `portal { }` for things that must be on top of everything. `position: fixed` ignores ancestors' `transform`.",
            "`vertical-align: top` / `bottom` on `display: inline` elements act like `text-top` / `text-bottom` (aligned to the parent's text, not to the line box).",
@@ -1277,7 +1278,8 @@ def release(ver, date, *items):
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("next", "unreleased",
              "Every color of the built-in controls is now a `--guilib-*` variable (`--guilib-button`, `--guilib-surface-3`, `--guilib-text-subtle`, `--guilib-danger` …). A theme only overrides variables on `:root` instead of the control rules; the defaults look the same as before. See [Theming built-in controls](css.html#theming).",
-             "SVG images can be tinted from CSS: `currentColor` inside the SVG is the element's `color` (for `img` and `background-image`), so one icon file works on light and dark backgrounds and follows `:hover`. See [Tinting SVG icons](elements.html#svg-current-color)."),
+             "SVG images can be tinted from CSS: `currentColor` inside the SVG is the element's `color` (for `img` and `background-image`), so one icon file works on light and dark backgrounds and follows `:hover`. See [Tinting SVG icons](elements.html#svg-current-color).",
+             "`border-style: dashed` and `dotted` are drawn (before, they were drawn solid): Chrome-like dash spacing, round dots, rounded corners supported. Handy for drop zones: `border: 1px dashed var(--guilib-text-subtle)`."),
     *release("0.9.0", "2026-10-03",
              "Minecraft 26.3 support: artifact `net.sbo:guilib-26.3-fabric`. Everything works the same as on 26.1.2 / 26.2 (typing, shortcuts, IME, cursors, shaders).",
              "On 26.3 `KeyboardEvent.keyCode` is Minecraft's new raw key code (an SDL scancode instead of a GLFW key code). Compare `key` (`\"Enter\"`, `\"a\"` …) instead, which is the same on every version."),
