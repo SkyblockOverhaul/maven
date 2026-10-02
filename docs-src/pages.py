@@ -155,6 +155,7 @@ body { display: flex; align-items: center; justify-content: center; }  /* body =
             ("title", "String", "app.name", "Screen title (narration)."),
             ("vanillaBackground", "Boolean", "true", "Draw Minecraft's blurred/dimmed background behind the UI."),
             ("pauseGame", "Boolean", "false", "Pause singleplayer while open."),
+            ("scale", "Float?", "null", "The screen's own GUI scale (physical pixels per CSS px, fractions like `2.5f` work), independent of Minecraft's; `null` = Minecraft's. Change it later with `useScreenScale`."),
         ], overloads=["fun open(stylesheets: List<String> = emptyList(), title: String = \"GuiLib\", content: NodeBuilder.() -> Unit): GuiLibScreen"],
         example="""
 GuiLib.open(App, stylesheets = listOf("mymod:ui/app.css"))
@@ -303,6 +304,15 @@ text(Component.translatable("mymod.gui.hint").withStyle(ChatFormatting.GRAY))
     h2("Document & misc"),
     api("useDocument", "hook", "The `Document` of the screen: `viewportWidth` / `viewportHeight`, `focusedElement`, `focus(el)`, `addEventListener`, `setTimeout` / `setInterval`, `post { }`.",
         receiver="ComponentScope", sig="fun useDocument(): Document"),
+    api("useScreenScale", "hook", "Gives the screen its own GUI scale while the component is mounted, independent of Minecraft's (`null` = Minecraft's, fractions like `2.5f` work). The whole document is laid out and drawn with it, portals (modals, tooltips, menus, toasts) included: the viewport is the window size / scale, `vw` / `vh` and `@media (resolution)` follow, text and SVGs are re-rasterized for the new pixel size so they stay sharp. Changing it re-lays out at once, without reopening. Restored on unmount. Outside components: `GuiLib.currentDocument()?.scale = 2.5f`. Note: the `minecraft` font is a pixel font and looks uneven at fractional scales; Minecraft's own item tooltips keep Minecraft's scale.",
+        receiver="ComponentScope", sig="fun useScreenScale(scale: Float?)",
+        example="""
+var scale by useState<Float?>(null)
+useScreenScale(scale)
+// Apply on release: rescaling while the slider is dragged would move it under the mouse.
+slider(value = scale ?: 2f, min = 1f, max = 4f, step = 0.25f, onChangeEnd = { scale = it }, showValue = true)
+button(onClick = { scale = null }) { +"Minecraft scale" }
+"""),
     api("useBodyClass", "hook", "Puts a class on the body while the component is mounted and `enabled`, e.g. a theme or font switch without reopening the screen. Portals (modals, tooltips, toasts) live under the body, so they follow too. Removed again on unmount.",
         receiver="ComponentScope", sig="fun useBodyClass(className: String, enabled: Boolean = true)",
         example="""
@@ -1156,6 +1166,8 @@ def release(ver, date, *items):
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("next", "unreleased",
+             "Own GUI scale per screen: `useScreenScale(2.5f)` / `GuiLib.open(…, scale = …)`, independent of Minecraft's, also fractional; everything incl. portals is laid out and drawn with it, text stays sharp, `vw`/`vh` and `@media (resolution)` follow, changes apply live.",
+             "**Fix:** text is re-measured when the GUI scale changes even if no style changes (widths snap to the new pixel grid).",
              "`@supports` with `(property: value)`, `selector(…)`, `not` / `and` / `or` (true when GuiLib can parse it), for CSS fallbacks.",
              "`useBodyClass` / `useBodyStyle` and DOM-like `classList.add/remove/toggle`, `setStyleProperty` on elements (and `GuiLib.currentDocument()`): switch a theme or font at runtime without reopening the screen.",
              "`@font-face` in stylesheets: declare your own TTF/OTF fonts (`src: url(\"mymod:fonts/x.ttf\")`, `font-weight` incl. ranges, `font-style`).",
