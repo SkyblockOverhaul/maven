@@ -1354,7 +1354,7 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
-    *release("0.12.1", "unreleased",
+    *release("0.12.1", "2026-10-04",
              "`§k` obfuscated text: drawn as random characters of about the same width that change every 50 ms, like in Minecraft; the layout keeps the real text's size. Also for Minecraft text components (`text(component)`) with the obfuscated style. See [Components](components.html).",
              "**Fix:** borders with a different width or color per side on a rounded box (`border-left: 3px solid green` on a card with `border-radius`) bend around the corners like in browsers instead of stopping where the curve begins. See [Differences from the web](differences.html#rendering).",
              ),
