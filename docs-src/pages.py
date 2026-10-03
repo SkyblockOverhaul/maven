@@ -636,8 +636,9 @@ rangeSlider(low = kills.first, high = kills.second, onChange = { lo, hi -> kills
                 ("step", "Int", "1", "Step of the buttons, arrows and wheel."),
                 ("wheel", "Boolean", "true", "Mouse wheel over the field steps the value."),
                 ("disabled", "Boolean", "false", ""),
-                ("placeholder", "String?", "null", "")] + C,
-        keys="ArrowUp/ArrowDown step (Shift ×10), Enter commits; holding −/+ repeats; wheel while hovered",
+                ("placeholder", "String?", "null", ""),
+                ("stepMultiplier", "(Modifiers) -> Int", "Shift ×10, Ctrl ×100, Ctrl+Shift ×1000", "Steps per click, arrow key and wheel notch for the held keys (Cmd counts as Ctrl). Replace it for other factors, e.g. `{ m -> if (m.shift) 64 else 1 }` for stacks.")] + C,
+        keys="ArrowUp/ArrowDown step (Shift ×10, Ctrl ×100, Ctrl+Shift ×1000), Enter commits; holding −/+ repeats with the multiplier of the press; wheel while hovered",
         example="""
 var slots by useState(3)
 numberInput(value = slots, onChange = { slots = it }, min = 1, max = 5)
@@ -1280,7 +1281,8 @@ changelog = Page("changelog", "Changelog", "Overview", "What changed in each Gui
              "Every color of the built-in controls is now a `--guilib-*` variable (`--guilib-button`, `--guilib-surface-3`, `--guilib-text-subtle`, `--guilib-danger` …). A theme only overrides variables on `:root` instead of the control rules; the defaults look the same as before. See [Theming built-in controls](css.html#theming).",
              "SVG images can be tinted from CSS: `currentColor` inside the SVG is the element's `color` (for `img` and `background-image`), so one icon file works on light and dark backgrounds and follows `:hover`. See [Tinting SVG icons](elements.html#svg-current-color).",
              "`border-style: dashed` and `dotted` are drawn (before, they were drawn solid): Chrome-like dash spacing, round dots, rounded corners supported. Handy for drop zones: `border: 1px dashed var(--guilib-text-subtle)`.",
-             "`option(…, title = \"…\")`: hover text for single entries of `select`, `multiSelect`, `radioGroup`, `segmented` and `chips`. **Fix:** `title` tooltips are drawn above open menus and dropdowns instead of behind them."),
+             "`option(…, title = \"…\")`: hover text for single entries of `select`, `multiSelect`, `radioGroup`, `segmented` and `chips`. **Fix:** `title` tooltips are drawn above open menus and dropdowns instead of behind them.",
+             "`numberInput`: Ctrl (Cmd) steps × 100 and Ctrl + Shift × 1000 (Shift stays × 10), for the buttons, arrow keys and the wheel; holding a button repeats with the multiplier of the press. Own factors with `stepMultiplier = { modifiers -> … }`."),
     *release("0.9.0", "2026-10-03",
              "Minecraft 26.3 support: artifact `net.sbo:guilib-26.3-fabric`. Everything works the same as on 26.1.2 / 26.2 (typing, shortcuts, IME, cursors, shaders).",
              "On 26.3 `KeyboardEvent.keyCode` is Minecraft's new raw key code (an SDL scancode instead of a GLFW key code). Compare `key` (`\"Enter\"`, `\"a\"` …) instead, which is the same on every version."),
