@@ -230,7 +230,7 @@ val Header = component("Header") {
         code("for (party in parties) PartyRow(party, key = party.id)\nfor (name in names) div(key = name) { +name }")),
     h3("Text"),
     raw(p("Add text with `+\"text\"` or `text(value)` (any value, converted with `toString()`). Minecraft `§` color and format "
-          "codes work in all text: `+\"§6Gold §lbold\"`."),
+          "codes work in all text: `+\"§6Gold §lbold\"`. `§k` (since 0.12.1) draws the text as random characters that keep changing, like Minecraft's obfuscated text, while it keeps the real text's size: `+\"§kSecret\"`; `§r` or a color code ends it."),
         code('span { +"Hello " ; b { +name } ; text(count) }')),
     h3("Classes"),
     raw(p("`className` works like HTML's `class` attribute: several classes are separated by **spaces**. "
@@ -1355,6 +1355,7 @@ def release(ver, date, *items):
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("0.12.1", "unreleased",
+             "`§k` obfuscated text: drawn as random characters of about the same width that change every 50 ms, like in Minecraft; the layout keeps the real text's size. Also for Minecraft text components (`text(component)`) with the obfuscated style. See [Components](components.html).",
              "**Fix:** borders with a different width or color per side on a rounded box (`border-left: 3px solid green` on a card with `border-radius`) bend around the corners like in browsers instead of stopping where the curve begins. See [Differences from the web](differences.html#rendering).",
              ),
     *release("0.12.0", "2026-10-03",
