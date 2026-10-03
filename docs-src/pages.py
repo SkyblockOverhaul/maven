@@ -1071,9 +1071,9 @@ css = Page("css", "CSS", "Reference", (
         ["Combinators", "descendant `a b`, child `a > b`, `a + b`, `a ~ b`, lists `a, b`"],
         ["State", "`:hover` `:active` `:focus` `:focus-visible` `:focus-within` `:disabled` `:enabled` `:checked`, `:scrolling` (GuiLib-only: while the scroll position changes and 150 ms after)"],
         ["Structural", "`:first-child` `:last-child` `:only-child` `:root` `:not(…)` `:nth-child()` `:nth-last-child()` `:nth-of-type()` `:nth-last-of-type()` (`odd`, `even`, `3`, `2n+1`, `-n+3`); `:nth-child(even of .x)` / `:nth-last-child(… of S)` count only siblings matching S"],
-        ["Pseudo-elements", "`::before` `::after` (also `:before`/`:after`) at the end of a selector, e.g. `.crumb + .crumb::before`, `.btn:hover::after`"],
+        ["Pseudo-elements", "`::before` `::after` (also `:before`/`:after`) at the end of a selector, e.g. `.crumb + .crumb::before`, `.btn:hover::after`; `::placeholder` of inputs and textareas"],
         ["At-rules", "`@keyframes`; `@media` (nestable): comma lists, `not`/`only`, `screen`/`all`/`print`, `and`/`or`; features `width` `height` `aspect-ratio` `orientation` in GUI px, `resolution` = Minecraft's GUI scale (`min-resolution: 3dppx` or `3x`), `hover` (hover), `pointer` (fine), `prefers-reduced-motion` (no-preference), `prefers-color-scheme` (dark); `min-`/`max-` prefixes and range syntax `(400px <= width < 640px)`. Styles update when the window size or GUI scale changes. `@supports` (nestable with `@media`): `(property: value)` is true when GuiLib knows the property and can parse the value (custom properties and `var()` values count), `selector(…)` when it can parse the selector, plus `not` / `and` / `or` and parentheses; decided once when the sheet loads. Use it for fallbacks: `@supports not (display: contents) { … }`. `@font-face` (see [Fonts](elements.html#fonts))."],
-    ]), note("Not supported: other pseudo-elements (`::placeholder`, `::selection`, …), `@import`, `@container`.", "warn")),
+    ]), note("Not supported: other pseudo-elements (`::selection`, `::marker`, …), `@import`, `@container`.", "warn")),
     h2("::before and ::after"),
     raw(p("Generated boxes before and after an element's children, like the web. A rule needs `content` to create one: strings, `attr(name)` (an attribute of the element, e.g. `attr(title)`), or `\"\"` for purely decorative boxes. `content: none` (or `normal`) removes it."),
         ul("The box is inline by default, inherits from the element and can be styled like any element: `display`, sizes, `position: absolute`, backgrounds, borders, shadows, transitions and animations.",
@@ -1087,6 +1087,12 @@ css = Page("css", "CSS", "Reference", (
 .more::after { content: " →"; opacity: 0; transition: opacity 150ms }
 .more:hover::after { opacity: 1 }
 .tip::after { content: attr(title) }
+""", "css")),
+    h2("::placeholder"),
+    raw(p("Styles the placeholder text of `input`, `textarea` and `numberInput` while the field is empty. Text properties (`color`, `font-style`, `font-weight`, `letter-spacing` …) and `opacity` apply; the host's state works too (`:focus::placeholder`). It beats GuiLib's built-in `.guilib-placeholder` rule, which still works."),
+        code("""
+.search::placeholder { color: #e0b04a; font-style: italic }
+.search:focus::placeholder { color: #e0b04a66 }
 """, "css")),
     h2("Values"),
     raw(table(["Kind", "Supported"], [
@@ -1242,7 +1248,7 @@ differences = Page("differences", "Differences from the web", "Guide", (
            "Rotated or skewed text is rasterized at 2× and filtered: smooth, but a little softer than straight text.")),
     h2("Not supported (yet)"),
     raw(ul("3D transforms (a `transform` containing them is ignored).",
-           "`@import`, pseudo-elements other than `::before` / `::after`.",
+           "`@import`, pseudo-elements other than `::before` / `::after` / `::placeholder`.",
            "`float`, subgrid, named grid lines.",
            "Backgrounds: a `url()` or gradient layer without `background-size` / `-position` / `-repeat` is stretched over the box (browsers: natural size, tiled). Copies of a positioned or tiled layer have square corners (`border-radius` doesn't cut them).",
            "`filter`: `blur()` keeps text and gradients sharp and `drop-shadow()` of text isn't blurred (there is no offscreen pass: each box, text run and image is filtered on its own); items, entities, player heads and animated GIFs aren't filtered; `url()` SVG filters and `backdrop-filter` aren't supported.",
@@ -1335,6 +1341,7 @@ def release(ver, date, *items):
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("next", "unreleased",
+             "`::placeholder`: style the placeholder text of inputs and textareas, incl. `:focus::placeholder`. See [CSS](css.html#placeholder).",
              "CSS `filter`: `grayscale()`, `sepia()`, `brightness()`, `contrast()`, `saturate()`, `hue-rotate()`, `invert()`, `opacity()`, `blur()` and `drop-shadow()`, on the element and everything inside it, animatable (`filter: grayscale(1)` → `none` on hover). Color functions work on everything GuiLib draws; `blur()` and `drop-shadow()` on boxes and images (text stays sharp). See [CSS](css.html#text-visuals).",
              "`aspect-ratio`, `outline` / `outline-offset` (follows `border-radius`, great for `:focus-visible` rings), `text-transform`, `word-break` / `overflow-wrap` (break long names and URLs), `line-clamp` / `-webkit-line-clamp` (N lines with \"…\"). See [CSS](css.html#layout).",
              "`background-size` (`cover`, `contain`, lengths), `background-position` (keywords, %, `right 10px bottom 5px`), `background-repeat` (`repeat-x`, `space`, `round` …), `background-origin` and `background-clip`, all per layer and in the `background` shorthand: `background: url(\"mymod:bg.png\") center / cover no-repeat`. Without any of size, position and repeat a layer is still stretched over the box as before. See [CSS](css.html#text-visuals).",
