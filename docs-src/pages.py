@@ -1126,7 +1126,7 @@ css = Page("css", "CSS", "Reference", (
         ["Shadow", "`box-shadow`: `none` or a comma list of `[inset] <x> <y> [<blur> [<spread>]] [<color>]` (first on top, color defaults to `currentColor`). Real Gaussian blur that follows `border-radius`; outer shadows are never drawn under the box, so translucent backgrounds stay clean. Animatable."],
         ["Filter", "`filter`: `brightness()` `contrast()` `grayscale()` `sepia()` `saturate()` `hue-rotate()` `invert()` `opacity()` `blur()` `drop-shadow(<x> <y> [<blur>] [<color>])`, applied to the element and everything inside it (positioned descendants too). Color functions are exact for boxes, text, gradients and images. `blur()` works on boxes, borders, shadows and images; text and gradients stay sharp. `drop-shadow()` follows rounded boxes, image alpha and text (unblurred for text). Items, entities, player heads and animated GIFs aren't filtered. Animatable, e.g. `.card { filter: grayscale(1); transition: filter 300ms } .card:hover { filter: none }`."],
         ["Visual", "`opacity` `visibility` `object-fit`"],
-        ["Interaction", "`cursor` (`auto` `default` `pointer` `text` `not-allowed` `crosshair` `move` `ns-resize` `ew-resize` `row-resize` `col-resize` `grab` `grabbing` `none`; `none` hides the system cursor (draw your own at the mouse with `onMouseMove`); a drag cursor stays while the left button is held), `pointer-events`, `user-select` (parsed only), `caret-color` (`auto` = text color, or a color; inherited, animatable) for inputs and textareas"],
+        ["Interaction", "`cursor` (`auto` `default` `pointer` `text` `not-allowed` `crosshair` `move` `ns-resize` `ew-resize` `row-resize` `col-resize` `grab` `grabbing` `none`; `none` hides the system cursor (draw your own at the mouse with `onMouseMove`); a drag cursor stays while the left button is held), `pointer-events`, `user-select` (parsed only), `caret-color` (`auto` = text color, or a color; inherited, animatable) for inputs and textareas, `accent-color` (`auto` or a color; inherited) for the checked/filled parts of checkboxes, radios, switches, sliders, segmented/tab indicators and selected chips – not focus borders or menus (use `--guilib-accent` for a whole theme)"],
         ["Generated content", "`content` (strings, `attr(name)`, `none` / `normal`), only on `::before` / `::after`"],
     ]), shot("boxes.png", "Rounded corners, borders (solid, dashed, dotted), gradients, shadows and opacity, drawn by GuiLib's own anti-aliased shader"),
         shot("filter.png", "filter on images and cards: color functions, blur() and drop-shadow()")),
@@ -1171,6 +1171,9 @@ css = Page("css", "CSS", "Reference", (
     --guilib-button: #f0f2f4;
     --guilib-button-hover: #e4e8eb;
 }
+
+/* Only the checked / filled parts of the controls in one panel (like browsers) */
+.loot-filters { accent-color: #e0b04a; }
 
 /* Or restyle a single control */
 .guilib-switch.checked .guilib-switch-track { background-color: #3ba55d; border-color: #3ba55d; }
@@ -1341,6 +1344,7 @@ def release(ver, date, *items):
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("next", "unreleased",
+             "`accent-color` recolors the checked/filled parts of controls (checkbox, radio, switch, sliders, segmented, tabs, chips) in a subtree: `.panel { accent-color: #e0b04a }`. See [CSS](css.html#theming).",
              "`caret-color` for inputs and textareas (inherited, animatable): `input { caret-color: #e0b04a }`. See [CSS](css.html#text-visuals).",
              "`::placeholder`: style the placeholder text of inputs and textareas, incl. `:focus::placeholder`. See [CSS](css.html#placeholder).",
              "CSS `filter`: `grayscale()`, `sepia()`, `brightness()`, `contrast()`, `saturate()`, `hue-rotate()`, `invert()`, `opacity()`, `blur()` and `drop-shadow()`, on the element and everything inside it, animatable (`filter: grayscale(1)` → `none` on hover). Color functions work on everything GuiLib draws; `blur()` and `drop-shadow()` on boxes and images (text stays sharp). See [CSS](css.html#text-visuals).",
