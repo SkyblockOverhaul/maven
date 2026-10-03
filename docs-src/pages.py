@@ -1281,7 +1281,7 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
-    *release("next", "unreleased",
+    *release("0.10.0", "2026-10-03",
              "Every color of the built-in controls is now a `--guilib-*` variable (`--guilib-button`, `--guilib-surface-3`, `--guilib-text-subtle`, `--guilib-danger` …). A theme only overrides variables on `:root` instead of the control rules; the defaults look the same as before. See [Theming built-in controls](css.html#theming).",
              "SVG images can be tinted from CSS: `currentColor` inside the SVG is the element's `color` (for `img` and `background-image`), so one icon file works on light and dark backgrounds and follows `:hover`. See [Tinting SVG icons](elements.html#svg-current-color).",
              "`border-style: dashed` and `dotted` are drawn (before, they were drawn solid): Chrome-like dash spacing, round dots, rounded corners supported. Handy for drop zones: `border: 1px dashed var(--guilib-text-subtle)`.",
