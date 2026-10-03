@@ -153,9 +153,10 @@ body { display: flex; align-items: center; justify-content: center; }  /* body =
             ("app", "ComponentType<Unit>", None, "The root component (without props)."),
             ("stylesheets", "List<String>", "emptyList()", "Resource locations of CSS files, e.g. `\"mymod:ui/app.css\"` → `assets/mymod/ui/app.css`."),
             ("title", "String", "app.name", "Screen title (narration)."),
-            ("vanillaBackground", "Boolean", "true", "Draw Minecraft's blurred/dimmed background behind the UI."),
+            ("vanillaBackground", "Boolean", "true", "Draw Minecraft's blurred/dimmed background behind the UI (`false` = neither blur nor dark overlay)."),
             ("pauseGame", "Boolean", "false", "Pause singleplayer while open."),
             ("scale", "Float?", "null", "The screen's own GUI scale (physical pixels per CSS px, fractions like `2.5f` work), independent of Minecraft's; `null` = Minecraft's. Change it later with `useScreenScale`."),
+            ("blurBackground", "Boolean", "true", "`false` = no blur behind the screen, the dark overlay stays. Change it later with `useBackgroundBlur`. Also on `GuiLib.screen(…)`."),
         ], overloads=["fun open(stylesheets: List<String> = emptyList(), title: String = \"GuiLib\", content: NodeBuilder.() -> Unit): GuiLibScreen"],
         example="""
 GuiLib.open(App, stylesheets = listOf("mymod:ui/app.css"))
@@ -358,6 +359,13 @@ useScreenScale(scale)
 // Apply on release: rescaling while the slider is dragged would move it under the mouse.
 slider(value = scale ?: 2f, min = 1f, max = 4f, step = 0.25f, onChangeEnd = { scale = it }, showValue = true)
 button(onClick = { scale = null }) { +"Minecraft scale" }
+"""),
+    api("useBackgroundBlur", "hook", "Turns Minecraft's blur behind the screen on or off while the component is mounted; the dark overlay stays (open with `vanillaBackground = false` to drop both). Changes apply at once, so it can be bound to a settings switch. Restored on unmount. Also `GuiLib.open(App, blurBackground = false)`; outside components: `GuiLib.currentDocument()?.backgroundBlur = false`.",
+        receiver="ComponentScope", sig="fun useBackgroundBlur(enabled: Boolean)",
+        example="""
+var blur by useState(settings.blurBackground)
+useBackgroundBlur(blur)
+switch(checked = blur, onChange = { blur = it.checked }, label = "Blur background")
 """),
     api("useBodyClass", "hook", "Puts a class on the body while the component is mounted and `enabled`, e.g. a theme or font switch without reopening the screen. Portals (modals, tooltips, toasts) live under the body, so they follow too. Removed again on unmount.",
         receiver="ComponentScope", sig="fun useBodyClass(className: String, enabled: Boolean = true)",
@@ -1281,6 +1289,8 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
+    *release("next", "unreleased",
+             "Turn off Minecraft's background blur per screen: `GuiLib.open(App, blurBackground = false)`, or live from a component with `useBackgroundBlur(enabled)` (e.g. a settings switch). The dark overlay stays. See [useBackgroundBlur](components.html#usebackgroundblur)."),
     *release("0.10.0", "2026-10-03",
              "Every color of the built-in controls is now a `--guilib-*` variable (`--guilib-button`, `--guilib-surface-3`, `--guilib-text-subtle`, `--guilib-danger` …). A theme only overrides variables on `:root` instead of the control rules; the defaults look the same as before. See [Theming built-in controls](css.html#theming).",
              "SVG images can be tinted from CSS: `currentColor` inside the SVG is the element's `color` (for `img` and `background-image`), so one icon file works on light and dark backgrounds and follows `:hover`. See [Tinting SVG icons](elements.html#svg-current-color).",
