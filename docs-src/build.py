@@ -247,7 +247,7 @@ TEMPLATE = """<!doctype html>
       {body}
       <nav class="pager">{prev}{next}</nav>
     </article>
-    <footer class="footer">GuiLib {version} · Minecraft {mc} (Fabric) · LGPL-3.0 · Screenshots taken in-game at GUI scale 2.<div class="footer-links">{social}</div></footer>
+    <footer class="footer">GuiLib {version} · Minecraft {mc} (Fabric) · LGPL-3.0 · Screenshots taken in-game at GUI scale 2.<br>Made with AI assistance (Claude Opus 5.5 by Anthropic), proofread by Saotzuri.<div class="footer-links">{social}</div></footer>
   </main>
   <aside class="toc"><div class="toc-title">On this page</div><nav id="toc"></nav></aside>
 </div>
