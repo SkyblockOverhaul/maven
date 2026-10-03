@@ -502,7 +502,7 @@ CommandRenderer
            "reload their CSS without losing state. `/guilib reload` does it manually.",
            "**Warnings** with file, line and column for CSS problems, and for hook misuse, duplicate keys and render "
            "errors (each logged once).",
-           "**Metrics overlay** (Ctrl + F12): frame time per phase, work per second, CPU, memory, GC, leak check. It "
+           "**Metrics overlay** (Ctrl + F12, draggable by its title bar): frame time per phase, work per second, CPU, memory, GC, leak check. It "
            "is a separate document and leaves itself out of its numbers.",
            "**Layout verification** `-Dguilib.layout.verify=log`: compares every incremental layout with a full one "
            "and logs differences.",

@@ -195,7 +195,7 @@ GuiLib.open(listOf("mymod:ui/hello.css")) { div(className = "hello") { +"Hi!" } 
            "**CPU and Memory (whole game):** process and render-thread CPU, heap, how fast the render thread allocates, garbage collections.",
            "**Leak check:** old-generation memory after the last GC. Click *GC now*, use your UI for a while, click *GC now* again: the value should stay near +0 MB.",
            "**Caches:** glyph atlas and image caches."),
-        p("The window measures itself out: it is a separate document whose work isn't counted, so Frame, Work and DOM show your screen only (the ⓘ next to the title explains this). Turn the shortcut off with `GuiLibScreen.METRICS_SHORTCUT = false`; toggle it from code with `screen.showMetrics`.")),
+        p("Drag it by its title bar; it remembers its position until the game closes. The window measures itself out: it is a separate document whose work isn't counted, so Frame, Work and DOM show your screen only (the ⓘ next to the title explains this). Turn the shortcut off with `GuiLibScreen.METRICS_SHORTCUT = false`; toggle it from code with `screen.showMetrics`.")),
 ])
 
 # =====================================================================================================================
