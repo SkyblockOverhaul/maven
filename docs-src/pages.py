@@ -657,7 +657,7 @@ numberInput(value = minCata, onChange = { minCata = it }, allowEmpty = true, min
                 ("placeholder", "String?", "null", "Shown when nothing is selected."),
                 ("searchable", "Boolean", "false", "Add a search field to the menu."),
                 ("searchPlaceholder", "String?", "null", "Placeholder of the search field (default \"Search…\")."),
-                ("options", "SelectBuilder.() -> Unit", None, "`option(value, label, disabled = false, title = null)` or `option(value) { +\"Label\" }`. `title` is a tooltip for that entry, shown above the open menu (the same `option` works in `multiSelect`, `radioGroup`, `segmented` and `chips`).")] + C,
+                ("options", "SelectBuilder.() -> Unit", None, "`option(value, label, disabled = false, title = null)` or `option(value) { +\"Label\" }`. `title` is a tooltip for that entry, shown above the open menu. `className` / `style` go on the menu entry and on its label in the box while chosen (`.guilib-select-chosen`, one span per chosen entry of a `multiSelect`), e.g. to color item names by rarity; labels also take `§` codes. The same `option` works in `multiSelect`, `radioGroup`, `segmented` and `chips`.")] + C,
         keys="ArrowUp/Down open and move, Enter/Space choose, Escape closes; typing goes to the search field",
         example="""
 select(value = mode, onChange = { mode = it.value }) {
@@ -669,10 +669,10 @@ select(value = mode, onChange = { mode = it.value }) {
 select(value = item, onChange = { item = it.value }, placeholder = "Search an item…", searchable = true) {
     for (i in items) option(i.id, i.displayName)    // labels may contain § codes
 }
-""", css=["select", ".guilib-select-value", ".guilib-select-arrow", ".guilib-select-menu", ".guilib-select-search",
+""", css=["select", ".guilib-select-value", ".guilib-select-chosen", ".guilib-select-arrow", ".guilib-select-menu", ".guilib-select-search",
           ".guilib-select-empty", ".guilib-option", ".selected", ".highlighted", ".disabled"],
         img=("select-search.png", "A searchable select")),
-    api("multiSelect", "function", "A dropdown for choosing several options. Each option has a check mark, the menu stays open while toggling and the box shows the chosen labels.",
+    api("multiSelect", "function", "A dropdown for choosing several options. Each option has a check mark, the menu stays open while toggling and the box shows the chosen labels (each keeps its option's `className` / `style`, see `select`).",
         params=[("values", "List<String>", None, "Selected values."),
                 ("onChange", "((List<String>) -> Unit)?", "null", "New selection, in option order."),
                 ("disabled", "Boolean", "false", ""),
@@ -1282,7 +1282,8 @@ changelog = Page("changelog", "Changelog", "Overview", "What changed in each Gui
              "SVG images can be tinted from CSS: `currentColor` inside the SVG is the element's `color` (for `img` and `background-image`), so one icon file works on light and dark backgrounds and follows `:hover`. See [Tinting SVG icons](elements.html#svg-current-color).",
              "`border-style: dashed` and `dotted` are drawn (before, they were drawn solid): Chrome-like dash spacing, round dots, rounded corners supported. Handy for drop zones: `border: 1px dashed var(--guilib-text-subtle)`.",
              "`option(…, title = \"…\")`: hover text for single entries of `select`, `multiSelect`, `radioGroup`, `segmented` and `chips`. **Fix:** `title` tooltips are drawn above open menus and dropdowns instead of behind them.",
-             "`numberInput`: Ctrl (Cmd) steps × 100 and Ctrl + Shift × 1000 (Shift stays × 10), for the buttons, arrow keys and the wheel; holding a button repeats with the multiplier of the press. Own factors with `stepMultiplier = { modifiers -> … }`."),
+             "`numberInput`: Ctrl (Cmd) steps × 100 and Ctrl + Shift × 1000 (Shift stays × 10), for the buttons, arrow keys and the wheel; holding a button repeats with the multiplier of the press. Own factors with `stepMultiplier = { modifiers -> … }`.",
+             "`option(…, className = \"legendary\", style = \"color: #ffaa00\")` for `select` / `multiSelect` (and `radioGroup`, `segmented`, `chips`): the class / style goes on the menu entry and on the chosen label in the box, so item names can be colored in the open list and in a multiple selection. The box now shows one `span.guilib-select-chosen` per chosen entry."),
     *release("0.9.0", "2026-10-03",
              "Minecraft 26.3 support: artifact `net.sbo:guilib-26.3-fabric`. Everything works the same as on 26.1.2 / 26.2 (typing, shortcuts, IME, cursors, shaders).",
              "On 26.3 `KeyboardEvent.keyCode` is Minecraft's new raw key code (an SDL scancode instead of a GLFW key code). Compare `key` (`\"Enter\"`, `\"a\"` …) instead, which is the same on every version."),
