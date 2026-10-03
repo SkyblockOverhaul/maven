@@ -856,7 +856,7 @@ button(onClick = {
         extra=f'<figure class="shot"><a href="img/toasts.png" target="_blank" rel="noopener" style="max-width: 340px">'
               f'<img src="img/toasts.png" alt="Toasts" loading="lazy" style="aspect-ratio: 680 / 380"></a>'
               f'<figcaption>success, warning (with title) and error toasts</figcaption></figure>'),
-    api("tooltip", "function", "A tooltip shown when hovering the children for `delayMs`. For simple text the `title` prop on any element works too.",
+    api("tooltip", "function", "A tooltip shown when hovering the children for `delayMs`. For simple text the `title` prop on any element works too. When it doesn't fit on its `placement` side it shows on the opposite side, and it is shifted to stay inside the screen (like `title` tips, select menus and color popovers).",
         params=[("text", "String", None, "Tooltip text (or `content = { … }` for rich content)."),
                 ("placement", "String", "\"top\"", "`top`, `bottom`, `left` or `right`."),
                 ("delayMs", "Long", "300", "Hover delay."),
@@ -1283,6 +1283,7 @@ changelog = Page("changelog", "Changelog", "Overview", "What changed in each Gui
              "`border-style: dashed` and `dotted` are drawn (before, they were drawn solid): Chrome-like dash spacing, round dots, rounded corners supported. Handy for drop zones: `border: 1px dashed var(--guilib-text-subtle)`.",
              "`option(…, title = \"…\")`: hover text for single entries of `select`, `multiSelect`, `radioGroup`, `segmented` and `chips`. **Fix:** `title` tooltips are drawn above open menus and dropdowns instead of behind them.",
              "`numberInput`: Ctrl (Cmd) steps × 100 and Ctrl + Shift × 1000 (Shift stays × 10), for the buttons, arrow keys and the wheel; holding a button repeats with the multiplier of the press. Own factors with `stepMultiplier = { modifiers -> … }`.",
+             "**Fix:** tooltips, `title` tips, select / multiSelect menus and the color popover no longer get cut off at the screen edges (small windows, high GUI scale): they flip to the other side when only that fits and are shifted inside the screen.",
              "`option(…, className = \"legendary\", style = \"color: #ffaa00\")` for `select` / `multiSelect` (and `radioGroup`, `segmented`, `chips`): the class / style goes on the menu entry and on the chosen label in the box, so item names can be colored in the open list and in a multiple selection. The box now shows one `span.guilib-select-chosen` per chosen entry."),
     *release("0.9.0", "2026-10-03",
              "Minecraft 26.3 support: artifact `net.sbo:guilib-26.3-fabric`. Everything works the same as on 26.1.2 / 26.2 (typing, shortcuts, IME, cursors, shaders).",
