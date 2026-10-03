@@ -1343,6 +1343,10 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
+    *release("next", "unreleased",
+             "Faster layout: only the parts of a screen that changed are laid out again, everything else keeps its layout. An animated or edited element no longer re-lays out the whole screen every frame (Showcase animation page: 1.4 ms → 0.4 ms per frame).",
+             "**Fix:** the scroll size of a container counted its absolutely positioned children at their position from the previous frame (a scrollbar could flash for one frame); it now uses their current position, and positioned boxes whose containing block is further out no longer count, like browsers.",
+             ),
     *release("0.11.0", "2026-10-03",
              "`accent-color` recolors the checked/filled parts of controls (checkbox, radio, switch, sliders, segmented, tabs, chips) in a subtree: `.panel { accent-color: #e0b04a }`. See [CSS](css.html#theming).",
              "`caret-color` for inputs and textareas (inherited, animatable): `input { caret-color: #e0b04a }`. See [CSS](css.html#text-visuals).",
