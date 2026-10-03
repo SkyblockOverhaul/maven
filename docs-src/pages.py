@@ -448,6 +448,41 @@ div(className = "card", id = "main", style = "padding: 4px", title = "A card", o
         ["`text(component)`", "inline", "A Minecraft `Component` (chat message, item name, `Component.translatable`): colors incl. RGB, bold/italic/underline/strikethrough, `show_text` hover events as tooltips, `show_item` hover events as Minecraft's item tooltip (`text(stack.displayName)` = an item link like in chat), click events (links, commands, copy) like in chat. `span.guilib-text`, clickable parts `.guilib-text-link`."],
         ["`button`", "inline-flex", "Centered content, `disabled`. Enter/Space activate a focused button. Disabled elements get no mouse events."],
     ])),
+    h2("Tables", "tables"),
+    raw(p("Real HTML tables: `table` `caption` `colgroup` `col` `thead` `tbody` `tfoot` `tr` `th` `td`. Columns line up "
+          "across rows, and the table is as wide as its content (or fills a `width`). Column widths work like in a browser: "
+          "each column fits its widest cell, a px `width` on a cell fixes its column, a `%` asks for that share of the table, "
+          "and extra width goes to the auto columns. `td`/`th` take `colSpan` and `rowSpan` (`0` = to the end of the group). "
+          "`thead` is always drawn first and `tfoot` last. Rows and row groups have their own boxes, so `tr:hover`, "
+          "`tr:nth-child(even)` and `onClick` on a `tr` work. Defaults: `border-spacing: 1px`, cell padding 1px, "
+          "cells vertically centered, `th` bold and centered. Table CSS: [border-collapse, border-spacing, table-layout, "
+          "caption-side](css.html#layout)."),
+        code("""
+table(className = "party") {
+    caption { +"Party" }
+    thead { tr { th { +"Player" }; th { +"Class" }; th(className = "num") { +"Level" } } }
+    tbody {
+        for (m in members) tr(key = m.name, className = classNames("selected" to (m.name == selected)), onClick = { selected = m.name }) {
+            td { +m.name }; td { +m.clazz }; td(className = "num") { +m.level.toString() }
+        }
+    }
+    tfoot { tr { td(colSpan = 2) { +"Average" }; td(className = "num") { +avg } } }
+}
+""", "kotlin"),
+        code("""
+.party { width: 100%; border-spacing: 0; border: 1px solid #3f4147; }
+.party th, .party td { padding: 3px 6px; text-align: left; }
+.party .num { text-align: right; }
+.party tbody tr:nth-child(even) { background-color: #ffffff08; }
+.party tbody tr:hover { background-color: #ffffff14; }
+/* Grid lines drawn once between cells: */
+.grid { border-collapse: collapse; }
+.grid td, .grid th { border: 1px solid #3f4147; }
+""", "css"),
+        shot("tables.png", "Tables: header, zebra rows, hover and selection, colspan/rowspan with collapsed borders"),
+        p("A `tr` or `td` without its wrapper gets an implicit one (without a box). Not supported: `col` backgrounds, "
+          "`visibility: collapse`, `empty-cells`; a `rowspan` cell is painted before the later rows it covers, so a "
+          "background on those rows hides its lower part.")),
     h2("GuiLib tags"),
     api("scroll", "GuiLib tag", "A block element with `overflow: auto` and a thin scrollbar. Any element with `overflow: auto/scroll` scrolls as well; `scroll` is a convenient default.",
         sig="fun NodeBuilder.scroll(className: String? = null, …, children: NodeBuilder.() -> Unit)",
@@ -1065,7 +1100,8 @@ css = Page("css", "CSS", "Reference", (
     raw(table(["Group", "Properties"], [
         ["Box", "`width` `height` `min-width` `min-height` `max-width` `max-height` `box-sizing` `margin(-*)` `padding(-*)`"],
         ["Border", "`border` `border-(top|right|bottom|left)` `border-width` `border-style` `border-color` `border-*-width/-style/-color` `border-radius` `border-*-radius`; styles `none` `hidden` `solid` `dashed` `dotted` (dashes are 3× the border width with the gaps stretched to fit and a dash in each square corner, like Chrome; dots are round from 2px; a uniform dashed border draws its rounded corners as solid arcs, a dotted one puts dots along them; the background shows through the gaps)"],
-        ["Display", "`display`: `block` `inline` `inline-block` `flex` `inline-flex` `grid` `inline-grid` `none`"],
+        ["Display", "`display`: `block` `inline` `inline-block` `flex` `inline-flex` `grid` `inline-grid` `table` `inline-table` `table-row-group` `table-header-group` `table-footer-group` `table-row` `table-cell` `table-caption` `table-column` `table-column-group` `none`"],
+        ["Tables", "`border-collapse` (`separate` `collapse`: no spacing, the table's padding is ignored, shared borders are drawn once and the wider one wins), `border-spacing` (one or two lengths), `table-layout` (`auto`; `fixed` with a table `width` takes widths from `col` and the first row only), `caption-side` (`top` `bottom`), `vertical-align` on cells (`top` `middle` `bottom` `baseline`). See [Tables](elements.html#tables)."],
         ["Inline", "`vertical-align` (`baseline sub super text-top text-bottom middle top bottom`, a length, or a % of the line height) for `inline-block` / `inline-flex` / `img` / `item` boxes, and on `display: inline` elements (`span`, `sub`, `sup`, …) to raise or lower their text (shifts add up when nested; the line grows to fit)"],
         ["Position", "`position`: `static` `relative` `absolute` `fixed`; `top` `right` `bottom` `left` `inset` `z-index`"],
         ["Overflow", "`overflow` `overflow-x` `overflow-y` (`visible` `hidden` `auto` `scroll`), `scrollbar-width` (`auto` `thin` `none`), `scrollbar-color: <thumb> <track>` (animatable); class `guilib-autohide` = scrollbar that fades out when idle, colors via `--guilib-scrollbar-thumb` / `--guilib-scrollbar-track`"],
@@ -1202,6 +1238,7 @@ differences = Page("differences", "Differences from the web", "Guide", (
     raw(ul("3D transforms (a `transform` containing them is ignored).",
            "`@import`, pseudo-elements other than `::before` / `::after`.",
            "`float`, subgrid, named grid lines.",
+           "Tables: `col` backgrounds, `visibility: collapse`, `empty-cells`. A `rowspan` cell is painted before the later rows it covers, so their backgrounds hide its lower part. Collapsed borders keep the color of the cell painted last.",
            "Images are resource locations (PNG, SVG or GIF), no URLs.",
            "`currentColor` inside an SVG image is the element's CSS `color` (browsers use black for `<img>` SVGs).")),
 ])
@@ -1290,6 +1327,7 @@ def release(ver, date, *items):
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("next", "unreleased",
+             "Tables: `table`, `thead`, `tbody`, `tfoot`, `tr`, `th`, `td`, `caption`, `col`, `colgroup` with browser-like column sizing, `colSpan` / `rowSpan`, `border-collapse`, `border-spacing`, `table-layout: fixed`, `caption-side` and `vertical-align` in cells. Rows have boxes, so `tr:hover` and zebra rows work. See [Tables](elements.html#tables).",
              "Turn off Minecraft's background blur per screen: `GuiLib.open(App, blurBackground = false)`, or live from a component with `useBackgroundBlur(enabled)` (e.g. a settings switch). The dark overlay stays. See [useBackgroundBlur](components.html#usebackgroundblur)."),
     *release("0.10.0", "2026-10-03",
              "Every color of the built-in controls is now a `--guilib-*` variable (`--guilib-button`, `--guilib-surface-3`, `--guilib-text-subtle`, `--guilib-danger` …). A theme only overrides variables on `:root` instead of the control rules; the defaults look the same as before. See [Theming built-in controls](css.html#theming).",
