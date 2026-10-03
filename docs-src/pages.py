@@ -157,6 +157,7 @@ body { display: flex; align-items: center; justify-content: center; }  /* body =
             ("pauseGame", "Boolean", "false", "Pause singleplayer while open."),
             ("scale", "Float?", "null", "The screen's own GUI scale (physical pixels per CSS px, fractions like `2.5f` work), independent of Minecraft's; `null` = Minecraft's. Change it later with `useScreenScale`."),
             ("blurBackground", "Boolean", "true", "`false` = no blur behind the screen, the dark overlay stays. Change it later with `useBackgroundBlur`. Also on `GuiLib.screen(…)`."),
+            ("metrics", "Boolean", "false", "Show the [metrics overlay](#metrics-overlay) from the start (Ctrl + F12 toggles it anyway). Also on `GuiLib.screen(…)`."),
         ], overloads=["fun open(stylesheets: List<String> = emptyList(), title: String = \"GuiLib\", content: NodeBuilder.() -> Unit): GuiLibScreen"],
         example="""
 GuiLib.open(App, stylesheets = listOf("mymod:ui/app.css"))
@@ -183,8 +184,17 @@ GuiLib.open(listOf("mymod:ui/hello.css")) { div(className = "hello") { +"Hi!" } 
            "Invalid CSS never crashes: unknown properties and values are skipped with a warning (`file:line:col`, with \"did you mean …\") in the log.")),
     h2("Development workflow"),
     raw(ul("`/guilib showcase` opens a demo of every feature (the screenshots on this site are taken from it).",
+           "**Ctrl + F12** in any GuiLib screen shows the [metrics overlay](#metrics-overlay).",
            "In a dev environment CSS files are **hot-reloaded** from `src/main/resources` on save, no rebuild needed. `/guilib reload` reloads manually.",
            "Warnings (unknown properties, invalid values, duplicate keys, hook misuse) are logged with file and line.")),
+    h2("Metrics overlay", "metrics-overlay"),
+    raw(p("Press **Ctrl + F12** in any GuiLib screen (or open it with `GuiLib.open(App, metrics = true)`) for a small window with live numbers and 30-second graphs, sampled twice a second:"),
+        ul("**Frame (this screen):** FPS, GuiLib's time per frame split into update (styles, layout, display list) and drawing, the worst frame.",
+           "**Work per second:** style, layout and paint passes, nodes laid out vs. reused, DOM size, paint commands.",
+           "**CPU and Memory (whole game):** process and render-thread CPU, heap, how fast the render thread allocates, garbage collections.",
+           "**Leak check:** old-generation memory after the last GC. Click *GC now*, use your UI for a while, click *GC now* again: the value should stay near +0 MB.",
+           "**Caches:** glyph atlas and image caches."),
+        p("The window measures itself out: it is a separate document whose work isn't counted, so Frame, Work and DOM show your screen only (the ⓘ next to the title explains this). Turn the shortcut off with `GuiLibScreen.METRICS_SHORTCUT = false`; toggle it from code with `screen.showMetrics`.")),
 ])
 
 # =====================================================================================================================
@@ -1344,6 +1354,7 @@ def release(ver, date, *items):
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("next", "unreleased",
+             "Metrics overlay: **Ctrl + F12** in any GuiLib screen (or `GuiLib.open(App, metrics = true)`) shows frame time, GuiLib's work per second, CPU, memory, GC, a leak check and cache sizes with live graphs. It doesn't count itself. See [Metrics overlay](getting-started.html#metrics-overlay).",
              "Faster layout: only the parts of a screen that changed are laid out again, everything else keeps its layout. An animated or edited element no longer re-lays out the whole screen every frame (Showcase animation page: 1.4 ms → 0.4 ms per frame).",
              "**Fix:** the scroll size of a container counted its absolutely positioned children at their position from the previous frame (a scrollbar could flash for one frame); it now uses their current position, and positioned boxes whose containing block is further out no longer count, like browsers.",
              ),
