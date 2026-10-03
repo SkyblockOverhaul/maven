@@ -628,7 +628,7 @@ var kills by useState(5000 to 20000)
 rangeSlider(low = kills.first, high = kills.second, onChange = { lo, hi -> kills = lo to hi },
             min = 0, max = 50000, step = 500, showValue = true, format = { "%,d".format(it) })
 """, css=[".guilib-range-slider", ".guilib-slider-thumb.low", ".guilib-slider-thumb.high", "+ all .guilib-slider-* classes"]),
-    api("numberInput", "function", "A number field with − and + buttons that keeps the value within `min..max`. Values inside the range are reported while typing; anything else is clamped when the field loses focus or on Enter. `Int` and `Double` overloads (the `Double` one shows as many decimals as `step`). With `allowEmpty = true` the value is an `Int?` / `Double?`: `null` shows an empty field with the placeholder, clearing the field reports `null`, + on an empty field starts at `step` (at least `min`), − on an empty field does nothing, and − at `min` empties the field again.",
+    api("numberInput", "function", "A number field with − and + buttons that keeps the value within `min..max`. Values inside the range are reported while typing; anything else is clamped when the field loses focus or on Enter. Typing accepts the shorthand `100k`, `1.5m`, `2,5k` or `1b` (k = thousand, m = million, b = billion, any case, `.` or `,` as decimal mark): the text stays as typed while editing and becomes the number (`100000`) on blur or Enter; invalid text goes back to the last value. `Int` and `Double` overloads (the `Double` one shows as many decimals as `step`). With `allowEmpty = true` the value is an `Int?` / `Double?`: `null` shows an empty field with the placeholder, clearing the field reports `null`, + on an empty field starts at `step` (at least `min`), − on an empty field does nothing, and − at `min` empties the field again.",
         params=[("value", "Int / Double", None, "Current value."),
                 ("onChange", "((Int) -> Unit)?", "null", "New, clamped value (`Int?` with `allowEmpty`)."),
                 ("allowEmpty", "Boolean", "–", "Only on the `Int?` / `Double?` overloads (required there): the field may be empty."),
@@ -637,7 +637,8 @@ rangeSlider(low = kills.first, high = kills.second, onChange = { lo, hi -> kills
                 ("wheel", "Boolean", "true", "Mouse wheel over the field steps the value."),
                 ("disabled", "Boolean", "false", ""),
                 ("placeholder", "String?", "null", ""),
-                ("stepMultiplier", "(Modifiers) -> Int", "Shift ×10, Ctrl ×100, Ctrl+Shift ×1000", "Steps per click, arrow key and wheel notch for the held keys (Cmd counts as Ctrl). Replace it for other factors, e.g. `{ m -> if (m.shift) 64 else 1 }` for stacks.")] + C,
+                ("stepMultiplier", "(Modifiers) -> Int", "Shift ×10, Ctrl ×100, Ctrl+Shift ×1000", "Steps per click, arrow key and wheel notch for the held keys (Cmd counts as Ctrl). Replace it for other factors, e.g. `{ m -> if (m.shift) 64 else 1 }` for stacks."),
+                ("parse", "(String) -> Double?", "parseNumberShorthand", "Turns the typed text into a number (`null` = invalid). The default reads plain numbers plus k/m/b. Own formats: `{ t -> if (t.endsWith(\"h\")) t.dropLast(1).toDoubleOrNull()?.times(3600) else parseNumberShorthand(t) }`. With a custom parser the field accepts any characters.")] + C,
         keys="ArrowUp/ArrowDown step (Shift ×10, Ctrl ×100, Ctrl+Shift ×1000), Enter commits; holding −/+ repeats with the multiplier of the press; wheel while hovered",
         example="""
 var slots by useState(3)
@@ -645,6 +646,9 @@ numberInput(value = slots, onChange = { slots = it }, min = 1, max = 5)
 
 var price by useState(1.5)
 numberInput(value = price, onChange = { price = it }, min = 0.0, max = 10.0, step = 0.25)
+
+var budget by useState(2_500_000.0)   // type 100k, 1.5m, 2,5k or 1b
+numberInput(value = budget, onChange = { budget = it }, min = 0.0, step = 100_000.0)
 
 var minCata by useState<Int?>(null)   // empty = no requirement
 numberInput(value = minCata, onChange = { minCata = it }, allowEmpty = true, min = 0, max = 50, placeholder = "any")
@@ -1283,6 +1287,7 @@ changelog = Page("changelog", "Changelog", "Overview", "What changed in each Gui
              "`border-style: dashed` and `dotted` are drawn (before, they were drawn solid): Chrome-like dash spacing, round dots, rounded corners supported. Handy for drop zones: `border: 1px dashed var(--guilib-text-subtle)`.",
              "`option(…, title = \"…\")`: hover text for single entries of `select`, `multiSelect`, `radioGroup`, `segmented` and `chips`. **Fix:** `title` tooltips are drawn above open menus and dropdowns instead of behind them.",
              "`numberInput`: Ctrl (Cmd) steps × 100 and Ctrl + Shift × 1000 (Shift stays × 10), for the buttons, arrow keys and the wheel; holding a button repeats with the multiplier of the press. Own factors with `stepMultiplier = { modifiers -> … }`.",
+             "`numberInput` understands shorthand: type `100k`, `1.5m`, `2,5k` or `1b` (k / m / b = thousand / million / billion, `.` or `,` as decimal mark). The field keeps the text while you type and shows the number on blur or Enter; min/max and rounding apply as usual. Own formats with `parse = { text -> … }`.",
              "**Fix:** tooltips, `title` tips, select / multiSelect menus and the color popover no longer get cut off at the screen edges (small windows, high GUI scale): they flip to the other side when only that fits and are shifted inside the screen.",
              "`option(…, className = \"legendary\", style = \"color: #ffaa00\")` for `select` / `multiSelect` (and `radioGroup`, `segmented`, `chips`): the class / style goes on the menu entry and on the chosen label in the box, so item names can be colored in the open list and in a multiple selection. The box now shows one `span.guilib-select-chosen` per chosen entry."),
     *release("0.9.0", "2026-10-03",
