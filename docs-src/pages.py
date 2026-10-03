@@ -1118,16 +1118,18 @@ css = Page("css", "CSS", "Reference", (
         ["Background", "`background` `background-color` `background-image` `background-size` `background-position` `background-repeat` `background-origin` `background-clip`: comma list of layers (first on top): `url(\"modid:path.png\")`, `linear-gradient(…)` (angles, `to right`, stops with positions, hard stops), `radial-gradient(…)` (`circle`/`ellipse`, size keywords, `at <position>`), `conic-gradient(…)` (`from <angle>`, `at <position>`, stops in angles or %; `from` is animatable) and the `repeating-linear/radial/conic-gradient(…)` forms. Gradients respect `border-radius`."],
         ["Background layout", "Per layer (comma lists, cycled): `background-size` (`auto` `cover` `contain`, one or two lengths/%; `auto` keeps the ratio), `background-position` (`center`, `right top`, `25% 75%`, `right 10px bottom 5px`), `background-repeat` (`repeat` `no-repeat` `repeat-x` `repeat-y` `space` `round`, or two values), `background-origin` (`padding-box` default, `border-box`, `content-box`), `background-clip` (`border-box` default, `padding-box`, `content-box`; the color follows the bottom layer). Shorthand: `background: #111 url(\"mymod:bg.png\") center / cover no-repeat`. **GuiLib default:** a layer without size, position and repeat is stretched over the box (browsers draw it at natural size and tile it); set any of them for web behavior. See [Differences](differences.html)."],
         ["Shadow", "`box-shadow`: `none` or a comma list of `[inset] <x> <y> [<blur> [<spread>]] [<color>]` (first on top, color defaults to `currentColor`). Real Gaussian blur that follows `border-radius`; outer shadows are never drawn under the box, so translucent backgrounds stay clean. Animatable."],
+        ["Filter", "`filter`: `brightness()` `contrast()` `grayscale()` `sepia()` `saturate()` `hue-rotate()` `invert()` `opacity()` `blur()` `drop-shadow(<x> <y> [<blur>] [<color>])`, applied to the element and everything inside it (positioned descendants too). Color functions are exact for boxes, text, gradients and images. `blur()` works on boxes, borders, shadows and images; text and gradients stay sharp. `drop-shadow()` follows rounded boxes, image alpha and text (unblurred for text). Items, entities, player heads and animated GIFs aren't filtered. Animatable, e.g. `.card { filter: grayscale(1); transition: filter 300ms } .card:hover { filter: none }`."],
         ["Visual", "`opacity` `visibility` `object-fit`"],
         ["Interaction", "`cursor` (`auto` `default` `pointer` `text` `not-allowed` `crosshair` `move` `ns-resize` `ew-resize` `row-resize` `col-resize` `grab` `grabbing` `none`; `none` hides the system cursor (draw your own at the mouse with `onMouseMove`); a drag cursor stays while the left button is held), `pointer-events`, `user-select` (parsed only)"],
         ["Generated content", "`content` (strings, `attr(name)`, `none` / `normal`), only on `::before` / `::after`"],
-    ]), shot("boxes.png", "Rounded corners, borders (solid, dashed, dotted), gradients, shadows and opacity, drawn by GuiLib's own anti-aliased shader")),
+    ]), shot("boxes.png", "Rounded corners, borders (solid, dashed, dotted), gradients, shadows and opacity, drawn by GuiLib's own anti-aliased shader"),
+        shot("filter.png", "filter on images and cards: color functions, blur() and drop-shadow()")),
     h2("Animation"),
     raw(p("`transition` (+ `-property` `-duration` `-timing-function` `-delay`) and `animation` (+ `-name` `-duration` "
           "`-timing-function` `-delay` `-iteration-count` `-direction` `-fill-mode` `-play-state`) with `@keyframes`. "
           "Easing: `linear` `ease` `ease-in` `ease-out` `ease-in-out` `cubic-bezier()` `steps()`."),
         p("Animatable: colors, lengths (also px ↔ % via calc), numbers (`opacity`, `flex-grow`, `font-size` …), radii, "
-          "`line-height`, `text-shadow`, `letter-spacing`, `box-shadow`, scrollbar colors, gradient stop colors, `visibility`, `transform`, "
+          "`line-height`, `text-shadow`, `letter-spacing`, `box-shadow`, `filter`, scrollbar colors, gradient stop colors, `visibility`, `transform`, "
           "`transform-origin`. Other values switch at 50 % in keyframes and don't transition."),
         code("""
 .card { transition: background-color 150ms, transform 150ms ease-out; }
@@ -1243,6 +1245,7 @@ differences = Page("differences", "Differences from the web", "Guide", (
            "`@import`, pseudo-elements other than `::before` / `::after`.",
            "`float`, subgrid, named grid lines.",
            "Backgrounds: a `url()` or gradient layer without `background-size` / `-position` / `-repeat` is stretched over the box (browsers: natural size, tiled). Copies of a positioned or tiled layer have square corners (`border-radius` doesn't cut them).",
+           "`filter`: `blur()` keeps text and gradients sharp and `drop-shadow()` of text isn't blurred (there is no offscreen pass: each box, text run and image is filtered on its own); items, entities, player heads and animated GIFs aren't filtered; `url()` SVG filters and `backdrop-filter` aren't supported.",
            "Tables: `col` backgrounds, `visibility: collapse`, `empty-cells`. A `rowspan` cell is painted before the later rows it covers, so their backgrounds hide its lower part. Collapsed borders keep the color of the cell painted last.",
            "Images are resource locations (PNG, SVG or GIF), no URLs.",
            "`currentColor` inside an SVG image is the element's CSS `color` (browsers use black for `<img>` SVGs).")),
@@ -1332,6 +1335,7 @@ def release(ver, date, *items):
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("next", "unreleased",
+             "CSS `filter`: `grayscale()`, `sepia()`, `brightness()`, `contrast()`, `saturate()`, `hue-rotate()`, `invert()`, `opacity()`, `blur()` and `drop-shadow()`, on the element and everything inside it, animatable (`filter: grayscale(1)` → `none` on hover). Color functions work on everything GuiLib draws; `blur()` and `drop-shadow()` on boxes and images (text stays sharp). See [CSS](css.html#text-visuals).",
              "`aspect-ratio`, `outline` / `outline-offset` (follows `border-radius`, great for `:focus-visible` rings), `text-transform`, `word-break` / `overflow-wrap` (break long names and URLs), `line-clamp` / `-webkit-line-clamp` (N lines with \"…\"). See [CSS](css.html#layout).",
              "`background-size` (`cover`, `contain`, lengths), `background-position` (keywords, %, `right 10px bottom 5px`), `background-repeat` (`repeat-x`, `space`, `round` …), `background-origin` and `background-clip`, all per layer and in the `background` shorthand: `background: url(\"mymod:bg.png\") center / cover no-repeat`. Without any of size, position and repeat a layer is still stretched over the box as before. See [CSS](css.html#text-visuals).",
              "Tables: `table`, `thead`, `tbody`, `tfoot`, `tr`, `th`, `td`, `caption`, `col`, `colgroup` with browser-like column sizing, `colSpan` / `rowSpan`, `border-collapse`, `border-spacing`, `table-layout: fixed`, `caption-side` and `vertical-align` in cells. Rows have boxes, so `tr:hover` and zebra rows work. See [Tables](elements.html#tables).",
