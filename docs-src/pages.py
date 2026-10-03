@@ -1,5 +1,6 @@
 """Content of the GuiLib documentation. Each Page is rendered by build.py."""
 from build import Page, h2, h3, raw, api, p, ul, code, note, table, shot, md, esc, VERSION
+from internals import internals
 
 C = [("className", "String?", "null", ""), ("id", "String?", "null", ""), ("style", "String?", "null", ""),
      ("key", "Any?", "null", "")]
@@ -1354,6 +1355,7 @@ def release(ver, date, *items):
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("next", "unreleased",
+             "New page [How GuiLib works](internals.html): a detailed tour through the internals, from components and the reconciler over the cascade, layout and painting to drawing in Minecraft.",
              "Metrics overlay: **Ctrl + F12** in any GuiLib screen (or `GuiLib.open(App, metrics = true)`) shows frame time, GuiLib's work per second, CPU, memory, GC, a leak check and cache sizes with live graphs. It doesn't count itself. See [Metrics overlay](getting-started.html#metrics-overlay).",
              "Faster layout: only the parts of a screen that changed are laid out again, everything else keeps its layout. An animated or edited element no longer re-lays out the whole screen every frame (Showcase animation page: 1.4 ms → 0.4 ms per frame).",
              "**Fix:** the scroll size of a container counted its absolutely positioned children at their position from the previous frame (a scrollbar could flash for one frame); it now uses their current position, and positioned boxes whose containing block is further out no longer count, like browsers.",
@@ -1456,4 +1458,4 @@ changelog = Page("changelog", "Changelog", "Overview", "What changed in each Gui
              "First release: components and hooks, CSS cascade and variables, box model, block/inline flow, flexbox, positioning, rounded corners, TTF text (Inter), PNG/SVG images, input, checkbox, select, tooltip, modal, portals, CSS hot reload."),
 ])
 
-PAGES = [overview, getting_started, changelog, components, differences, recipes, elements, controls, overlays, events, css]
+PAGES = [overview, getting_started, changelog, components, differences, recipes, internals, elements, controls, overlays, events, css]
