@@ -1249,7 +1249,7 @@ differences = Page("differences", "Differences from the web", "Guide", (
            "`onChange` on inputs, selects, checkboxes, switches and sliders fires on every change (React behaviour); sliders also have `onChangeEnd`.")),
     h2("Rendering"),
     raw(ul("`overflow: hidden` clips **rectangularly**. With `border-radius` on the clipping element, child backgrounds that sit exactly in one of its corners (headers, footers, sidebars) are rounded to match; other content is not cut to the curve.",
-           "Per-side borders on a box with `border-radius` are drawn as straight strips that stop at the rounded corners. Uniform borders are exact.",
+           "Per-side borders on a box with `border-radius` (since 0.12.1) bend around the corners and meet on the diagonal like in browsers; the inner corner is circular (browsers: elliptical when the two widths differ), and sides wider than 15.5px fall back to straight strips that stop at the rounded corners.",
            "`dashed` / `dotted` follow Chrome's look (dash 3× the width, a dash in each square corner). Rounded corners of a uniform dashed border are solid arcs; `double` `groove` `ridge` `inset` `outset` are not supported (skipped with a warning).",
            "Inline elements (`span`, `code`, …) paint background, border and shadow per line like the web; vertical padding/border don't change the line height. Use `display: inline-block` for boxes that must not wrap or need a size.",
            "Every positioned element (`relative` / `absolute` / `fixed`) is its own paint layer; `z-index` orders layers among siblings. Use `portal { }` for things that must be on top of everything. `position: fixed` ignores ancestors' `transform`.",
@@ -1354,6 +1354,9 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
+    *release("0.12.1", "unreleased",
+             "**Fix:** borders with a different width or color per side on a rounded box (`border-left: 3px solid green` on a card with `border-radius`) bend around the corners like in browsers instead of stopping where the curve begins. See [Differences from the web](differences.html#rendering).",
+             ),
     *release("0.12.0", "2026-10-03",
              "New page [How GuiLib works](internals.html): a detailed tour through the internals, from components and the reconciler over the cascade, layout and painting to drawing in Minecraft.",
              "Metrics overlay: **Ctrl + F12** in any GuiLib screen (or `GuiLib.open(App, metrics = true)`) shows frame time, GuiLib's work per second, CPU, memory, GC, a leak check and cache sizes with live graphs. It doesn't count itself. See [Metrics overlay](getting-started.html#metrics-overlay).",
