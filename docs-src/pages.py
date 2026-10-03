@@ -1343,7 +1343,7 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
-    *release("next", "unreleased",
+    *release("0.11.0", "2026-10-03",
              "`accent-color` recolors the checked/filled parts of controls (checkbox, radio, switch, sliders, segmented, tabs, chips) in a subtree: `.panel { accent-color: #e0b04a }`. See [CSS](css.html#theming).",
              "`caret-color` for inputs and textareas (inherited, animatable): `input { caret-color: #e0b04a }`. See [CSS](css.html#text-visuals).",
              "`::placeholder`: style the placeholder text of inputs and textareas, incl. `:focus::placeholder`. See [CSS](css.html#placeholder).",
