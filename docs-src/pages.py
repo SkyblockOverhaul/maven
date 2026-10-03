@@ -1354,7 +1354,7 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
-    *release("next", "unreleased",
+    *release("0.12.0", "2026-10-03",
              "New page [How GuiLib works](internals.html): a detailed tour through the internals, from components and the reconciler over the cascade, layout and painting to drawing in Minecraft.",
              "Metrics overlay: **Ctrl + F12** in any GuiLib screen (or `GuiLib.open(App, metrics = true)`) shows frame time, GuiLib's work per second, CPU, memory, GC, a leak check and cache sizes with live graphs. It doesn't count itself. See [Metrics overlay](getting-started.html#metrics-overlay).",
              "Faster layout: only the parts of a screen that changed are laid out again, everything else keeps its layout. An animated or edited element no longer re-lays out the whole screen every frame (Showcase animation page: 1.4 ms → 0.4 ms per frame).",
