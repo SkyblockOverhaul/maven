@@ -1362,7 +1362,7 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
-    *release("0.12.2", "unreleased",
+    *release("0.12.2", "2026-10-04",
              "`useEscapeBack(enabled) { … }`: Escape goes back from a sub-page (details, settings) instead of closing the screen; menus, modals and inputs still get it first. See [Components](components.html#useescapeback).",
              "**Fix:** boxes with `border-radius` sit on the same whole pixels as plain boxes, so a rounded box stacked on plain ones (e.g. the top part of a bar) no longer shifts by a pixel at fractional positions.",
              "Scrollbars can be dragged with the mouse, vertical and horizontal, like in browsers: drag the thumb, or press the track to jump there and keep dragging. See [scroll](elements.html#scroll).",
