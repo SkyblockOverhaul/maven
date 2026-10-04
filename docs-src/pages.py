@@ -1364,6 +1364,7 @@ def release(ver, date, *items):
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("0.12.2", "unreleased",
              "`useEscapeBack(enabled) { … }`: Escape goes back from a sub-page (details, settings) instead of closing the screen; menus, modals and inputs still get it first. See [Components](components.html#useescapeback).",
+             "**Fix:** boxes with `border-radius` sit on the same whole pixels as plain boxes, so a rounded box stacked on plain ones (e.g. the top part of a bar) no longer shifts by a pixel at fractional positions.",
              "Toasts with a button: `toast.info(\"Event deleted\", action = ToastAction(\"Undo\") { restore() })` runs the lambda and closes the toast. See [Toasts](overlays.html#usetoast).",
              ),
     *release("0.12.1", "2026-10-04",
