@@ -890,17 +890,19 @@ contextMenu(menu = {
         receiver="ComponentScope", sig="""fun useToast(): Toaster
 
 class Toaster {
-    fun show(message: String, kind: String = "info", title: String? = null, durationMs: Long = 3500): Toast
-    fun info(message: String, title: String? = null, durationMs: Long = 3500): Toast
-    fun success(message: String, title: String? = null, durationMs: Long = 3500): Toast
-    fun warning(message: String, title: String? = null, durationMs: Long = 3500): Toast
-    fun error(message: String, title: String? = null, durationMs: Long = 3500): Toast
+    fun show(message: String, kind: String = "info", title: String? = null, durationMs: Long = 3500, action: ToastAction? = null): Toast
+    fun info(message: String, title: String? = null, durationMs: Long = 3500, action: ToastAction? = null): Toast
+    fun success(message: String, title: String? = null, durationMs: Long = 3500, action: ToastAction? = null): Toast
+    fun warning(message: String, title: String? = null, durationMs: Long = 3500, action: ToastAction? = null): Toast
+    fun error(message: String, title: String? = null, durationMs: Long = 3500, action: ToastAction? = null): Toast
     fun clear()
     companion object { fun of(doc: Document): Toaster }
 }
 
-class Toast { fun dismiss() }""",
-        notes=["`durationMs <= 0` keeps the toast until it is clicked. `kind` becomes a CSS class, so custom kinds can be styled."],
+class Toast { fun dismiss() }
+class ToastAction(val label: String, val onClick: () -> Unit)""",
+        notes=["`durationMs <= 0` keeps the toast until it is clicked. `kind` becomes a CSS class, so custom kinds can be styled.",
+               "`action` (since 0.12.2) adds a button below the message, e.g. Undo: `toast.info(\"Event deleted\", action = ToastAction(\"Undo\") { restore() })`. Clicking it runs the lambda once and closes the toast; give such toasts a longer `durationMs`."],
         example="""
 val toast = useToast()
 button(onClick = {
@@ -910,7 +912,7 @@ button(onClick = {
     )
 }) { +"Create party" }
 """, css=[".guilib-toasts", ".guilib-toast", ".info", ".success", ".warning", ".error", ".leaving", ".guilib-toast-accent",
-          ".guilib-toast-title", ".guilib-toast-message", ".guilib-toast-close"],
+          ".guilib-toast-title", ".guilib-toast-message", ".guilib-toast-action", ".guilib-toast-close"],
         extra=f'<figure class="shot"><a href="img/toasts.png" target="_blank" rel="noopener" style="max-width: 340px">'
               f'<img src="img/toasts.png" alt="Toasts" loading="lazy" style="aspect-ratio: 680 / 380"></a>'
               f'<figcaption>success, warning (with title) and error toasts</figcaption></figure>'),
@@ -1354,6 +1356,9 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
+    *release("0.12.2", "unreleased",
+             "Toasts with a button: `toast.info(\"Event deleted\", action = ToastAction(\"Undo\") { restore() })` runs the lambda and closes the toast. See [Toasts](overlays.html#usetoast).",
+             ),
     *release("0.12.1", "2026-10-04",
              "`§k` obfuscated text: drawn as random characters of about the same width that change every 50 ms, like in Minecraft; the layout keeps the real text's size. Also for Minecraft text components (`text(component)`) with the obfuscated style. See [Components](components.html).",
              "**Fix:** borders with a different width or color per side on a rounded box (`border-left: 3px solid green` on a card with `border-radius`) bend around the corners like in browsers instead of stopping where the curve begins. See [Differences from the web](differences.html#rendering).",
