@@ -501,7 +501,7 @@ table(className = "party") {
           "`visibility: collapse`, `empty-cells`; a `rowspan` cell is painted before the later rows it covers, so a "
           "background on those rows hides its lower part.")),
     h2("GuiLib tags"),
-    api("scroll", "GuiLib tag", "A block element with `overflow: auto` and a thin scrollbar. Any element with `overflow: auto/scroll` scrolls as well; `scroll` is a convenient default.",
+    api("scroll", "GuiLib tag", "A block element with `overflow: auto` and a thin scrollbar. Any element with `overflow: auto/scroll` scrolls as well; `scroll` is a convenient default. Scrollbars can be dragged with the mouse (since 0.12.2); a press on the track moves the thumb there and keeps dragging.",
         sig="fun NodeBuilder.scroll(className: String? = null, …, children: NodeBuilder.() -> Unit)",
         example="""
 scroll(className = "list", style = "max-height: 120px") {
@@ -1365,6 +1365,7 @@ changelog = Page("changelog", "Changelog", "Overview", "What changed in each Gui
     *release("0.12.2", "unreleased",
              "`useEscapeBack(enabled) { … }`: Escape goes back from a sub-page (details, settings) instead of closing the screen; menus, modals and inputs still get it first. See [Components](components.html#useescapeback).",
              "**Fix:** boxes with `border-radius` sit on the same whole pixels as plain boxes, so a rounded box stacked on plain ones (e.g. the top part of a bar) no longer shifts by a pixel at fractional positions.",
+             "Scrollbars can be dragged with the mouse, vertical and horizontal, like in browsers: drag the thumb, or press the track to jump there and keep dragging. See [scroll](elements.html#scroll).",
              "Toasts with a button: `toast.info(\"Event deleted\", action = ToastAction(\"Undo\") { restore() })` runs the lambda and closes the toast. See [Toasts](overlays.html#usetoast).",
              ),
     *release("0.12.1", "2026-10-04",
