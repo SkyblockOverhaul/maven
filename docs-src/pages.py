@@ -501,7 +501,7 @@ table(className = "party") {
           "`visibility: collapse`, `empty-cells`; a `rowspan` cell is painted before the later rows it covers, so a "
           "background on those rows hides its lower part.")),
     h2("GuiLib tags"),
-    api("scroll", "GuiLib tag", "A block element with `overflow: auto` and a thin scrollbar. Any element with `overflow: auto/scroll` scrolls as well; `scroll` is a convenient default. Scrollbars can be dragged with the mouse (since 0.12.2); a press on the track moves the thumb there and keeps dragging.",
+    api("scroll", "GuiLib tag", "A block element with `overflow: auto` and a thin scrollbar. Any element with `overflow: auto/scroll` scrolls as well; `scroll` is a convenient default. Scrollbars can be dragged with the mouse (since 0.12.2); a press on the track moves the thumb there and keeps dragging. PageUp/PageDown scroll by most of a page and Home/End jump to the top/bottom (since 0.12.3): the container around the focused element, else the one under the mouse, else the biggest one.",
         sig="fun NodeBuilder.scroll(className: String? = null, …, children: NodeBuilder.() -> Unit)",
         example="""
 scroll(className = "list", style = "max-height: 120px") {
@@ -1364,6 +1364,8 @@ def release(ver, date, *items):
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("0.12.3", "unreleased",
              "**Fix:** text follows color changes that need no new layout: a button going from `disabled` to enabled no longer keeps the `:disabled` text color until something else redraws the screen (same for `text-decoration` and `text-shadow`). No more need for a `key` per state as a workaround.",
+             "PageUp/PageDown scroll scroll containers by most of a page, Home/End to the top/bottom, like browsers. See [scroll](elements.html#scroll).",
+             "The first screen after starting the game opens faster: GuiLib warms up its CSS, layout and paint code on a background thread at startup, and parsed stylesheets are cached between screens (no more parsing ua.css and your CSS on every open).",
              ),
     *release("0.12.2", "2026-10-04",
              "`useEscapeBack(enabled) { … }`: Escape goes back from a sub-page (details, settings) instead of closing the screen; menus, modals and inputs still get it first. See [Components](components.html#useescapeback).",
