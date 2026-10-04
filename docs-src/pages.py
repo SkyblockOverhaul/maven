@@ -330,6 +330,12 @@ useDocumentEvent("keydown") { e ->
     if ((e as KeyboardEvent).key == "r") refresh()
 }
 """),
+    api("useEscapeBack", "hook", "Escape as a back key for windows with sub-pages (since 0.12.2): while `enabled`, an Escape that nothing else uses runs `onBack` instead of closing the screen. Open menus, selects and modals still close first, and a focused input is left first; on the main page (`enabled = false`) Escape closes the screen as usual. With several, the component mounted last wins.",
+        receiver="ComponentScope", sig="fun useEscapeBack(enabled: Boolean = true, onBack: () -> Unit)",
+        example="""
+var page by useState("list")
+useEscapeBack(page != "list") { page = "list" }
+"""),
     h2("Context"),
     api("createContext", "function", "Creates a context with a default value, for passing data deep into the tree without props (themes, the current user, …).",
         receiver=None, sig="fun <T> createContext(defaultValue: T, name: String = \"Context\"): Context<T>",
@@ -1050,7 +1056,7 @@ useDocumentEvent("keydown") { e ->
     h2("Focus"),
     raw(ul("Inputs, textareas, buttons, selects and elements with `tabIndex` are focusable. Tab / Shift+Tab move the focus.",
            "Clicking focuses the nearest focusable element; style it with `:focus`, `:focus-visible` (only keyboard focus, like browsers) or `:focus-within`.",
-           "The first Escape blurs a focused input; the next closes the screen (unless something called `preventDefault()`).",
+           "The first Escape blurs a focused input; the next goes back with [`useEscapeBack`](components.html#useescapeback) or closes the screen (unless something called `preventDefault()`).",
            "Use `autoFocus = true` on an input to focus it when it appears, or `ref.current?.focus()`.")),
     h2("Element API", "element-api"),
     raw(p("Via `ref.current` (see `useElementRef`) or `useDocument()`:"),
@@ -1357,6 +1363,7 @@ def release(ver, date, *items):
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
     *release("0.12.2", "unreleased",
+             "`useEscapeBack(enabled) { … }`: Escape goes back from a sub-page (details, settings) instead of closing the screen; menus, modals and inputs still get it first. See [Components](components.html#useescapeback).",
              "Toasts with a button: `toast.info(\"Event deleted\", action = ToastAction(\"Undo\") { restore() })` runs the lambda and closes the toast. See [Toasts](overlays.html#usetoast).",
              ),
     *release("0.12.1", "2026-10-04",
