@@ -1362,7 +1362,7 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
-    *release("0.12.3", "unreleased",
+    *release("0.12.3", "2026-10-04",
              "**Fix:** text follows color changes that need no new layout: a button going from `disabled` to enabled no longer keeps the `:disabled` text color until something else redraws the screen (same for `text-decoration` and `text-shadow`). No more need for a `key` per state as a workaround.",
              "PageUp/PageDown scroll scroll containers by most of a page, Home/End to the top/bottom, like browsers. See [scroll](elements.html#scroll).",
              "The first screen after starting the game opens faster: GuiLib warms up its CSS, layout and paint code on a background thread at startup, and parsed stylesheets are cached between screens (no more parsing ua.css and your CSS on every open).",
