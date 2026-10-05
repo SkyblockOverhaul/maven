@@ -896,11 +896,11 @@ contextMenu(menu = {
         receiver="ComponentScope", sig="""fun useToast(): Toaster
 
 class Toaster {
-    fun show(message: String, kind: String = "info", title: String? = null, durationMs: Long = 3500, action: ToastAction? = null): Toast
-    fun info(message: String, title: String? = null, durationMs: Long = 3500, action: ToastAction? = null): Toast
-    fun success(message: String, title: String? = null, durationMs: Long = 3500, action: ToastAction? = null): Toast
-    fun warning(message: String, title: String? = null, durationMs: Long = 3500, action: ToastAction? = null): Toast
-    fun error(message: String, title: String? = null, durationMs: Long = 3500, action: ToastAction? = null): Toast
+    fun show(message: String, kind: String = "info", title: String? = null, durationMs: Long = 3500, action: ToastAction? = null, pauseOnHover: Boolean = true): Toast
+    fun info(message: String, title: String? = null, durationMs: Long = 3500, action: ToastAction? = null, pauseOnHover: Boolean = true): Toast
+    fun success(message: String, title: String? = null, durationMs: Long = 3500, action: ToastAction? = null, pauseOnHover: Boolean = true): Toast
+    fun warning(message: String, title: String? = null, durationMs: Long = 3500, action: ToastAction? = null, pauseOnHover: Boolean = true): Toast
+    fun error(message: String, title: String? = null, durationMs: Long = 3500, action: ToastAction? = null, pauseOnHover: Boolean = true): Toast
     fun clear()
     companion object { fun of(doc: Document): Toaster }
 }
@@ -908,7 +908,8 @@ class Toaster {
 class Toast { fun dismiss() }
 class ToastAction(val label: String, val onClick: () -> Unit)""",
         notes=["`durationMs <= 0` keeps the toast until it is clicked. `kind` becomes a CSS class, so custom kinds can be styled.",
-               "`action` (since 0.12.2) adds a button below the message, e.g. Undo: `toast.info(\"Event deleted\", action = ToastAction(\"Undo\") { restore() })`. Clicking it runs the lambda once and closes the toast; give such toasts a longer `durationMs`."],
+               "`action` (since 0.12.2) adds a button below the message, e.g. Undo: `toast.info(\"Event deleted\", action = ToastAction(\"Undo\") { restore() })`. Clicking it runs the lambda once and closes the toast; give such toasts a longer `durationMs`.",
+               "While the mouse is over a toast its timer is paused (since 0.12.4); when the mouse leaves it continues with the time left, but at least 1.5 s. The hovered toast is not the one dropped when a 6th toast arrives. `pauseOnHover = false` turns this off."],
         example="""
 val toast = useToast()
 button(onClick = {
@@ -1362,6 +1363,8 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
+    *release("0.12.4", "unreleased",
+             "Toasts pause while the mouse is over them, like web toast libraries: a long message no longer disappears while you read it. When the mouse leaves, the toast stays for the time it had left (at least 1.5 s). A hovered toast is not evicted when more than 5 are shown. Opt out per toast with `pauseOnHover = false`. See [useToast](overlays.html#usetoast)."),
     *release("0.12.3", "2026-10-04",
              "**Fix:** text follows color changes that need no new layout: a button going from `disabled` to enabled no longer keeps the `:disabled` text color until something else redraws the screen (same for `text-decoration` and `text-shadow`). No more need for a `key` per state as a workaround.",
              "PageUp/PageDown scroll scroll containers by most of a page, Home/End to the top/bottom, like browsers. See [scroll](elements.html#scroll).",
