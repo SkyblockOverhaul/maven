@@ -1363,7 +1363,7 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
-    *release("0.12.4", "unreleased",
+    *release("0.12.4", "2026-10-05",
              "Toasts pause while the mouse is over them, like web toast libraries: a long message no longer disappears while you read it. When the mouse leaves, the toast stays for the time it had left (at least 1.5 s). A hovered toast is not evicted when more than 5 are shown. Opt out per toast with `pauseOnHover = false`. See [useToast](overlays.html#usetoast)."),
     *release("0.12.3", "2026-10-04",
              "**Fix:** text follows color changes that need no new layout: a button going from `disabled` to enabled no longer keeps the `:disabled` text color until something else redraws the screen (same for `text-decoration` and `text-shadow`). No more need for a `key` per state as a workaround.",
