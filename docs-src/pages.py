@@ -694,6 +694,7 @@ rangeSlider(low = kills.first, high = kills.second, onChange = { lo, hi -> kills
                 ("allowEmpty", "Boolean", "–", "Only on the `Int?` / `Double?` overloads (required there): the field may be empty."),
                 ("min", "Int", "Int.MIN_VALUE", ""), ("max", "Int", "Int.MAX_VALUE", ""),
                 ("step", "Int", "1", "Step of the buttons, arrows and wheel."),
+                ("decimals", "Int", "decimals of step", "Only on the `Double` overloads (since 0.12.6): decimals a typed value keeps. Decimals past those of `step` show only when the value has them, so `step = 1.0, decimals = 1` steps by 1 and shows `48` or `48.5`."),
                 ("wheel", "Boolean", "true", "Mouse wheel over the field steps the value."),
                 ("disabled", "Boolean", "false", ""),
                 ("placeholder", "String?", "null", ""),
@@ -706,6 +707,9 @@ numberInput(value = slots, onChange = { slots = it }, min = 1, max = 5)
 
 var price by useState(1.5)
 numberInput(value = price, onChange = { price = it }, min = 0.0, max = 10.0, step = 0.25)
+
+var tracking by useState<Double?>(null)   // steps by 1, typing 48.5 keeps the .5
+numberInput(value = tracking, onChange = { tracking = it }, allowEmpty = true, min = 1.0, decimals = 1)
 
 var budget by useState(2_500_000.0)   // type 100k, 1.5m, 2,5k or 1b
 numberInput(value = budget, onChange = { budget = it }, min = 0.0, step = 100_000.0)
