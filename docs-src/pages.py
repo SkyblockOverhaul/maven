@@ -1367,6 +1367,10 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
+    *release("0.12.6", "2026-10-19",
+             "`numberInput` with `Double` values takes `decimals`: typed values keep that many decimals while the buttons, arrows and wheel still move by `step`. Extra decimals show only when the value has them, so `step = 1.0, decimals = 1` shows `48` or `48.5`. Without `decimals` nothing changes. See [numberInput](controls.html#numberinput)."),
+    *release("0.12.5", "2026-10-07",
+             "**Fix:** items snap to whole screen pixels, so an item at a fractional position no longer shows a thin line from its neighbour in the item atlas."),
     *release("0.12.4", "2026-10-05",
              "Toasts pause while the mouse is over them, like web toast libraries: a long message no longer disappears while you read it. When the mouse leaves, the toast stays for the time it had left (at least 1.5 s). A hovered toast is not evicted when more than 5 are shown. Opt out per toast with `pauseOnHover = false`. See [useToast](overlays.html#usetoast)."),
     *release("0.12.3", "2026-10-04",
