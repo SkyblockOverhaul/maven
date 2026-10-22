@@ -178,6 +178,36 @@ GuiLib.open(listOf("mymod:ui/hello.css")) { div(className = "hello") { +"Hi!" } 
         sig="fun currentScreen(): Screen?"),
     api("GuiLib.runOnUi", "function", "Runs a block on the client (render) thread. State setters are already thread-safe; use this for other work such as opening screens from a network callback.",
         sig="fun runOnUi(block: () -> Unit)"),
+    h2("HUD documents", "hud"),
+    api("GuiLibHud", "class", "A GuiLib document drawn on the HUD (or over any screen) instead of in a screen of its own, for overlays and trackers (since 0.12.7). "
+        "The content is laid out at its own size from the top left (inside a shrink-to-fit `.guilib-hud` box); `width` and `height` give that size in GUI px at scale 1, "
+        "so the mod can place it, keep it on the screen or hit-test it. Paint commands are reused while nothing changes, so drawing it every frame costs little: "
+        "call `render` again only when the shown data changed. `item`, `img` and `player-head` work like in screens. "
+        "It gets no mouse or keyboard input, and its work is not counted in the metrics window of an open screen.",
+        receiver=None, sig="class GuiLibHud(stylesheets: List<String> = emptyList())",
+        params=[
+            ("render(content)", "VNode or NodeBuilder.() -> Unit", None, "Shows the content, replacing what was shown before; components that stay keep their state."),
+            ("draw(ctx, x, y, scale)", "GuiGraphicsExtractor, Float, Float, Float = 1f", None, "Draws it with its top left corner at GUI position (`x`, `y`). Text and SVGs are rasterized for the drawn size, so they stay sharp at any `scale`."),
+            ("width / height", "Float", None, "Size of the content in GUI px at scale 1, as of the last `draw` (0 before the first)."),
+            ("bounds(selector)", "String → Rect?", None, "Where the first element matching the CSS selector is, relative to the content's top left in GUI px at scale 1 (as of the last `draw`). For hit-testing a part yourself, e.g. a button: the HUD gets no mouse input."),
+            ("reloadStylesheets()", "", None, "Reloads the stylesheets, e.g. after a resource reload."),
+            ("unmount()", "", None, "Unmounts the content and runs effect cleanups."),
+        ],
+        example="""
+val hud = GuiLibHud(listOf("mymod:ui/tracker.css"))
+
+// Whenever the data changes:
+hud.render {
+    div(className = "tracker") {
+        item(ItemStack(Items.DIAMOND), decorations = false)
+        span { +"Kills: $kills" }
+    }
+}
+
+// Every frame, e.g. from Fabric's HUD render callback:
+hud.draw(ctx, 10f, 10f, scale = 1.5f)
+""",
+        notes=["Create it once the game has started (e.g. on the first draw), not while your mod initializes: documents load fonts and stylesheets."]),
     h2("Stylesheets & resources"),
     raw(ul("CSS files live in your mod's resources and are referenced by resource location: `\"mymod:ui/app.css\"` → `src/main/resources/assets/mymod/ui/app.css`.",
            "Several stylesheets can be passed; later ones win on equal specificity. GuiLib's built-in stylesheet (`assets/guilib/css/ua.css`) has the lowest priority, so you can override every built-in control.",
@@ -1367,6 +1397,8 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
+    *release("0.12.7", "2026-10-22",
+             "`GuiLibHud` draws a GuiLib document on the HUD, outside any screen, for overlays and trackers: `render { … }` when the data changes, `draw(ctx, x, y, scale)` every frame. The content is laid out at its own size; `width`, `height` and `bounds(selector)` let the mod place it, keep it on the screen and hit-test parts of it. Paint commands are reused until the content changes, and `item`, `img` and `player-head` work like in screens. See [HUD documents](getting-started.html#hud)."),
     *release("0.12.6", "2026-10-19",
              "`numberInput` with `Double` values takes `decimals`: typed values keep that many decimals while the buttons, arrows and wheel still move by `step`. Extra decimals show only when the value has them, so `step = 1.0, decimals = 1` shows `48` or `48.5`. Without `decimals` nothing changes. See [numberInput](controls.html#numberinput)."),
     *release("0.12.5", "2026-10-07",
