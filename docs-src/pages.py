@@ -588,7 +588,7 @@ FakePlayer.of(name: String): FakePlayer?
 FakePlayer.of(uuid: UUID): FakePlayer?
 FakePlayer.of(profile: GameProfile): FakePlayer?
 FakePlayer.of(player: AbstractClientPlayer): FakePlayer?"""),
-    api("playerHead", "GuiLib tag", "A player's face like in the tab list (16×16 by default), scaled to its box. The skin loads in the background (the default skin is shown until then); no world is needed. The CSS tag selector is `player-head`.",
+    api("playerHead", "GuiLib tag", "A player's face like in the tab list (16×16 by default), scaled to its box. The skin loads in the background (the default skin is shown until then); no world is needed. With a `UUID`, a lookup Mojang refused because of its rate limit is tried again with growing waits, so the head does not keep the default skin (since 0.12.8). The CSS tag selector is `player-head`.",
         params=[("player", "Any", None, "A name (`String`), `UUID`, `GameProfile`, `ResolvableProfile` or `AbstractClientPlayer`."),
                 ("hat", "Boolean", "true", "Draw the hat layer.")] + common("className", "id", "style", "key"),
         example="""
@@ -1397,6 +1397,8 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
+    *release("0.12.8", "2026-10-27",
+             "**Fix:** `playerHead` with a `UUID` no longer keeps the default skin (Steve, Alex, …) when Mojang refused the skin lookup because of its rate limit, which happens when many heads load at once. Minecraft keeps such a failed lookup while the head is drawn, so GuiLib asks Mojang again itself, first after 5 s and then waiting twice as long each time (at most 2 minutes). See [playerHead](elements.html#playerhead)."),
     *release("0.12.7", "2026-10-22",
              "`GuiLibHud` draws a GuiLib document on the HUD, outside any screen, for overlays and trackers: `render { … }` when the data changes, `draw(ctx, x, y, scale)` every frame. The content is laid out at its own size; `width`, `height` and `bounds(selector)` let the mod place it, keep it on the screen and hit-test parts of it. Paint commands are reused until the content changes, and `item`, `img` and `player-head` work like in screens. See [HUD documents](getting-started.html#hud)."),
     *release("0.12.6", "2026-10-19",
