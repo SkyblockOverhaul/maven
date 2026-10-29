@@ -1397,6 +1397,8 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
+    *release("0.12.9", "2026-10-29",
+             "**Fix:** a rounded box whose border and background are both set no longer shows a thin dark line between them. The background was drawn only inside the border, and the soft edges of both met there, so filled buttons, switches and selected chips with a border in the same color looked slightly shrunk. Under an opaque border the background now reaches the outer edge, like `background-clip: border-box` in browsers; with a see-through border the background still stops at the border, as before."),
     *release("0.12.8", "2026-10-27",
              "**Fix:** `playerHead` with a `UUID` no longer keeps the default skin (Steve, Alex, …) when Mojang refused the skin lookup because of its rate limit, which happens when many heads load at once. Minecraft keeps such a failed lookup while the head is drawn, so GuiLib asks Mojang again itself, first after 5 s and then waiting twice as long each time (at most 2 minutes). See [playerHead](elements.html#playerhead)."),
     *release("0.12.7", "2026-10-22",
