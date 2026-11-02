@@ -216,6 +216,7 @@ hud.draw(ctx, 10f, 10f, scale = 1.5f)
     h2("Development workflow"),
     raw(ul("`/guilib showcase` opens a demo of every feature (the screenshots on this site are taken from it).",
            "**Ctrl + F12** in any GuiLib screen shows the [metrics overlay](#metrics-overlay).",
+           "**Ctrl + Shift + C** in any GuiLib screen turns on the [CSS inspector](#css-inspector) (since 0.12.11).",
            "In a dev environment CSS files are **hot-reloaded** from `src/main/resources` on save, no rebuild needed. `/guilib reload` reloads manually.",
            "Warnings (unknown properties, invalid values, duplicate keys, hook misuse) are logged with file and line.")),
     h2("Metrics overlay", "metrics-overlay"),
@@ -226,6 +227,12 @@ hud.draw(ctx, 10f, 10f, scale = 1.5f)
            "**Leak check:** old-generation memory after the last GC. Click *GC now*, use your UI for a while, click *GC now* again: the value should stay near +0 MB.",
            "**Caches:** glyph atlas and image caches."),
         p("Drag it by its title bar; it remembers its position until the game closes. The window measures itself out: it is a separate document whose work isn't counted, so Frame, Work and DOM show your screen only (the ⓘ next to the title explains this). Turn the shortcut off with `GuiLibScreen.METRICS_SHORTCUT = false`; toggle it from code with `screen.showMetrics`.")),
+    h2("CSS inspector", "css-inspector"),
+    raw(p("Press **Ctrl + Shift + C** in any GuiLib screen (since 0.12.11), like *inspect element* in a browser. It is meant for you while styling, and for your players when you let them write their own CSS (see [useStylesheet](components.html#usestylesheet)):"),
+        ul("The element under the mouse gets a frame, a box shows its selector (`button#go.btn.primary`), the path from the body to it and the rules that match it with `file:line`, in cascade order: the last one wins at the same specificity. GuiLib's own `ua.css` rules are left out.",
+           "**Left click** copies the selector, **right click** the whole path to the clipboard. Clicks don't reach the UI while it is on, the mouse wheel still scrolls.",
+           "**Ctrl + Shift + C** again or **Escape** turns it off. The box moves to the top when the mouse is in the lower half."),
+        p("Like the metrics overlay it is its own document, so the screen's CSS can't hide or restyle it. Turn the shortcut off with `GuiLibScreen.INSPECTOR_SHORTCUT = false`; toggle it from code with `screen.inspecting`. `Inspector.selectorOf`, `pathOf` and `matchingRules` (in `net.sbo.guilib.core.debug`) give the same information for your own tools.")),
 ])
 
 # =====================================================================================================================
@@ -424,6 +431,13 @@ useBodyClass("font-mc", settings.minecraftFont)
         receiver="ComponentScope", sig="fun useBodyStyle(property: String, value: String?)",
         example="""
 useBodyStyle("--accent", accentColor)   // CSS: .button { background: var(--accent) }
+"""),
+    api("useStylesheet", "hook", "Adds a stylesheet given as text after the screen's own stylesheets while mounted (since 0.12.11), like a `<link>` added to the page, e.g. CSS your players write in a config file. It wins over the screen's CSS at the same specificity, stays through `/guilib reload`, and a new text replaces it live; `null` adds nothing. Mistakes are logged with `source` and the line like in any stylesheet. `url()` in it only reaches resources, nothing from disk or the internet. With several, a higher `order` comes later and wins, also when a lower one is replaced later; the same order keeps the order they were added in. It returns the parsed sheet: `problems` lists every mistake as `source:line:col: message`, every time it is parsed (the log shows each message only once), so you can show them to the player. `Stylesheet.parse(…).problems` works the same without a hook. Without a hook: `document.addStylesheet(sheet, order)` returns a function that removes it again.",
+        receiver="ComponentScope", sig="fun useStylesheet(css: String?, source: String = \"<useStylesheet>\", order: Int = 0): Stylesheet?",
+        example="""
+val file = File(configDir, "user.css")
+val sheet = useStylesheet(file.takeIf { it.isFile }?.readText(), "user.css")
+sheet?.problems?.forEach { div { +it } }   // e.g. "user.css:3:5: unknown property 'colr'; did you mean 'color'?"
 """),
     api("Element.classList / setStyleProperty", "function", "Change an element's classes and inline style like in the DOM: `classList.add(…)`, `remove(…)`, `toggle(name, force)`, `replace(old, new)`, `inlineStyle = \"…\"`, `setStyleProperty(name, value)`, `removeStyleProperty(name)`, `getStyleProperty(name)`. Meant for `useDocument().body`; from outside the UI use `GuiLib.currentDocument()?.body` on the render thread. On an element you render with `className` / `style`, the next render sets them back (like React).",
         receiver="Element", sig="""val classList: ClassList   // Set<String> + add / remove / toggle / replace
@@ -1397,6 +1411,10 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
+    *release("0.12.11", "2026-11-02",
+             "`useStylesheet(css, source, order)` adds a stylesheet given as text after the screen's own ones while the component is mounted, like a `<link>` added to the page, e.g. CSS your players write in a config file. It wins at the same specificity, stays through `/guilib reload`, a new text replaces it live, and a higher `order` stays last even when a lower sheet is replaced. Without a hook: `document.addStylesheet(sheet, order)`. See [useStylesheet](components.html#usestylesheet).",
+             "`Stylesheet.problems` lists every parse mistake as `source:line:col: message`, every time the sheet is parsed (the log shows each message only once), so you can show players what is wrong in their CSS. `useStylesheet` returns the parsed sheet for that.",
+             "CSS inspector: **Ctrl + Shift + C** in any GuiLib screen frames the element under the mouse and shows its selector, the path from the body and the matching rules with `file:line` in cascade order. Left click copies the selector, right click the path, Escape closes it. `screen.inspecting`, `GuiLibScreen.INSPECTOR_SHORTCUT = false`; `Inspector.selectorOf` / `pathOf` / `matchingRules` for your own tools. See [CSS inspector](getting-started.html#css-inspector)."),
     *release("0.12.10", "2026-11-02",
              "`text-shadow` takes a comma-separated list like in browsers, the first shadow on top: `text-shadow: 1px 0 #000, -1px 0 #000, 0 1px #000, 0 -1px #000` gives text a black outline that stays readable on any background. With the Minecraft font a single shadow is still Minecraft's own text shadow, several are drawn as copies of the text in their color and offset. The list animates pairwise and works with `filter`. `ComputedStyle.textShadows` and `TextStyle.shadows` hold the list; `textShadow` / `shadow` are the first one. See [CSS](css.html#text-visuals)."),
     *release("0.12.9", "2026-10-29",
