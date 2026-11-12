@@ -1411,8 +1411,10 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
-    *release("0.12.12", "2026-11-12",
+    *release("0.12.13", "2026-11-12",
              "Build only, no API or behaviour changes: the dev `runClient` setup uses the current Fabric Loom run-config API, so configuring the GuiLib project no longer prints deprecation warnings."),
+    *release("0.12.12", "2026-11-12",
+             "Not published: the build script did not compile, so no 0.12.12 jars exist. Use 0.12.13."),
     *release("0.12.11", "2026-11-02",
              "`useStylesheet(css, source, order)` adds a stylesheet given as text after the screen's own ones while the component is mounted, like a `<link>` added to the page, e.g. CSS your players write in a config file. It wins at the same specificity, stays through `/guilib reload`, a new text replaces it live, and a higher `order` stays last even when a lower sheet is replaced. Without a hook: `document.addStylesheet(sheet, order)`. See [useStylesheet](components.html#usestylesheet).",
              "`Stylesheet.problems` lists every parse mistake as `source:line:col: message`, every time the sheet is parsed (the log shows each message only once), so you can show players what is wrong in their CSS. `useStylesheet` returns the parsed sheet for that.",
