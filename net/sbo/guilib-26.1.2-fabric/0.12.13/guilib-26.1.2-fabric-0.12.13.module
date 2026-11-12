@@ -1,0 +1,130 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "net.sbo",
+    "module": "guilib-26.1.2-fabric",
+    "version": "0.12.13",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "9.8.0"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 25,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.3.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "guilib-26.1.2-fabric-0.12.13.jar",
+          "url": "guilib-26.1.2-fabric-0.12.13.jar",
+          "size": 3410838,
+          "sha512": "fc67b31212a9ff453ff8184bd4c8cdf5b8b6508bc53cd7f48802965896e14904f7d1fb82196b15c2a1b9fc6866eab4c40ee73a275f1fc9b6a1bf8e3bb53a3fbf",
+          "sha256": "093af833e5e866f19928b07e3fe42df3062fa5aff076e26b650afae16b2a09e1",
+          "sha1": "086af48dd64724aa83b0e990f8194bf2f8a9df23",
+          "md5": "84031a9cbd9a5261e7f0b68899aabae5"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 25,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "net.fabricmc",
+          "module": "fabric-loader",
+          "version": {
+            "requires": "0.19.5"
+          }
+        },
+        {
+          "group": "net.fabricmc.fabric-api",
+          "module": "fabric-api",
+          "version": {
+            "requires": "0.155.3+26.1.2"
+          }
+        },
+        {
+          "group": "net.fabricmc",
+          "module": "fabric-language-kotlin",
+          "version": {
+            "requires": "1.14.1+kotlin.2.4.20"
+          }
+        },
+        {
+          "group": "com.github.weisj",
+          "module": "jsvg",
+          "version": {
+            "requires": "2.0.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.3.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "guilib-26.1.2-fabric-0.12.13.jar",
+          "url": "guilib-26.1.2-fabric-0.12.13.jar",
+          "size": 3410838,
+          "sha512": "fc67b31212a9ff453ff8184bd4c8cdf5b8b6508bc53cd7f48802965896e14904f7d1fb82196b15c2a1b9fc6866eab4c40ee73a275f1fc9b6a1bf8e3bb53a3fbf",
+          "sha256": "093af833e5e866f19928b07e3fe42df3062fa5aff076e26b650afae16b2a09e1",
+          "sha1": "086af48dd64724aa83b0e990f8194bf2f8a9df23",
+          "md5": "84031a9cbd9a5261e7f0b68899aabae5"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "guilib-26.1.2-fabric-0.12.13-sources.jar",
+          "url": "guilib-26.1.2-fabric-0.12.13-sources.jar",
+          "size": 1560427,
+          "sha512": "b204079970edbd20d28d0357e80f259964e8c4573546020b2da72ef6e0f401d761132735038bd4608e3e8a6990b54ae9135b209f411b6e7509e74fbb0e9a7dea",
+          "sha256": "9c40fa915cd809bb4324ac7558e6b1bcc343a248ade16b0bafd0201560b9b1b6",
+          "sha1": "e88310cc19eeee109972fd12378fa136b8f72e47",
+          "md5": "b56d9552bb6517d034607216a8708935"
+        }
+      ]
+    }
+  ]
+}
