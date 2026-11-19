@@ -602,7 +602,7 @@ FakePlayer.of(name: String): FakePlayer?
 FakePlayer.of(uuid: UUID): FakePlayer?
 FakePlayer.of(profile: GameProfile): FakePlayer?
 FakePlayer.of(player: AbstractClientPlayer): FakePlayer?"""),
-    api("playerHead", "GuiLib tag", "A player's face like in the tab list (16×16 by default), scaled to its box. The skin loads in the background (the default skin is shown until then); no world is needed. With a `UUID`, a lookup Mojang refused because of its rate limit is tried again with growing waits, so the head does not keep the default skin (since 0.12.8). The CSS tag selector is `player-head`.",
+    api("playerHead", "GuiLib tag", "A player's face like in the tab list (16×16 by default), scaled to its box. The skin loads in the background (the default skin is shown until then); no world is needed. With a `UUID`, a lookup Mojang refused because of its rate limit is tried again with growing waits, so the head does not keep the default skin (since 0.12.8). Only heads that are drawn are retried, one lookup at a time for all heads, and a refused lookup pauses all of them (since 0.12.15). The CSS tag selector is `player-head`.",
         params=[("player", "Any", None, "A name (`String`), `UUID`, `GameProfile`, `ResolvableProfile` or `AbstractClientPlayer`."),
                 ("hat", "Boolean", "true", "Draw the hat layer.")] + common("className", "id", "style", "key"),
         example="""
@@ -1411,6 +1411,8 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
+    *release("0.12.15", "2026-11-19",
+             "**Fix:** the `playerHead` retries no longer keep Mojang's rate limit reached. Before, every head with a refused skin lookup retried on its own timer, so a list of dozens of heads could keep asking Mojang and get refused again, also for the player's own skin. Now the retries run one at a time for all heads, at most once a second, and a refused lookup pauses all of them (5 s, doubling up to 2 minutes, reset by the next successful lookup). Only heads that are drawn are retried. See [playerHead](api.html#playerHead)."),
     *release("0.12.14", "2026-11-19",
              "Build only, no API or behaviour changes: GuiLib is built with the upstream preprocessor instead of DGT, without remapping, and the Minecraft versions compile in parallel, so building GuiLib (also as part of a mod that includes it from source) is much faster.",
              "Compiled with Kotlin 2.4.21 instead of 2.3.0; the published POM now asks for `kotlin-stdlib` 2.4.21. At runtime Fabric Language Kotlin 1.14.1+ (Kotlin 2.4.20) is still enough."),
