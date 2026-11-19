@@ -1411,6 +1411,9 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
+    *release("0.12.14", "2026-11-19",
+             "Build only, no API or behaviour changes: GuiLib is built with the upstream preprocessor instead of DGT, without remapping, and the Minecraft versions compile in parallel, so building GuiLib (also as part of a mod that includes it from source) is much faster.",
+             "Compiled with Kotlin 2.4.21 instead of 2.3.0; the published POM now asks for `kotlin-stdlib` 2.4.21. At runtime Fabric Language Kotlin 1.14.1+ (Kotlin 2.4.20) is still enough."),
     *release("0.12.13", "2026-11-12",
              "Build only, no API or behaviour changes: the dev `runClient` setup uses the current Fabric Loom run-config API, so configuring the GuiLib project no longer prints deprecation warnings."),
     *release("0.12.12", "2026-11-12",
