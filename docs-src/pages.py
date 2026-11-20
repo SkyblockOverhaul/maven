@@ -1411,6 +1411,8 @@ def release(ver, date, *items):
 
 
 changelog = Page("changelog", "Changelog", "Overview", "What changed in each GuiLib release, newest first.", [
+    *release("0.12.16", "2026-11-20",
+             "Performance only, no API or behaviour changes: the font for a text style (family, weight, italic) is looked up once and cached, instead of filtering the font's faces again for every text drawn each frame, so HUDs with a lot of text cost less per frame."),
     *release("0.12.15", "2026-11-19",
              "**Fix:** the `playerHead` retries no longer keep Mojang's rate limit reached. Before, every head with a refused skin lookup retried on its own timer, so a list of dozens of heads could keep asking Mojang and get refused again, also for the player's own skin. Now the retries run one at a time for all heads, at most once a second, and a refused lookup pauses all of them (5 s, doubling up to 2 minutes, reset by the next successful lookup). Only heads that are drawn are retried. See [playerHead](api.html#playerHead)."),
     *release("0.12.14", "2026-11-19",
